@@ -3111,9 +3111,22 @@ function generateFigmaBoth(darkColors) {
   return `/* ===== LIGHT MODE ===== */\n/* Download this as: colors-light.tokens.json */\n\n${lightJSON}\n\n\n/* ===== DARK MODE ===== */\n/* Download this as: colors-dark.tokens.json */\n\n${darkJSON}`;
 }
 
+// The Clipboard API rejects on permission denial and is undefined on an
+// insecure origin. Without a catch, both failed silently — nothing copied and
+// nothing said.
+function writeClipboard(text, okMsg) {
+  if (!navigator.clipboard || !navigator.clipboard.writeText) {
+    showToast('Clipboard unavailable — copy manually');
+    return;
+  }
+  navigator.clipboard.writeText(text)
+    .then(() => showToast(okMsg))
+    .catch(() => showToast('Copy failed — check clipboard permission'));
+}
+
 function copyExport() {
   const text = document.getElementById('exportCode').textContent;
-  navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard'));
+  writeClipboard(text, 'Copied to clipboard');
 }
 
 function downloadExport() {
@@ -3174,7 +3187,7 @@ function downloadFigmaFiles() {
 }
 
 function copyText(text) {
-  navigator.clipboard.writeText(text).then(() => showToast(`Copied: ${text}`));
+  writeClipboard(text, `Copied: ${text}`);
 }
 
 let toastHideTimer = null;
@@ -3247,8 +3260,19 @@ document.getElementById('darkBgPicker').addEventListener('input', function() {
   render();
 });
 
+// True when the event came from somewhere the user is typing or choosing.
+// Without this, "?" fired while naming a colour and Ctrl+Z was preventDefault-ed
+// unconditionally, so native text undo was unreachable in every input.
+function isEditingTarget(el) {
+  if (!el) return false;
+  const tag = el.tagName;
+  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el.isContentEditable;
+}
+
 // Keyboard shortcuts
 document.addEventListener('keydown', function(e) {
+  if (isEditingTarget(e.target)) return;
+
   // Ctrl/Cmd + Z = Undo
   if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
     e.preventDefault();
@@ -3264,7 +3288,9 @@ document.addEventListener('keydown', function(e) {
   // ? = Show shortcuts hint
   if (e.key === '?') {
     const hint = document.getElementById('shortcutsHint');
-    hint.innerHTML = 'Ctrl+Z: Undo · Ctrl+Y: Redo · Ctrl+S: Save · Ctrl+O: Load';
+    // Only claim shortcuts that exist. Ctrl+S / Ctrl+O were advertised here but
+    // never implemented — pressing them just opened the browser's own dialogs.
+    hint.textContent = 'Ctrl+Z: Undo · Ctrl+Y: Redo';
     hint.classList.add('show');
     setTimeout(() => hint.classList.remove('show'), 3000);
   }
