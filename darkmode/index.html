@@ -809,6 +809,8 @@
     color: var(--text);
     line-height: 1.3;
   }
+  /* Real <button> so the copy targets are focusable and in the tab order.
+     The reset below keeps them looking exactly like the <div>s they replaced. */
   .color-value {
     font-size: 11px;
     color: var(--text-secondary);
@@ -817,9 +819,34 @@
     text-transform: uppercase;
     transition: color 0.2s;
     letter-spacing: 0.04em;
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: 0;
+    -webkit-appearance: none;
+    appearance: none;
   }
-  .color-value:hover { 
+  .color-value:hover {
     color: var(--accent);
+  }
+  .color-value:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Visible to assistive technology only. */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
   
   .light-card .color-name {
@@ -1495,6 +1522,25 @@
     .modal {
       padding: 24px;
     }
+
+    /* Reflow (WCAG 1.4.10). The palette card clips its overflow to keep the
+       rounded corners, so at narrow widths the lock, duplicate and remove
+       buttons were pushed past the card edge and were not reachable by any
+       means. Let the row wrap instead — every control stays on screen. */
+    .color-input-row,
+    .dark-card .color-item {
+      flex-wrap: wrap;
+      row-gap: 10px;
+    }
+    .color-input-row > .color-info,
+    .dark-card .color-item > .color-info {
+      flex: 1 1 120px;
+    }
+    /* Full-width break forces the trailing controls onto their own line. */
+    .color-input-row > .method-select {
+      flex: 1 1 100%;
+      width: 100%;
+    }
   }
 </style>
 <!-- Google Analytics (consent-gated) -->
@@ -1524,7 +1570,7 @@
 
 <!-- Navbar -->
 <nav class="navbar">
-  <a href="https://gamaleldien.com" class="navbar-logo" style="display: flex; align-items: center;">
+  <a href="https://gamaleldien.com" class="navbar-logo" aria-label="Gamal Eldien — home" style="display: flex; align-items: center;">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 146.76 60.13" style="height: 40px; width: auto;">
       <style>.logo-fill{fill:#f1f2f2}</style>
       <path d="M75.08 24.06c1.67-1.68 3.68-2.52 6.03-2.52 1.7 0 3.22.45 4.56 1.34 1.34.9 2.35 2.1 3.04 3.62l-3.41.98c-.4-.8-.97-1.42-1.72-1.86-.75-.44-1.57-.66-2.48-.66-1.41 0-2.59.5-3.54 1.49-.95.99-1.42 2.22-1.42 3.67s.47 2.68 1.42 3.66c.94.98 2.12 1.48 3.54 1.48 1.02 0 1.94-.27 2.78-.82s1.44-1.33 1.82-2.35l-4.5.02-.05-3.05h8.03v1.37c0 2.4-.77 4.38-2.31 5.93-1.54 1.55-3.46 2.33-5.77 2.33s-4.36-.84-6.03-2.51-2.5-3.69-2.5-6.06.83-4.39 2.5-6.07Zm17.37 3.41c1.22-1.26 2.69-1.9 4.41-1.9 1.35 0 2.51.43 3.48 1.3v-1.3h3.46v13.12h-3.44v-1.24c-.97.83-2.13 1.25-3.49 1.25-1.7 0-3.17-.65-4.4-1.94-1.23-1.3-1.85-2.83-1.85-4.61s.61-3.4 1.83-4.68Zm1.38 4.68c0 .93.32 1.73.97 2.4.64.67 1.44 1.01 2.39 1.01s1.72-.34 2.38-1.02c.67-.68 1-1.48 1-2.39s-.33-1.71-1-2.4c-.67-.69-1.46-1.03-2.38-1.03s-1.75.34-2.39 1.02c-.64.68-.97 1.48-.97 2.41Zm16.04-6.58v1.39c.95-.93 2.01-1.39 3.17-1.39 1.59 0 2.86.65 3.81 1.94a5.63 5.63 0 0 1 1.88-1.43c.73-.34 1.47-.52 2.22-.52 1.27 0 2.38.45 3.34 1.36.95.9 1.43 2.13 1.43 3.68v8.08h-3.46v-7.31c0-.82-.17-1.46-.51-1.93-.34-.47-.85-.71-1.51-.71-1.45 0-2.26.85-2.43 2.54v7.4h-3.46v-7.31c0-.82-.17-1.46-.51-1.93-.34-.47-.85-.71-1.51-.71-.84 0-1.46.28-1.86.85-.4.57-.6 1.31-.6 2.22v6.88h-3.46V25.55h3.46Zm19.59 1.9c1.22-1.26 2.69-1.9 4.41-1.9 1.35 0 2.51.43 3.48 1.3v-1.3h3.46v13.12h-3.46v-1.24c-.95.83-2.11 1.25-3.48 1.25-1.7 0-3.17-.65-4.4-1.94-1.23-1.3-1.85-2.83-1.85-4.61s.61-3.4 1.83-4.68Zm1.38 4.68c0 .93.32 1.73.97 2.4.64.67 1.44 1.01 2.39 1.01s1.72-.34 2.38-1.02c.67-.68 1-1.48 1-2.39s-.33-1.71-1-2.4c-.67-.69-1.46-1.03-2.38-1.03s-1.75.34-2.39 1.02c-.64.68-.97 1.48-.97 2.41Zm12.46 6.55V21.45h3.46V38.7h-3.46Zm-59.04 4.63v1.61H74.3v6h9v1.56h-9v6.02h9.96v1.61H72.57v-16.8h11.69Zm2.83 16.8v-16.8h1.68v16.8h-1.68Zm6.02-11.24c1.25-1.26 2.76-1.9 4.54-1.9 1.09 0 2.07.26 2.94.78.87.52 1.56 1.21 2.05 2.08v-6.52h1.68v16.79h-1.68v-2.86c-.5.86-1.18 1.56-2.05 2.08-.87.52-1.85.78-2.94.78-1.78 0-3.29-.64-4.54-1.93s-1.87-2.83-1.87-4.62.62-3.4 1.87-4.68Zm-.26 4.68c0 1.38.48 2.55 1.44 3.53s2.13 1.46 3.5 1.46 2.52-.49 3.49-1.46c.97-.98 1.45-2.15 1.45-3.53s-.48-2.56-1.45-3.55c-.97-.99-2.13-1.49-3.49-1.49s-2.54.49-3.5 1.46c-.96.98-1.44 2.17-1.44 3.58Zm14.45-9.9c.24-.22.54-.34.89-.34s.67.12.91.35c.24.23.36.52.36.88s-.12.64-.36.88c-.24.23-.54.35-.91.35s-.65-.12-.89-.35c-.24-.23-.36-.52-.36-.88s.12-.65.36-.89Zm1.73 3.74v12.72h-1.68V47.41h1.68Zm4.51 1.5c1.26-1.28 2.79-1.92 4.58-1.92 1.65 0 3.08.55 4.28 1.66 1.21 1.1 1.91 2.46 2.1 4.08.06.3.1.58.1.84 0 .21-.02.41-.07.6H113.3c.11 1.3.62 2.36 1.54 3.18.91.82 2.01 1.24 3.29 1.24.88 0 1.7-.2 2.47-.61s1.38-.96 1.85-1.67l1.58.31c-.53 1.06-1.33 1.9-2.41 2.54a6.72 6.72 0 0 1-3.49.96c-1.82 0-3.36-.64-4.62-1.92-1.26-1.28-1.88-2.83-1.88-4.66s.64-3.35 1.92-4.63Zm-.24 3.89h9.55c-.13-1.22-.63-2.23-1.51-3.05-.88-.82-1.95-1.22-3.22-1.22s-2.37.41-3.28 1.22c-.9.82-1.42 1.83-1.55 3.05Zm13.56-5.81h1.68v2.87c.42-.77 1.02-1.4 1.81-1.91s1.72-.76 2.77-.76c1.49 0 2.76.48 3.82 1.44s1.58 2.25 1.58 3.86v7.63h-1.68v-7.1c0-1.33-.38-2.37-1.15-3.12-.77-.75-1.71-1.13-2.83-1.13-1.25 0-2.28.46-3.1 1.37s-1.22 2.08-1.22 3.5v6.48h-1.68V46.98ZM60.12 35.22v24.9l-24.9-24.9h24.9z" class="logo-fill"/>
@@ -1652,7 +1698,11 @@
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<!-- Announces that the converted palette changed. Separate from the toast so a
+     status message never overwrites a palette announcement mid-read. -->
+<div class="sr-only" id="paletteStatus" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <div class="shortcuts-hint" id="shortcutsHint">
   Press ? for keyboard shortcuts
@@ -2235,11 +2285,86 @@ function syncBackgroundPickers() {
   darkBgPicker.value = darkBgOverride;
 }
 
+// ============================================
+// Focus preservation across re-render
+// ============================================
+// render() replaces both lists wholesale, which removes the control the user is
+// operating mid-interaction — after a rename, a lock, a FIX or a remove,
+// document.activeElement was <body> every time. With 104 tab stops between
+// "Add Color" and the export area that costs hundreds of keystrokes.
+//
+// Every per-row control carries data-fk="<role>-<colour id>". We capture that
+// key before the wipe and restore it after. If the exact control is gone (a FIX
+// button that succeeded, a removed row) we fall back to the same role at the
+// same position, so focus lands somewhere sensible instead of on <body>.
+
+function focusRole(fk) {
+  return fk.replace(/-\d+$/, '');
+}
+
+function captureFocus() {
+  const el = document.activeElement;
+  const fk = el && el.dataset ? el.dataset.fk : null;
+  if (!fk) return null;
+
+  const role = focusRole(fk);
+  const peers = Array.from(document.querySelectorAll(`[data-fk^="${role}-"]`));
+  const state = { fk, role, index: Math.max(0, peers.indexOf(el)) };
+
+  try {
+    if (typeof el.selectionStart === 'number') {
+      state.start = el.selectionStart;
+      state.end = el.selectionEnd;
+    }
+  } catch (err) {
+    /* input types like color throw on selectionStart — nothing to preserve */
+  }
+
+  return state;
+}
+
+function restoreFocus(state) {
+  if (!state) return;
+
+  let el = document.querySelector(`[data-fk="${state.fk}"]`);
+  if (!el) {
+    const peers = document.querySelectorAll(`[data-fk^="${state.role}-"]`);
+    if (peers.length) el = peers[Math.min(state.index, peers.length - 1)];
+  }
+  if (!el) return;
+
+  el.focus();
+  if (state.start != null && typeof el.setSelectionRange === 'function') {
+    try {
+      el.setSelectionRange(state.start, state.end);
+    } catch (err) {
+      /* not a text-selectable input */
+    }
+  }
+}
+
+let paletteStatusTimer = null;
+
+// Debounced — render() fires on every drag-over frame and slider tick, and a
+// live region that talks that often is unusable.
+function announcePalette() {
+  clearTimeout(paletteStatusTimer);
+  paletteStatusTimer = setTimeout(() => {
+    const el = document.getElementById('paletteStatus');
+    if (!el) return;
+    const n = colors.length;
+    el.textContent = n === 0
+      ? 'Palette cleared.'
+      : `Converted palette updated. ${n} color${n === 1 ? '' : 's'}.`;
+  }, 600);
+}
+
 function render() {
   const lightList = document.getElementById('lightList');
   const darkList = document.getElementById('darkList');
   const darkColors = getDarkColors();
-  
+  const focusState = captureFocus();
+
   syncBackgroundPickers();
 
   if (colors.length === 0) {
@@ -2258,36 +2383,38 @@ function render() {
       const isBgColor = c.hex.toLowerCase() === lightBg.toLowerCase() || ['background', 'bg', 'base', 'canvas'].some(role => c.name.toLowerCase().includes(role));
       const needsFix = contrastRatio < 4.5 && !isBgColor;
       
+      const label = escHtml(c.name);
+
       return `
-      <div class="color-item ${c.locked ? 'locked' : ''}" 
-           draggable="true" 
+      <div class="color-item ${c.locked ? 'locked' : ''}"
+           draggable="true"
            ondragstart="handleDragStart(event, ${index})"
            ondragend="handleDragEnd(event)"
            ondragover="handleDragOver(event, ${index})">
-        <span class="drag-handle">::</span>
+        <span class="drag-handle" aria-hidden="true">::</span>
         <div class="color-input-row" style="flex:1;display:flex;align-items:center;gap:8px">
-          <input type="color" value="${c.hex}" onchange="updateColor(${c.id}, this.value)">
+          <input type="color" value="${c.hex}" onchange="updateColor(${c.id}, this.value)" data-fk="l-swatch-${c.id}" aria-label="Light color value for ${label}">
           <div class="color-info">
-            <input class="name-input" type="text" value="${escHtml(c.name)}" onchange="updateName(${c.id}, this.value)">
-            <div class="color-value" onclick="copyText('${c.hex}')">${c.hex}</div>
-            <div class="color-value" style="margin-top:2px;font-size:10px;opacity:0.7" onclick="copyText('${hslStr}')">${hslStr}</div>
+            <input class="name-input" type="text" value="${label}" onchange="updateName(${c.id}, this.value)" data-fk="l-name-${c.id}" aria-label="Name for color ${label}">
+            <button type="button" class="color-value" onclick="copyText('${c.hex}')" data-fk="l-hex-${c.id}" aria-label="Copy light hex ${c.hex} for ${label}">${c.hex}</button>
+            <button type="button" class="color-value" style="margin-top:2px;font-size:10px;opacity:0.7" onclick="copyText('${hslStr}')" data-fk="l-hsl-${c.id}" aria-label="Copy light HSL ${hslStr} for ${label}">${hslStr}</button>
           </div>
           <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
             <div class="contrast-badge ${badge.class}" title="${badge.label} — contrast ratio ${contrastRatio.toFixed(2)}:1" style="font-size:8px;padding:3px 8px">
               ${badge.text} · ${contrastRatio.toFixed(1)}:1
             </div>
-            ${needsFix ? `<button class="icon-btn" onclick="fixLightModeContrast(${c.id})" title="Auto-fix contrast to WCAG AA" style="font-size:11px;padding:4px 6px;font-weight:600;color:var(--warning)">FIX</button>` : ''}
+            ${needsFix ? `<button class="icon-btn" onclick="fixLightModeContrast(${c.id})" data-fk="l-fix-${c.id}" aria-label="Auto-fix light contrast for ${label} to WCAG AA" style="font-size:11px;padding:4px 6px;font-weight:600;color:var(--warning)">FIX</button>` : ''}
           </div>
-          <select class="method-select" onchange="updateColorMethod(${c.id}, this.value)" title="Conversion Method">
+          <select class="method-select" onchange="updateColorMethod(${c.id}, this.value)" data-fk="l-method-${c.id}" aria-label="Conversion method for ${label}">
             <option value="" ${currentMethod === '' ? 'selected' : ''}>Global</option>
             <option value="oklch-invert" ${currentMethod === 'oklch-invert' ? 'selected' : ''}>OKLCH Inv</option>
             <option value="oklch-remap" ${currentMethod === 'oklch-remap' ? 'selected' : ''}>OKLCH Remap</option>
             <option value="hsl-invert" ${currentMethod === 'hsl-invert' ? 'selected' : ''}>HSL Inv</option>
             <option value="antdesign" ${currentMethod === 'antdesign' ? 'selected' : ''}>Ant Design</option>
           </select>
-          <button class="btn-lock ${c.locked ? 'locked' : ''}" onclick="toggleLock(${c.id})" title="${c.locked ? 'Unlock' : 'Lock'} color"></button>
-          <button class="icon-btn" onclick="duplicateColor(${c.id})" title="Duplicate">⎘</button>
-          <button class="btn-remove" onclick="removeColor(${c.id})">✕</button>
+          <button class="btn-lock ${c.locked ? 'locked' : ''}" onclick="toggleLock(${c.id})" data-fk="l-lock-${c.id}" aria-label="${c.locked ? 'Unlock' : 'Lock'} color ${label}"></button>
+          <button class="icon-btn" onclick="duplicateColor(${c.id})" data-fk="l-dup-${c.id}" aria-label="Duplicate color ${label}">⎘</button>
+          <button class="btn-remove" onclick="removeColor(${c.id})" data-fk="l-remove-${c.id}" aria-label="Remove color ${label}">✕</button>
         </div>
       </div>
       `;
@@ -2314,21 +2441,23 @@ function render() {
       // Override border styling
       const overrideBorder = c.isOverridden ? 'border: 1.5px solid rgba(96, 165, 250, 0.3);' : '';
       
+      const label = escHtml(c.name);
+
       return `
         <div class="color-item ${c.locked ? 'locked' : ''}" style="${overrideBorder}">
-          <input type="color" value="${c.darkHex}" onchange="setDarkOverride(${c.id}, this.value)" title="Edit dark color">
+          <input type="color" value="${c.darkHex}" onchange="setDarkOverride(${c.id}, this.value)" data-fk="d-swatch-${c.id}" aria-label="Dark color value for ${label}">
           <div class="color-info" style="flex:1;min-width:0">
-            <div class="color-name" style="font-size:12px;margin-bottom:2px">${escHtml(c.name)}${c.locked ? ' <span style="color:var(--warning);font-size:9px">●</span>' : ''}${methodIndicator}${overrideIndicator}</div>
-            <div class="color-value" onclick="copyText('${c.darkHex}')">${c.darkHex}</div>
-            <div class="color-value" style="margin-top:1px;font-size:10px;opacity:0.6" onclick="copyText('${hslStr}')">${hslStr}</div>
+            <div class="color-name" style="font-size:12px;margin-bottom:2px">${label}${c.locked ? ' <span style="color:var(--warning);font-size:9px" title="Locked">●</span>' : ''}${methodIndicator}${overrideIndicator}</div>
+            <button type="button" class="color-value" onclick="copyText('${c.darkHex}')" data-fk="d-hex-${c.id}" aria-label="Copy dark hex ${c.darkHex} for ${label}">${c.darkHex}</button>
+            <button type="button" class="color-value" style="margin-top:1px;font-size:10px;opacity:0.6" onclick="copyText('${hslStr}')" data-fk="d-hsl-${c.id}" aria-label="Copy dark HSL ${hslStr} for ${label}">${hslStr}</button>
           </div>
           <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
             <div class="contrast-badge ${badge.class}" title="${badge.label} — contrast ratio ${contrastRatio.toFixed(2)}:1" style="font-size:8px;padding:3px 8px">
               ${badge.text} · ${contrastRatio.toFixed(1)}:1
             </div>
-            ${needsFix ? `<button class="icon-btn" onclick="fixDarkModeContrast(${c.id})" title="Auto-fix contrast to WCAG AA" style="font-size:11px;padding:4px 6px;font-weight:600;color:var(--warning)">FIX</button>` : ''}
+            ${needsFix ? `<button class="icon-btn" onclick="fixDarkModeContrast(${c.id})" data-fk="d-fix-${c.id}" aria-label="Auto-fix dark contrast for ${label} to WCAG AA" style="font-size:11px;padding:4px 6px;font-weight:600;color:var(--warning)">FIX</button>` : ''}
           </div>
-          ${c.isOverridden ? `<button class="icon-btn" onclick="resetDarkOverride(${c.id})" title="Reset to auto-generated" style="color:#60a5fa;font-size:14px;padding:6px 8px">↺</button>` : ''}
+          ${c.isOverridden ? `<button class="icon-btn" onclick="resetDarkOverride(${c.id})" data-fk="d-reset-${c.id}" aria-label="Reset ${label} to auto-generated dark color" style="color:#60a5fa;font-size:14px;padding:6px 8px">↺</button>` : ''}
         </div>
       `;
     }).join('');
@@ -2336,6 +2465,8 @@ function render() {
 
   updateExport();
   updatePreview();
+  restoreFocus(focusState);
+  announcePalette();
 }
 
 // ============================================
@@ -3046,11 +3177,28 @@ function copyText(text) {
   navigator.clipboard.writeText(text).then(() => showToast(`Copied: ${text}`));
 }
 
+let toastHideTimer = null;
+let toastClearTimer = null;
+
 function showToast(msg) {
   const t = document.getElementById('toast');
+  clearTimeout(toastHideTimer);
+  clearTimeout(toastClearTimer);
+
+  // Setting textContent on a role="status" element is what drives the
+  // announcement, so it has to change every time.
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+
+  toastHideTimer = setTimeout(() => {
+    t.classList.remove('show');
+    // The toast is hidden by transform, not display:none, so it stays in the
+    // accessibility tree. Clear the text once it has slid away, otherwise
+    // stale status text sits there for screen readers to find.
+    toastClearTimer = setTimeout(() => {
+      if (!t.classList.contains('show')) t.textContent = '';
+    }, 450);
+  }, 2000);
 }
 
 function toggleNeutral() {
