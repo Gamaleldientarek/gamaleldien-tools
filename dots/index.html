@@ -21,8 +21,28 @@
   gtag('config', 'G-KSQ52DZN13');
 </script>
 <style>
+  @import url('https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap');
+
+  :root {
+    /* Brand type stack — matches the rest of tools.gamaleldien.com. Clash is
+       the body face here, not just a display face; SF Mono carries anything
+       that ticks so a changing value never reflows its own label. */
+    --font-display: 'Clash Display', -apple-system, sans-serif;
+    --font-mono: 'SF Mono', ui-monospace, 'Fira Code', monospace;
+  }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #0a0a0a; color: #fff; font-family: -apple-system, system-ui, sans-serif; overflow: hidden; height: 100vh; }
+  body { background: #0a0a0a; color: #fff; font-family: var(--font-display); overflow: hidden; height: 100vh; }
+
+  /* Live numeric readouts (Velocity 1.0×, Density 100%, Tilt 0°…). Tabular
+     mono so dragging a slider changes the digits without shifting the label
+     beside them — in a proportional face "1.0×" and "10.0×" are different
+     widths and the row visibly jitters on every frame of a drag. */
+  .control label span[id$="Val"] {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    color: #aaa;
+  }
 
   /* ─── Header ─── */
   .header { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #111; border-bottom: 1px solid #222; height: 56px; }
