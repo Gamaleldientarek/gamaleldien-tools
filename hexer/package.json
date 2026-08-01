@@ -1,0 +1,21 @@
+{
+  "name": "hexer",
+  "version": "1.0.2",
+  "private": true,
+  "type": "module",
+  "description": "Get the exact color palette of any website, straight from its CSS.",
+  "license": "MIT",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "spike:a": "node scripts/spike-a.mjs",
+    "icons": "node scripts/make-icons.mjs",
+    "zip": "npm run build && rm -f hexer.zip && cd dist && zip -qr ../hexer.zip . && cd .. && echo 'hexer.zip ready'",
+    "build": "rm -rf dist && mkdir -p dist && cp -R manifest.json popup.html popup.css icons src dist/ && rm -f dist/icons/store-icon* && find dist -name '.DS_Store' -delete && echo 'dist/ ready \u2014 load this folder unpacked'"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4",
+    "@playwright/test": "^1.55.0"
+  }
+}
