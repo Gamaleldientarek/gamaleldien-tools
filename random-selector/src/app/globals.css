@@ -1,0 +1,701 @@
+@import url("https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap");
+@import "tailwindcss";
+
+/*
+ * Turn Order Generator — gamaleldien design system, web tokens.
+ *
+ * Source of truth: the live Figma file "My Design System'26"
+ * (pogZhyq3ZywUQYSee9vSuW), as recorded in context/company/design-system.md.
+ *
+ * Three families, each with a job (the tools already ship all three):
+ *   Clash Display — everything SPOKEN: heroes, titles, names, codes, labels.
+ *   system-ui     — everything READ IN QUANTITY or TYPED INTO: prose, inputs.
+ *   SF Mono       — everything that TICKS or must not reflow: numerals, clock.
+ *
+ * There is no serif. The AZMX "serif = personality / sans = information" split
+ * is replaced by "display vs. input" — see the type scale below.
+ *
+ * NO BLUE. NO GREEN. NO LIME. Not as brand, not as a state, not as a default.
+ */
+
+/* `dark:` utilities key off the resolved theme attribute, never the media
+ * query directly — the inline head script resolves auto/light/dark first. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme {
+  /* ---------------------------------------------------------------------
+   * Orange — the brand ramp. Orange/300 is brand, Orange/400 is the default
+   * accent. #F83200 is RETIRED and must never appear.
+   * ------------------------------------------------------------------- */
+  --color-orange-50: #fff2ec;
+  --color-orange-100: #f2dfd1;
+  --color-orange-150: #ffe1d3;
+  --color-orange-200: #ffc6ab;
+  --color-orange-300: #ff7519; /* brand */
+  --color-orange-400: #e16105; /* default accent */
+  --color-orange-450: #d64e0a;
+  --color-orange-redish: #b0220c;
+  --color-orange-500: #bc4e00;
+  --color-orange-700: #732c00;
+  --color-orange-900: #3a1000;
+
+  /* Brownish — warm neutrals, used only in the gradient bloom. */
+  --color-brownish-100: #ffe9c5;
+
+  /* Neutrals */
+  --color-neutral-00: #ffffff;
+  --color-neutral-50: #f5f5f5;
+  --color-neutral-100: #f0f0f0;
+  --color-neutral-150: #ececec;
+  --color-neutral-180: #e0e0e0;
+  --color-neutral-200: #d4d4d4;
+  --color-neutral-300: #999999;
+  --color-neutral-400: #808080;
+  --color-neutral-500: #6b6b6b;
+  --color-neutral-600: #5d5d5d;
+  --color-neutral-700: #4a4a4a;
+  --color-neutral-800: #232323;
+  --color-neutral-850: #1f1f1f;
+  --color-neutral-900: #1a1a1a;
+  --color-neutral-950: #0a0a0a;
+
+  /* Mode-independent states. #10B981 (success green) is deliberately ABSENT:
+   * the standing no-green rule has no exceptions, and this product has no true
+   * success state — joining open/closed is modal, not good/bad. */
+  --color-danger: #ef4444;
+  --color-danger-hover: #dc2626;
+
+  /* Type families */
+  --font-display: "Clash Display", system-ui, sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "SF Mono", ui-monospace, "Fira Code", monospace;
+
+  /* Spacing — the 8px scale is structure, not brand. Carried over intact. */
+  --spacing-sp-1: 8px;
+  --spacing-sp-2: 16px;
+  --spacing-sp-3: 24px;
+  --spacing-sp-4: 40px;
+  --spacing-sp-5: 64px;
+  --spacing-sp-6: 96px;
+  --spacing-sp-7: 128px;
+  --spacing-sp-8: 160px;
+
+  /* Radius — the single biggest visual departure from AZMX, which is
+   * near-square (2px) by doctrine. The tools family is generously rounded. */
+  --radius-g-sm: 8px;
+  --radius-g-md: 12px; /* every control */
+  --radius-g-lg: 24px; /* every card */
+  --radius-g-xl: 32px; /* the large panels */
+}
+
+/* =========================================================================
+ * THEME ROLES. Dark is the default and the design system's default mode.
+ * Light is a genuine second mode with its own values from the live system —
+ * not a washed-out inversion.
+ *
+ * The PROJECTION surfaces never theme: a projector is always a dark room.
+ * ========================================================================= */
+:root {
+  color-scheme: dark;
+
+  --bg: #0a0a0a;
+  --surface: #1a1a1a;
+  --surface-2: #232323;
+  --surface-elevated: #1f1f1f;
+
+  --text: #ffffff;
+  --text-secondary: #999999; /* 6.11:1 on #0A0A0A */
+  --text-muted: #808080; /* see the contrast guard below */
+  --text-disabled: #232323;
+
+  --accent: #e16105; /* 5.55:1 on #0A0A0A — AA */
+  --accent-hover: #ff7519; /* 7.66:1 on #0A0A0A — AA */
+  --accent-light: #f2dfd1;
+  --accent-glow: #3a1000;
+
+  --border-light: rgba(255, 255, 255, 0.08);
+  --border: #333333;
+  --border-hard: #4a4a4a;
+
+  --background: var(--bg);
+  --foreground: var(--text);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: #f5f5f5;
+  --surface: #ffffff;
+  --surface-2: #f0f0f0;
+  --surface-elevated: #e0e0e0;
+
+  --text: #0a0a0a;
+  --text-secondary: #4a4a4a;
+  --text-muted: #6b6b6b;
+  --text-disabled: #d4d4d4;
+
+  /* Accent is mode-independent in the live system. */
+  --accent: #e16105;
+  --accent-hover: #ff7519;
+  --accent-light: #f2dfd1;
+  --accent-glow: #f2dfd1;
+
+  --border-light: #ececec;
+  --border: #d4d4d4;
+  --border-hard: #999999;
+}
+
+/* Themed utility tokens (`inline` so utilities emit var() and follow the
+ * data-theme swap at runtime). */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-text: var(--text);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-disabled: var(--text-disabled);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-light: var(--accent-light);
+  --color-border-light: var(--border-light);
+  --color-border: var(--border);
+  --color-border-hard: var(--border-hard);
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+}
+
+/* =========================================================================
+ * CONTRAST GUARD — not advisory.
+ *
+ * --text-muted (#808080) measures 4.99:1 on the page ground (#0A0A0A) but
+ * only 4.41:1 on a raised surface (#1A1A1A), where it FAILS AA. Muted text is
+ * therefore permitted on the page ground only; on any card or surface, meta
+ * text steps up to --text-secondary (#999999, 6.11:1).
+ *
+ * Enforced structurally: the surface classes re-point --text-muted at
+ * --text-secondary for their whole subtree, so a muted class used inside a
+ * card silently becomes compliant rather than silently failing.
+ * ========================================================================= */
+.g-card,
+.g-surface-2 {
+  --text-muted: var(--text-secondary);
+}
+
+/* =========================================================================
+ * SURFACES
+ * ========================================================================= */
+
+/* The dot lattice — the only non-typographic mark in the system that is his.
+ * Already in production on the landing page and the Dark Mode Converter. */
+.g-lattice {
+  background-image: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.015) 1px,
+    transparent 1px
+  );
+  background-size: 32px 32px;
+}
+
+[data-theme="light"] .g-lattice {
+  background-image: radial-gradient(
+    circle,
+    rgba(0, 0, 0, 0.02) 1px,
+    transparent 1px
+  );
+}
+
+/* Page ground. */
+.g-ground {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+/* A card / raised panel. Rounded hard — the signature departure from the
+ * AZMX 2px doctrine. */
+.g-card {
+  background-color: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-g-lg);
+}
+
+.g-surface-2 {
+  background-color: var(--surface-2);
+  color: var(--text);
+  border-radius: var(--radius-g-lg);
+}
+
+/* Surfaces that never theme.
+ *
+ * .g-projection — a projector is always a dark room, and the room, not the
+ *   facilitator's laptop, decides.
+ * .g-dark-locked — art-directed surfaces (the landing) that are composed on
+ *   black and would read as broken washed out light. Every tool in this
+ *   family is dark; the marketing surface should not be the exception.
+ *
+ * The WORKING surfaces (facilitator panel, phone, join) do theme — someone
+ * running a workshop in a bright room gets to choose. */
+.g-projection,
+.g-dark-locked {
+  background-color: #0a0a0a;
+  color: #ffffff;
+  color-scheme: dark;
+  --bg: #0a0a0a;
+  --surface: #1a1a1a;
+  --surface-2: #232323;
+  --text: #ffffff;
+  --text-secondary: #999999;
+  --text-muted: #999999;
+  --accent: #e16105;
+  --accent-hover: #ff7519;
+  --border-light: rgba(255, 255, 255, 0.08);
+  --border: #333333;
+  --border-hard: #4a4a4a;
+}
+
+/* =========================================================================
+ * THE GRADIENT BLOOM — the signature look.
+ *
+ * KNOWN HAZARD, from the design system: body copy crossing the bloom's hot
+ * centre drops to ~2.98:1, against 15.32:1 on clean ground. On a projection
+ * read at 3–5 metres that is a failure, not a nitpick.
+ *
+ * Solved STRUCTURALLY rather than with a scrim: the bloom is anchored BELOW
+ * the frame (50% 118%), so the hot #FFE9C5 centre sits off-canvas entirely.
+ * What reaches the screen is the #B0220C-to-black falloff — a dark warm field
+ * where white type measures comfortably above 7:1.
+ *
+ * Don't put a scrim over the bloom. Put the bloom where copy cannot reach it.
+ * ========================================================================= */
+.g-bloom {
+  position: relative;
+  isolation: isolate;
+}
+
+.g-bloom::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(
+    ellipse 90% 60% at 50% var(--bloom-y, 118%),
+    #ffe9c5 0%,
+    #d64e0a 22%,
+    #b0220c 48%,
+    transparent 78%
+  );
+  opacity: var(--bloom-opacity, 1);
+  transition:
+    opacity var(--g-dur-slow) var(--g-ease-out),
+    background-position var(--g-dur-slow) var(--g-ease-out);
+}
+
+.g-bloom > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Where a bloom MUST sit behind type, the system's own remedy: a vertical
+ * scrim of the page ground, strong at the type band, clearing below. */
+.g-scrim > *:first-child {
+  position: relative;
+  z-index: 2;
+}
+
+.g-scrim::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(10, 10, 10, 0.72) 0%,
+    rgba(10, 10, 10, 0.42) 55%,
+    rgba(10, 10, 10, 0.14) 100%
+  );
+}
+
+/* =========================================================================
+ * TYPE SCALE — display vs. input.
+ *
+ * Clash carries every SPOKEN thing. system-ui carries what is read in
+ * quantity or typed into. Mono takes what ticks.
+ *
+ * Tracking follows Clash's own behaviour in the Figma system: negative at
+ * display sizes, positive below.
+ * ========================================================================= */
+
+.g-eyebrow {
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.8125rem;
+  line-height: 1.25;
+}
+
+.g-hero {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: clamp(2.75rem, 8.5vw, 6.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+.g-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: clamp(2.25rem, 6vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.g-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: clamp(1.85rem, 4.5vw, 3.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.g-h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.g-sublabel {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  line-height: 1.3;
+}
+
+/* Read in quantity → system-ui. */
+.g-lead {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(1.05rem, 2vw, 1.375rem);
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.g-body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(0.95rem, 1.4vw, 1.0625rem);
+  line-height: 1.6;
+}
+
+.g-caption {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+}
+
+/* Projection scale — legible at 3–5 metres. */
+.g-proj-hero {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: clamp(3.5rem, 9vw, 10rem);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+}
+
+.g-proj-code {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.5rem, 6.5vw, 6.5rem);
+  line-height: 1;
+  letter-spacing: 0.14em;
+  font-variant-numeric: tabular-nums;
+}
+
+.g-code {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+  line-height: 1;
+  letter-spacing: 0.14em;
+  font-variant-numeric: tabular-nums;
+}
+
+.g-proj-label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: clamp(0.875rem, 1.5vw, 1.5rem);
+  line-height: 1.25;
+}
+
+/* Ticks or must not reflow → mono. */
+.g-numeral {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.g-mono {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* =========================================================================
+ * THE NODE — the graphic device that replaces the AZMX chevron.
+ *
+ * The lattice, promoted from wallpaper to instrument. A lit node is a
+ * participant. Square at small sizes, because a 4px circle renders muddy.
+ * ========================================================================= */
+.g-tick {
+  display: inline-block;
+  inline-size: 4px;
+  block-size: 4px;
+  background-color: var(--accent);
+  flex: none;
+}
+
+/* Joining OPEN — a filled accent dot with a pulsing ring. Live = accent.
+ * Joining CLOSED — hollow, hard border, no fill. Colour NEVER carries the
+ * state alone; the button label always says it in words. */
+.g-state-dot {
+  position: relative;
+  display: inline-block;
+  inline-size: 10px;
+  block-size: 10px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.g-state-open {
+  background-color: var(--accent);
+}
+
+.g-state-open::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  animation: g-pulse 2000ms var(--g-ease-inout) infinite;
+}
+
+.g-state-closed {
+  background-color: transparent;
+  border: 1px solid var(--border-hard);
+}
+
+@keyframes g-pulse {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.85);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+}
+
+/* =========================================================================
+ * MOTION — one easing family, three durations, transform/opacity only.
+ *
+ * The AZMX motion system was well-reasoned and its STRUCTURE is kept intact;
+ * only the names change (az- → g-). Personality is unchanged: decelerating
+ * entrances, ZERO overshoot, nothing bouncy.
+ *
+ * Every animation here has a reduced-motion branch at the bottom that lands
+ * on the settled state. Nothing animates a layout property.
+ * ========================================================================= */
+:root {
+  --g-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --g-ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --g-dur-quick: 180ms;
+  --g-dur-base: 420ms;
+  --g-dur-slow: 620ms;
+}
+
+@keyframes g-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.g-rise {
+  animation: g-rise 520ms var(--g-ease-out) both;
+}
+
+/* Arrives with weight. Scale settles inward, no overshoot. */
+@keyframes g-land {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.g-land {
+  animation: g-land var(--g-dur-slow) var(--g-ease-out) both;
+}
+
+/* Lock-in for something already on screen. Scale ONLY, never opacity, so the
+ * name never blinks out of existence at the moment it is revealed. */
+@keyframes g-lock {
+  from {
+    transform: scale(1.09);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.g-lock {
+  animation: g-lock var(--g-dur-slow) var(--g-ease-out) both;
+}
+
+/* A travelling band under the primary CTA while a draw is in flight. A moving
+ * hairline, not a spinner: no icon, no glow. */
+@keyframes g-rail {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(400%);
+  }
+}
+
+.g-rail-band {
+  animation: g-rail 1150ms var(--g-ease-inout) infinite;
+}
+
+/* A highlight travelling down the roster while the selector runs. */
+@keyframes g-scan {
+  0%,
+  100% {
+    opacity: 0.42;
+  }
+  22% {
+    opacity: 1;
+  }
+}
+
+.g-scan {
+  animation: g-scan 1200ms var(--g-ease-inout) infinite;
+}
+
+/* The "earned" rule under a revealed name. */
+@keyframes g-rule-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.g-rule-draw {
+  transform-origin: left center;
+  animation: g-rule-draw var(--g-dur-slow) var(--g-ease-out) both;
+}
+
+/* The only looping motion on an idle surface. Shallow: a breath, not a blink. */
+@keyframes g-breathe {
+  0%,
+  100% {
+    opacity: 0.68;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.g-breathe {
+  animation: g-breathe 1800ms var(--g-ease-inout) infinite;
+}
+
+/* Press response — transform only, costs nothing, never nudges neighbours. */
+.g-press {
+  transition: transform var(--g-dur-quick) var(--g-ease-out);
+}
+
+.g-press:active:not(:disabled) {
+  transform: scale(0.985);
+}
+
+/* -------------------------------------------------------------------------
+ * REDUCED MOTION — every animation above resolves to its settled state.
+ * Non-negotiable: the result must be fully legible with all motion off.
+ * ---------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .g-rise,
+  .g-rise *,
+  .g-land,
+  .g-lock,
+  .g-scan,
+  .g-breathe,
+  .g-rule-draw,
+  .g-rail-band {
+    animation: none !important;
+  }
+
+  .g-rule-draw {
+    transform: scaleX(1) !important;
+  }
+
+  .g-scan,
+  .g-breathe {
+    opacity: 1 !important;
+  }
+
+  /* The bloom lands at full rather than stranded mid-transition. */
+  .g-bloom::before {
+    transition: none !important;
+  }
+
+  /* The pulsing ring is pure decoration with motion off; the filled dot and
+   * the button's own label still carry the state. */
+  .g-state-open::after {
+    animation: none !important;
+    display: none;
+  }
+
+  .g-rail-band {
+    display: none;
+  }
+
+  .g-press:active:not(:disabled) {
+    transform: none;
+  }
+}

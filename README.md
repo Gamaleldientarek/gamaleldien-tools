@@ -6,6 +6,7 @@ Free tools by [Gamal Eldien](https://gamaleldien.com) — hosted at [tools.gamal
 
 | Tool | Live URL | Source |
 |------|----------|--------|
+| Turn Order Generator | [tools.gamaleldien.com/random-selector](https://tools.gamaleldien.com/random-selector) | [`random-selector/`](./random-selector) |
 | Dark Mode Converter | [tools.gamaleldien.com/darkmode](https://tools.gamaleldien.com/darkmode) | [`darkmode/`](./darkmode) |
 | Shade Generator | [tools.gamaleldien.com/shades](https://tools.gamaleldien.com/shades) | [`shade-generator/`](./shade-generator) |
 | Lottie Previewer | [tools.gamaleldien.com/lottie](https://tools.gamaleldien.com/lottie) | [`lottie/`](./lottie) |
@@ -31,3 +32,9 @@ Pushes to `main` trigger auto-deploy via GitHub Actions.
 ## Structure
 
 Each tool lives in its own folder with a self-contained `index.html`.
+
+**One exception:** `random-selector/` (Turn Order Generator) is a Next.js app with a
+Supabase backend, because a live shared room needs a server, a database and a realtime
+channel. It deploys to its own Vercel project, and the Worker reverse-proxies
+`/random-selector/**` to it so the public URL stays on this domain. See
+[`random-selector/README.md`](./random-selector/README.md).

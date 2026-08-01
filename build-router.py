@@ -85,6 +85,12 @@ FAVICON_LANDING = _make_fav("""
 WORKER_NAME = "dark-mode-converter"
 BASE = os.path.dirname(os.path.abspath(__file__))
 
+# ── Turn Order Generator ─────────────────────────────────────────────────────
+# The only tool here that is NOT a self-contained index.html: it is a Next.js
+# app with a Supabase backend, so the Worker reverse-proxies it instead of
+# inlining it. Its favicon ships inside the app (src/app/icon.svg), not here.
+RANDOM_SELECTOR_ORIGIN = "turn-order-generator.vercel.app"
+
 print("🛠️  tools.gamaleldien.com — Build & Deploy (Router)")
 print("=" * 55)
 
@@ -209,6 +215,7 @@ const OG_SHADES_B64 = "{og_shades_b64}";
 const OG_LOTTIE_B64 = "{og_lottie_b64}";
 const OG_NUMERIC_B64 = "{og_numeric_b64}";
 const OG_PROMPT_BUILDER_B64 = "{og_prompt_builder_b64}";
+const RANDOM_SELECTOR_ORIGIN = "{RANDOM_SELECTOR_ORIGIN}";
 
 export default {{
   async fetch(request, env, ctx) {{
@@ -366,11 +373,100 @@ async function handleRequest(request, env, ctx) {{
     return htmlResponse('<html><head><meta http-equiv="refresh" content="0;url=/"></head></html>');
   }}
   
+  // Route: /random-selector/** → Turn Order Generator (reverse proxy to Vercel)
+  //
+  // THREE THINGS HERE ARE LOAD-BEARING — read before editing:
+  //
+  //  1. The upstream Response is returned VERBATIM. It must never go through
+  //     htmlResponse(), whose CSP has no script-src; that blocks Next's inline
+  //     hydration payload, and the result is a page that renders and then never
+  //     becomes interactive.
+  //  2. This block must stay ABOVE the dynamic shortlink lookup below, which
+  //     treats the first path segment as a slug and would swallow every request.
+  //  3. X-Forwarded-Host carries the PUBLIC host so the app builds correct
+  //     absolute URLs for the join link and the projected QR code.
+  //
+  // Supabase Realtime is NOT proxied — phones talk to *.supabase.co directly.
+  if (path === '/random-selector' || path.startsWith('/random-selector/')) {{
+    const upstream = new URL(url.pathname + url.search, `https://${{RANDOM_SELECTOR_ORIGIN}}`);
+    const fwd = new Headers(request.headers);
+    fwd.set('Host', RANDOM_SELECTOR_ORIGIN);
+    fwd.set('X-Forwarded-Host', url.hostname);
+    fwd.set('X-Forwarded-Proto', 'https');
+
+    const upstreamResponse = await fetch(upstream, {{
+      method: request.method,
+      headers: fwd,
+      body: request.body,
+      redirect: 'manual',
+    }});
+
+    // Rewrite redirects the origin issues: absolute ones back to the public
+    // host, and no-JS server-action redirects that come back missing the
+    // basePath (a Next quirk — MPA 303s return e.g. "/facilitator").
+    const location = upstreamResponse.headers.get('Location');
+    if (location) {{
+      let fixed = location.replaceAll(RANDOM_SELECTOR_ORIGIN, url.hostname);
+      if (fixed.startsWith('/') && !fixed.startsWith('/random-selector')) {{
+        fixed = `/random-selector${{fixed}}`;
+      }}
+      if (fixed !== location) {{
+        const rewritten = new Headers(upstreamResponse.headers);
+        rewritten.set('Location', fixed);
+        return new Response(upstreamResponse.body, {{
+          status: upstreamResponse.status,
+          statusText: upstreamResponse.statusText,
+          headers: rewritten,
+        }});
+      }}
+    }}
+
+    return upstreamResponse;
+  }}
+
   // Route: / → Landing Page
   if (path === '/' || path === '') {{
     return htmlResponse(LANDING_HTML);
   }}
   
+  // Route: /turn → Turn Order Generator (short slug, with click tracking)
+  //
+  // A say-out-loud shortcut for the start of a workshop: "go to
+  // tools.gamaleldien.com/turn". Redirects to the real mount at
+  // /random-selector rather than proxying, so there is exactly one canonical
+  // URL for the app and the basePath/cookie scoping stays coherent.
+  //
+  // Tracked into SHORTLINKS the same way /hexer is, so it appears in the
+  // shortener dashboard alongside every other link.
+  if (path === '/turn' || path === '/turn/') {{
+    const TURN_URL = url.origin + '/random-selector';
+    if (env && env.SHORTLINKS) {{
+      const ua = request.headers.get('user-agent') || '';
+      const cf = request.cf || {{}};
+      const device = /mobile|android|iphone|ipad/i.test(ua) ? 'Mobile' : 'Desktop';
+      const lc = ua.toLowerCase();
+      const browser = lc.includes('edg/') ? 'Edge' : lc.includes('chrome') ? 'Chrome' : lc.includes('firefox') ? 'Firefox' : lc.includes('safari') ? 'Safari' : 'Other';
+      const click = {{ ts: new Date().toISOString(), country: cf.country || '??', device, browser, referrer: request.headers.get('referer') || '' }};
+      ctx.waitUntil((async () => {{
+        try {{
+          let linkData = await env.SHORTLINKS.get('link:turn', 'json');
+          if (!linkData) {{
+            linkData = {{ url: TURN_URL, domain: 'tools.gamaleldien.com', created_at: new Date().toISOString(), is_custom: true, total_clicks: 0 }};
+            const index = await env.SHORTLINKS.get('meta:index', 'json') || [];
+            if (!index.includes('turn')) {{ index.unshift('turn'); await env.SHORTLINKS.put('meta:index', JSON.stringify(index)); }}
+          }}
+          const clicks = await env.SHORTLINKS.get('clicks:turn', 'json') || [];
+          clicks.push(click);
+          if (clicks.length > 500) clicks.splice(0, clicks.length - 500);
+          await env.SHORTLINKS.put('clicks:turn', JSON.stringify(clicks));
+          linkData.total_clicks = (linkData.total_clicks || 0) + 1;
+          await env.SHORTLINKS.put('link:turn', JSON.stringify(linkData));
+        }} catch (e) {{}}
+      }})());
+    }}
+    return Response.redirect(TURN_URL, 302);
+  }}
+
   // Route: /hexer → Hexer Chrome Extension (with click tracking)
   if (path === '/hexer' || path === '/hexer/') {{
     const HEXER_URL = 'https://chromewebstore.google.com/detail/mgbajpnindnpkdgidnijgaklbfbamkab?utm_source=tools-gamaleldien';
@@ -493,4 +589,6 @@ print("🎭 Lottie:    https://tools.gamaleldien.com/lottie")
 print("🎥 Preview:   https://tools.gamaleldien.com/lottie/preview")
 print("⚫ Dots:     https://tools.gamaleldien.com/dots")
 print("✦ Prompt:   https://tools.gamaleldien.com/prompt-builder")
+print(f"🎲 Turn Order: https://tools.gamaleldien.com/random-selector  → {RANDOM_SELECTOR_ORIGIN}")
+print("↪  Short slug: https://tools.gamaleldien.com/turn")
 print("🖼️  OG Image: https://tools.gamaleldien.com/darkmode/og-image.png")
