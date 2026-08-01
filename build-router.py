@@ -82,8 +82,8 @@ FAVICON_LANDING = _make_fav("""
     <path d="M60.12 10.32 47.67 22.77c-3.44-3.44-7.94-5.16-12.45-5.16s-9.01 1.72-12.45 5.16c-3.44 3.43-5.16 7.94-5.16 12.45s1.72 9.01 5.16 12.45L10.32 60.12C3.94 53.75 0 44.94 0 35.22s3.94-18.53 10.32-24.9C16.69 3.94 25.49 0 35.22 0s18.53 3.94 24.9 10.32" fill="#f1f2f2"/>
   </g>
 </svg>""")
-WORKER_NAME = "dark-mode-converter"
-BASE = "/root/clawd/projects/business/gamaleldien.com/tools"
+WORKER_NAME = "darkmode"
+BASE = os.path.dirname(os.path.abspath(__file__))
 
 print("🛠️  tools.gamaleldien.com — Build & Deploy (Router)")
 print("=" * 55)
@@ -97,7 +97,7 @@ landing_html = inject_favicon(landing_html, FAVICON_LANDING)
 print(f"   Size: {len(landing_html)} bytes")
 
 # Read dark mode converter
-darkmode_path = os.path.join(BASE, "dark-mode-converter", "index.html")
+darkmode_path = os.path.join(BASE, "darkmode", "index.html")
 print(f"\n📖 Reading dark mode converter: {darkmode_path}")
 with open(darkmode_path) as f:
     darkmode_html = f.read()
@@ -117,8 +117,8 @@ else:
     print(f"\n⏳ Shade generator not built yet (placeholder route active)")
 
 # Read lottie hub (if exists) — use inlined version for Worker deployment
-lottie_inline = os.path.join(BASE, "lottie-previewer", "index-inline.html")
-lottie_path = lottie_inline if os.path.exists(lottie_inline) else os.path.join(BASE, "lottie-previewer", "index.html")
+lottie_inline = os.path.join(BASE, "lottie", "index-inline.html")
+lottie_path = lottie_inline if os.path.exists(lottie_inline) else os.path.join(BASE, "lottie", "index.html")
 lottie_html = ""
 if os.path.exists(lottie_path):
     with open(lottie_path) as f:
@@ -130,7 +130,7 @@ else:
     print(f"\n⏳ Lottie Hub not built yet (placeholder route active)")
 
 # Read lottie preview (if exists)
-preview_path = os.path.join(BASE, "lottie-previewer", "preview-inline.html")
+preview_path = os.path.join(BASE, "lottie", "preview-inline.html")
 preview_html = ""
 if os.path.exists(preview_path):
     with open(preview_path) as f:
@@ -141,7 +141,7 @@ else:
     print(f"\n⏳ Lottie Preview not built yet")
 
 # Read numeric scale (if exists)
-numeric_path = os.path.join(BASE, "numeric-scale-v2", "index.html")
+numeric_path = os.path.join(BASE, "numeric-scale", "index.html")
 numeric_html = ""
 if os.path.exists(numeric_path):
     with open(numeric_path) as f:
@@ -164,10 +164,10 @@ def load_og_image(path, name):
     return ""
 
 og_landing_b64 = load_og_image(os.path.join(BASE, "landing", "og-image.png"), "Landing")
-og_darkmode_b64 = load_og_image(os.path.join(BASE, "dark-mode-converter", "og-image.png"), "Dark Mode")
+og_darkmode_b64 = load_og_image(os.path.join(BASE, "darkmode", "og-image.png"), "Dark Mode")
 og_shades_b64 = load_og_image(os.path.join(BASE, "shade-generator", "og-image.png"), "Shade Generator")
-og_lottie_b64 = load_og_image(os.path.join(BASE, "lottie-previewer", "og-image.png"), "Lottie Hub")
-og_numeric_b64 = load_og_image(os.path.join(BASE, "numeric-scale-v2", "og-image.png"), "Numeric Scale")
+og_lottie_b64 = load_og_image(os.path.join(BASE, "lottie", "og-image.png"), "Lottie Hub")
+og_numeric_b64 = load_og_image(os.path.join(BASE, "numeric-scale", "og-image.png"), "Numeric Scale")
 og_prompt_builder_b64 = load_og_image(os.path.join(BASE, "prompt-builder", "og-image.png"), "Prompt Builder")
 
 # Read prompt builder (if exists)
@@ -183,7 +183,7 @@ else:
     print(f"\n⏳ Prompt Builder not found")
 
 # Read dot motion generator (if exists)
-dots_path = os.path.join(BASE, "dot-motion-generator", "index.html")
+dots_path = os.path.join(BASE, "dots", "index.html")
 dots_html = ""
 if os.path.exists(dots_path):
     with open(dots_path) as f:
