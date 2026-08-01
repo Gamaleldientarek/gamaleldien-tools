@@ -4,26 +4,28 @@ Free tools by [Gamal Eldien](https://gamaleldien.com) — hosted at [tools.gamal
 
 ## Tools
 
-| Tool | Path | Description |
-|------|------|-------------|
-| Dark Mode Converter | `/darkmode` | Convert Figma light-mode variables to dark mode |
-| Shade Generator | `/shade-generator` | Generate color shade palettes |
-| Lottie Previewer | `/lottie` | Preview Lottie animations |
-| Numeric Scale | `/numeric-scale` | Generate typographic/spacing scales |
-| Dot Motion Generator | `/dots` | Create animated dot patterns |
-| Prompt Builder | `/prompt-builder` | Build structured AI prompts |
-| URL Shortener | `/s` | Branded short links |
+| Tool | Live URL | Source |
+|------|----------|--------|
+| Dark Mode Converter | [tools.gamaleldien.com/darkmode](https://tools.gamaleldien.com/darkmode) | [`darkmode/`](./darkmode) |
+| Shade Generator | [tools.gamaleldien.com/shades](https://tools.gamaleldien.com/shades) | [`shade-generator/`](./shade-generator) |
+| Lottie Previewer | [tools.gamaleldien.com/lottie](https://tools.gamaleldien.com/lottie) | [`lottie/`](./lottie) |
+| Numeric Scale | [tools.gamaleldien.com/numeric-scale](https://tools.gamaleldien.com/numeric-scale) | [`numeric-scale/`](./numeric-scale) |
+| Dot Motion Generator | [tools.gamaleldien.com/dots](https://tools.gamaleldien.com/dots) | [`dots/`](./dots) |
+| Prompt Builder | [tools.gamaleldien.com/prompt-builder](https://tools.gamaleldien.com/prompt-builder) | [`prompt-builder/`](./prompt-builder) |
+| URL Shortener | [tools.gamaleldien.com/s](https://tools.gamaleldien.com/s) | [`url-shortener/`](./url-shortener) |
+| Brand Brief | [brief.gamaleldien.com](https://brief.gamaleldien.com) | [`brand-brief/`](./brand-brief) |
+| Hexer (Chrome Extension) | [Chrome Web Store](https://chromewebstore.google.com/detail/mgbajpnindnpkdgidnijgaklbfbamkab) | [`hexer/`](./hexer) |
+| Landing Page | [tools.gamaleldien.com](https://tools.gamaleldien.com) | [`landing/`](./landing) |
 
 ## Deployment
 
-All tools are deployed via a single **Cloudflare Worker** (`build-router.py`).
+All web tools are deployed via a single **Cloudflare Worker** (`build-router.py`).
 
 ```bash
-cd /root/clawd/projects/business/gamaleldien.com/tools
 python3 build-router.py
 ```
 
-The router reads each tool's `index.html` and serves them at the correct paths.
+Pushes to `main` trigger auto-deploy via GitHub Actions.
 
 ## Structure
 
