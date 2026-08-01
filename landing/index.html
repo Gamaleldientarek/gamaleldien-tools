@@ -346,6 +346,33 @@
     color: rgb(232,97,26);
 }
 
+        /* Section Header */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: clamp(24px, 4vw, 32px);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .section-title {
+            font-size: clamp(11px, 1.5vw, 13px);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--accent);
+        }
+
+        .section-divider {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .tools-section {
+            margin-bottom: clamp(48px, 8vw, 80px);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .tools-grid {
@@ -401,6 +428,11 @@
             </header>
 
             <main>
+                <div class="tools-section">
+                <div class="section-header">
+                    <span class="section-title">Tools</span>
+                    <div class="section-divider"></div>
+                </div>
                 <div class="tools-grid">
                     <!-- Dark Mode Converter Tool -->
                     <a href="/darkmode" class="tool-card">
@@ -651,6 +683,42 @@
                         </div>
                     </a>
 
+                </div>
+                </div>
+
+                <!-- Learning Section -->
+                <div class="tools-section">
+                    <div class="section-header">
+                        <span class="section-title">Learning</span>
+                        <div class="section-divider"></div>
+                    </div>
+                    <div class="tools-grid">
+
+                        <!-- Freelancing Presentation -->
+                        <a href="https://learn.gamaleldien.com/" target="_blank" rel="noopener" class="tool-card">
+                            <svg class="tool-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="4" y="8" width="56" height="36" rx="6" fill="#1c1c1c" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+                                <rect x="4" y="8" width="56" height="36" rx="6" stroke="rgb(225, 97, 5)" stroke-width="1.5" fill="none" opacity="0.4"/>
+                                <rect x="12" y="16" width="24" height="2.5" rx="1.25" fill="rgb(225, 97, 5)"/>
+                                <rect x="12" y="22" width="32" height="2" rx="1" fill="#fff" opacity="0.5"/>
+                                <rect x="12" y="27" width="26" height="2" rx="1" fill="#fff" opacity="0.3"/>
+                                <circle cx="46" cy="22" r="8" fill="rgb(225, 97, 5)" opacity="0.15" stroke="rgb(225, 97, 5)" stroke-width="1.5"/>
+                                <path d="M43 19l6 3-6 3V19z" fill="rgb(225, 97, 5)"/>
+                                <rect x="24" y="44" width="16" height="4" rx="1" fill="rgba(255,255,255,0.15)"/>
+                                <rect x="12" y="48" width="40" height="6" rx="3" fill="rgba(255,255,255,0.06)"/>
+                            </svg>
+                            <div class="tool-content">
+                                <h2 class="tool-name">
+                                    Freelancing Presentation
+                                    <span class="tool-arrow">→</span>
+                                </h2>
+                                <p class="tool-description">
+                                    Learn how to build a sustainable freelancing career — from positioning and pricing to landing clients and scaling your practice.
+                                </p>
+                            </div>
+                        </a>
+
+                    </div>
                 </div>
             </main>
         </div>
