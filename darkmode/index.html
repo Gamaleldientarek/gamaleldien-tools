@@ -877,6 +877,15 @@
     background: rgba(245, 158, 11, 0.2);
     color: var(--warning);
   }
+  /* AA-Large is a conditional pass — it clears 3:1 for large text only.
+     Same fill and text colour as AA so contrast is provably unchanged; the
+     ring is what distinguishes it, so the difference does not rely on hue.
+     inset box-shadow rather than border, to avoid changing the pill's box. */
+  .contrast-aa-lg {
+    background: rgba(245, 158, 11, 0.2);
+    color: var(--warning);
+    box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.55);
+  }
   .contrast-fail {
     background: rgba(239, 68, 68, 0.2);
     color: var(--danger);
@@ -1930,6 +1939,18 @@ function getLuminance(hex) {
 
 // WCAG 2.1 tiers. Large text is 18pt / 24px, or 14pt / 18.66px bold.
 // The verdict text is rendered next to the ratio, never colour alone (WCAG 1.4.1).
+// Roles that name a surface or a boundary rather than text. WCAG judges these
+// against the 3:1 non-text threshold, not the 4.5:1 text threshold, so flagging
+// them as FAIL is wrong — and offering the auto-fix on them is destructive,
+// because it drives the user's background to mid-grey to chase 4.5:1.
+// Single source of truth: both the light and dark lists read this list.
+const SURFACE_ROLES = ['background', 'bg', 'base', 'canvas', 'surface', 'border', 'divider', 'outline'];
+
+function isSurfaceRole(name) {
+  const lower = String(name || '').toLowerCase();
+  return SURFACE_ROLES.some(role => lower.includes(role));
+}
+
 function getContrastBadge(ratio) {
   if (ratio >= 7) return {
     class: 'contrast-aaa', text: 'AAA',
@@ -1940,7 +1961,7 @@ function getContrastBadge(ratio) {
     label: 'Passes WCAG AA for normal text, AAA for large text'
   };
   if (ratio >= 3) return {
-    class: 'contrast-aa', text: 'AA-LG',
+    class: 'contrast-aa-lg', text: 'AA-LG',
     label: 'Passes WCAG AA for large text only (18pt+, or 14pt+ bold)'
   };
   return {
@@ -2380,7 +2401,7 @@ function render() {
       const lightBg = getLightBg();
       const contrastRatio = getContrastRatio(c.hex, lightBg);
       const badge = getContrastBadge(contrastRatio);
-      const isBgColor = c.hex.toLowerCase() === lightBg.toLowerCase() || ['background', 'bg', 'base', 'canvas'].some(role => c.name.toLowerCase().includes(role));
+      const isBgColor = c.hex.toLowerCase() === lightBg.toLowerCase() || isSurfaceRole(c.name);
       const needsFix = contrastRatio < 4.5 && !isBgColor;
       
       const label = escHtml(c.name);
@@ -2427,7 +2448,7 @@ function render() {
       // A background is not text — never judge it at 4.5:1, and never offer to
       // "fix" it (that drove the user's background to mid-grey). Same exclusion
       // the light list already applies.
-      const isBgColor = c.darkHex.toLowerCase() === darkBg.toLowerCase() || ['background', 'bg', 'base', 'canvas'].some(role => c.name.toLowerCase().includes(role));
+      const isBgColor = c.darkHex.toLowerCase() === darkBg.toLowerCase() || isSurfaceRole(c.name);
       const needsFix = contrastRatio < 4.5 && !isBgColor;
       const hsl = hexToHsl(c.darkHex);
       const hslStr = `HSL(${Math.round(hsl.h)}°, ${Math.round(hsl.s)}%, ${Math.round(hsl.l)}%)`;
