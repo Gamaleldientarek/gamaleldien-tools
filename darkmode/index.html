@@ -1743,13 +1743,47 @@ function hexToOklch(hex) {
   return { L: lab.L, C, H };
 }
 
+// Is this linear-RGB triple inside the sRGB gamut?
+// Epsilon absorbs floating-point noise so in-gamut colors never trigger a search.
+function inSrgbGamut(rgb) {
+  const e = 1e-6;
+  return rgb.r >= -e && rgb.r <= 1 + e &&
+         rgb.g >= -e && rgb.g <= 1 + e &&
+         rgb.b >= -e && rgb.b <= 1 + e;
+}
+
 // OKLCH → Hex
+// Out-of-gamut colors are gamut-mapped the CSS Color 4 way: reduce chroma at
+// constant L and H until the color fits, then clip only to absorb float error.
+// Clipping each channel independently (the naive approach) drags the hue —
+// that is what turned #f59e0b amber into a dark red.
 function oklchToHex(L, C, H) {
   const hRad = H * (Math.PI / 180);
-  const a = C * Math.cos(hRad);
-  const b = C * Math.sin(hRad);
+  L = Math.max(0, Math.min(1, L));
+  C = Math.max(0, C);
 
-  const rgb = oklabToLinearRgb(L, a, b);
+  let rgb = oklabToLinearRgb(L, C * Math.cos(hRad), C * Math.sin(hRad));
+
+  if (!inSrgbGamut(rgb)) {
+    // Binary search chroma downward. C = 0 is a grey and is always in gamut
+    // once L is clamped, so the search always has a valid lower bound.
+    let low = 0;
+    let high = C;
+    let best = oklabToLinearRgb(L, 0, 0);
+
+    for (let i = 0; i < 20; i++) {
+      const mid = (low + high) / 2;
+      const test = oklabToLinearRgb(L, mid * Math.cos(hRad), mid * Math.sin(hRad));
+
+      if (inSrgbGamut(test)) {
+        best = test;
+        low = mid; // Try more chroma (closer to the original)
+      } else {
+        high = mid; // Need less chroma
+      }
+    }
+    rgb = best;
+  }
 
   let r = linearToSrgb(Math.max(0, Math.min(1, rgb.r)));
   let g = linearToSrgb(Math.max(0, Math.min(1, rgb.g)));
