@@ -1878,10 +1878,25 @@ function getLuminance(hex) {
   return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
 }
 
+// WCAG 2.1 tiers. Large text is 18pt / 24px, or 14pt / 18.66px bold.
+// The verdict text is rendered next to the ratio, never colour alone (WCAG 1.4.1).
 function getContrastBadge(ratio) {
-  if (ratio >= 7) return { class: 'contrast-aaa', text: 'AAA ✓' };
-  if (ratio >= 4.5) return { class: 'contrast-aa', text: 'AA ✓' };
-  return { class: 'contrast-fail', text: 'FAIL' };
+  if (ratio >= 7) return {
+    class: 'contrast-aaa', text: 'AAA',
+    label: 'Passes WCAG AAA at any text size'
+  };
+  if (ratio >= 4.5) return {
+    class: 'contrast-aa', text: 'AA',
+    label: 'Passes WCAG AA for normal text, AAA for large text'
+  };
+  if (ratio >= 3) return {
+    class: 'contrast-aa', text: 'AA-LG',
+    label: 'Passes WCAG AA for large text only (18pt+, or 14pt+ bold)'
+  };
+  return {
+    class: 'contrast-fail', text: 'FAIL',
+    label: 'Fails WCAG AA at every text size'
+  };
 }
 
 // Auto-fix contrast by adjusting lightness
@@ -2258,8 +2273,8 @@ function render() {
             <div class="color-value" style="margin-top:2px;font-size:10px;opacity:0.7" onclick="copyText('${hslStr}')">${hslStr}</div>
           </div>
           <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
-            <div class="contrast-badge ${badge.class}" title="Contrast ratio: ${contrastRatio.toFixed(2)}:1" style="font-size:8px;padding:3px 8px">
-              ${contrastRatio.toFixed(1)}:1
+            <div class="contrast-badge ${badge.class}" title="${badge.label} — contrast ratio ${contrastRatio.toFixed(2)}:1" style="font-size:8px;padding:3px 8px">
+              ${badge.text} · ${contrastRatio.toFixed(1)}:1
             </div>
             ${needsFix ? `<button class="icon-btn" onclick="fixLightModeContrast(${c.id})" title="Auto-fix contrast to WCAG AA" style="font-size:11px;padding:4px 6px;font-weight:600;color:var(--warning)">FIX</button>` : ''}
           </div>
@@ -2282,7 +2297,11 @@ function render() {
       const darkBg = getDarkBg();
       const contrastRatio = getContrastRatio(c.darkHex, darkBg);
       const badge = getContrastBadge(contrastRatio);
-      const needsFix = contrastRatio < 4.5;
+      // A background is not text — never judge it at 4.5:1, and never offer to
+      // "fix" it (that drove the user's background to mid-grey). Same exclusion
+      // the light list already applies.
+      const isBgColor = c.darkHex.toLowerCase() === darkBg.toLowerCase() || ['background', 'bg', 'base', 'canvas'].some(role => c.name.toLowerCase().includes(role));
+      const needsFix = contrastRatio < 4.5 && !isBgColor;
       const hsl = hexToHsl(c.darkHex);
       const hslStr = `HSL(${Math.round(hsl.h)}°, ${Math.round(hsl.s)}%, ${Math.round(hsl.l)}%)`;
       
@@ -2304,8 +2323,8 @@ function render() {
             <div class="color-value" style="margin-top:1px;font-size:10px;opacity:0.6" onclick="copyText('${hslStr}')">${hslStr}</div>
           </div>
           <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
-            <div class="contrast-badge ${badge.class}" title="Contrast ratio: ${contrastRatio.toFixed(2)}:1" style="font-size:8px;padding:3px 8px">
-              ${contrastRatio.toFixed(1)}:1
+            <div class="contrast-badge ${badge.class}" title="${badge.label} — contrast ratio ${contrastRatio.toFixed(2)}:1" style="font-size:8px;padding:3px 8px">
+              ${badge.text} · ${contrastRatio.toFixed(1)}:1
             </div>
             ${needsFix ? `<button class="icon-btn" onclick="fixDarkModeContrast(${c.id})" title="Auto-fix contrast to WCAG AA" style="font-size:11px;padding:4px 6px;font-weight:600;color:var(--warning)">FIX</button>` : ''}
           </div>
