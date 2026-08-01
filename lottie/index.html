@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lottie Hub — Professional Lottie Animation Suite</title>
+
+<!-- Open Graph / Social Preview -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://tools.gamaleldien.com/lottie">
+<meta property="og:title" content="Lottie Hub — Professional Lottie Animation Suite">
+<meta property="og:description" content="Professional Lottie animation suite with preview, color editing, and export tools. Edit colors, customize animations, and export to GIF. Free forever by Gamal Eldien.">
+<meta property="og:image" content="https://tools.gamaleldien.com/lottie/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lottie Hub — Professional Lottie Animation Suite">
+<meta name="twitter:description" content="Professional Lottie animation suite with preview, color editing, and export tools. Edit colors, customize animations, and export to GIF. Free forever.">
+<meta name="twitter:image" content="https://tools.gamaleldien.com/lottie/og-image.png">
+
+<!-- General Meta -->
+<meta name="description" content="Professional Lottie animation suite with preview, color editing, and export tools. Edit colors, customize animations, and export to GIF. Free forever by Gamal Eldien.">
+<meta name="author" content="Gamal Eldien">
+<meta name="keywords" content="lottie preview, lottie viewer, lottie json preview, lottie animation viewer, preview lottie file, lottie player online">
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KSQ52DZN13"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-KSQ52DZN13");
+</script>
+
+<!-- Lottie Library -->
+<script src="libs/lottie.min.js"></script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a href="https://tools.gamaleldien.com/lottie" class="navbar-logo" title="Lottie Hub">
+    <span class="navbar-logo-text"><strong>LOTTIE</strong><br>HUB</span>
+  </a>
+  <div style="display: flex; gap: 24px; align-items: center;">
+    <a href="https://tools.gamaleldien.com" class="navbar-link">Tools</a>
+    <a href="https://gamaleldien.com" class="navbar-link">Gamaleldien.com</a>
+    <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path id="sunIcon" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" style="display: block;"></path>
+        <path id="moonIcon" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" style="display: none;"></path>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="main-wrapper">
+  
+  <!-- Header -->
+  <header class="header">
+    <h1>LOTTIE<br>HUB</h1>
+    <p>Professional Lottie animation suite with preview, color editing, and export tools. Free tool by a brand strategist who's helped secure $102M+ in funding.</p>
+  </header>
+
+  <!-- Drop Zone -->
+  <section class="drop-section">
+    <div class="drop-zone" id="dropZone">
+      <div class="drop-zone-content">
+        <div class="drop-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
+        <p class="drop-text">DROP LOTTIE JSON HERE</p>
+        <p class="drop-hint">or click to browse files</p>
+      </div>
+      <input type="file" id="fileInput" accept=".json,application/json" multiple hidden>
+    </div>
+  </section>
+
+  <!-- Animations Container -->
+  <section class="animations-section" id="animationsSection" style="display: none;">
+    <div class="section-divider">
+      <span>ANIMATIONS</span>
+    </div>
+    <div class="animations-grid" id="animationsContainer"></div>
+    <div class="actions">
+      <button class="btn btn-danger" id="clearAll">CLEAR ALL</button>
+    </div>
+  </section>
+
+<!-- Global color editor removed - now inline per card -->
+
+  <!-- How It Works -->
+  <section class="info-section">
+    <div class="section-divider">
+      <span>HOW IT WORKS</span>
+    </div>
+    <div class="info-content">
+      <p>Lottie Hub is a professional Lottie animation suite that allows you to preview, edit, and export Lottie animations directly in your browser. Built by a brand strategist who's helped secure $102M+ in funding.</p>
+      <p>Simply drag and drop your <code>.json</code> file onto the upload area, and the animation will play automatically. Click on any animation card to edit its colors. Export your customized animations as JSON files.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-text">
+    ©2026 <span class="footer-divider">//</span> MADE BY <a href="https://gamaleldien.com" class="footer-link">GAMAL ELDIEN</a>
+  </div>
+</footer>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast"></div>
+
+<!-- Color Picker Modal removed - now using inline native inputs -->
+
+<script src="app.js"></script>
+</body>
+</html>

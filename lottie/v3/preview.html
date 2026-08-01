@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Preview — Lottie Color Editor</title>
+
+    <!-- Open Graph / Social Preview -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tools.gamaleldien.com/lottie/color-editor/preview">
+    <meta property="og:title" content="Multi Preview — Lottie Color Editor">
+    <meta property="og:description"
+        content="Preview multiple Lottie animations at once. Click any animation to edit its colors.">
+
+    <!-- General Meta -->
+    <meta name="description"
+        content="Preview multiple Lottie animations in a grid. Click any animation to open the color editor.">
+    <meta name="author" content="Gamal Eldien">
+
+    <!-- Lottie Library (CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-logo" title="Lottie Color Editor">
+            <span class="navbar-logo-text"><strong>LOTTIE</strong><br>MULTI PREVIEW</span>
+        </a>
+        <div style="display: flex; gap: 24px; align-items: center;">
+            <a href="index.html" class="navbar-link">Editor</a>
+            <a href="https://tools.gamaleldien.com" class="navbar-link">Tools</a>
+            <a href="https://gamaleldien.com" class="navbar-link">Gamaleldien.com</a>
+            <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path id="sunIcon"
+                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                        style="display: block;"></path>
+                    <path id="moonIcon" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" style="display: none;"></path>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+
+        <!-- Upload Section -->
+        <section class="upload-section" id="uploadSection">
+            <header class="header">
+                <h1>MULTI<br>PREVIEW</h1>
+                <p>Drop multiple Lottie JSON files to preview them all at once. Click any animation to open it in the
+                    editor.</p>
+            </header>
+
+            <div class="drop-zone drop-zone-multi" id="dropZone">
+                <div class="drop-zone-content">
+                    <div class="drop-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                    </div>
+                    <p class="drop-text">DROP MULTIPLE LOTTIE FILES</p>
+                    <p class="drop-hint">or click to browse files</p>
+                </div>
+                <input type="file" id="fileInput" accept=".json,application/json" multiple hidden>
+            </div>
+
+            <div class="sample-button-container">
+                <button class="btn btn-sample" id="btnLoadSamples">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <polygon points="10,8 16,12 10,16" fill="currentColor" />
+                    </svg>
+                    LOAD SAMPLE FILES
+                </button>
+            </div>
+        </section>
+
+        <!-- Preview Grid Section -->
+        <section class="preview-grid-section" id="previewGridSection" style="display: none;">
+            <div class="preview-grid-header">
+                <div class="preview-grid-info">
+                    <span id="fileCount">0 files loaded</span>
+                </div>
+                <div class="preview-grid-actions">
+                    <button class="btn btn-small" id="btnAddMore">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        ADD MORE
+                    </button>
+                    <button class="btn btn-small btn-danger" id="btnClearAll">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                        CLEAR ALL
+                    </button>
+                </div>
+            </div>
+
+            <div class="preview-grid" id="previewGrid">
+                <!-- Cards populated by JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-text">
+            ©2026 <span class="footer-divider">//</span> MADE BY <a href="https://gamaleldien.com"
+                class="footer-link">GAMAL ELDIEN</a>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script type="module" src="js/preview.js"></script>
+</body>
+
+</html>

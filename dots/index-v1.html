@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dot Motion Generator — Abstract Particle Animations</title>
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://tools.gamaleldien.com/dots">
+<meta property="og:title" content="Dot Motion Generator — Abstract Particle Animations">
+<meta property="og:description" content="Generate beautiful abstract dot animations with 10 unique scenes. Export as WebM, GIF, PNG sequence, or embed code. Free forever.">
+<meta name="description" content="Generate beautiful abstract dot animations with 10 unique scenes. Export as WebM, GIF, PNG sequence, or embed code. Free forever.">
+<meta name="author" content="Gamal Eldien">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0a0a;
+  --surface: rgba(63, 63, 63, 0.3);
+  --surface-2: rgba(80, 80, 80, 0.35);
+  --surface-elevated: rgba(90, 90, 90, 0.25);
+  --text: rgb(255, 255, 255);
+  --text-muted: rgb(128, 128, 128);
+  --text-secondary: rgb(153, 153, 153);
+  --border: rgb(51, 51, 51);
+  --border-light: rgba(255, 255, 255, 0.08);
+  --accent: rgb(225, 97, 5);
+  --accent-hover: rgb(255, 117, 25);
+  --accent-glow: rgba(225, 97, 5, 0.15);
+  --danger: #ef4444;
+  --success: #10b981;
+  --radius: 24px;
+  --radius-lg: 32px;
+  --radius-pill: 64px;
+  --font-display: 'Clash Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.12);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.16), 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.24), 0 4px 8px rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 0 24px rgba(225, 97, 5, 0.12);
+  --dot-color: 255, 255, 255;
+  --canvas-bg: #000000;
+}
+
+body.light-theme {
+  --bg: #f5f5f5;
+  --surface: rgba(255, 255, 255, 0.8);
+  --surface-2: rgba(240, 240, 240, 0.9);
+  --surface-elevated: rgba(230, 230, 230, 0.6);
+  --text: #0a0a0a;
+  --text-muted: #6b6b6b;
+  --text-secondary: #4a4a4a;
+  --border: #e0e0e0;
+  --border-light: rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+  --dot-color: 0, 0, 0;
+  --canvas-bg: #ffffff;
+}
+.light-theme .navbar { background: rgba(245, 245, 245, 0.9); }
+.light-theme .footer { background: radial-gradient(ellipse 80% 55% at 50% 100%, rgba(232,97,26,0.85) 0%, rgba(180,50,5,0.55) 30%, rgba(50,10,0,0.25) 60%, transparent 100%), linear-gradient(to top, #1a0800 0%, #f5f5f5 45%); }
+.light-theme .scene-card { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.08); color: #333; }
+.light-theme .scene-card:hover { background: rgba(255,255,255,0.95); border-color: rgba(0,0,0,0.15); }
+.light-theme .scene-card.active { background: rgba(225,97,5,0.08); }
+.light-theme .card { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.08); }
+.light-theme .preset-card { background: rgba(255,255,255,0.7); border-color: rgba(0,0,0,0.08); }
+.light-theme .preset-card:hover { background: rgba(255,255,255,0.95); border-color: rgba(0,0,0,0.15); }
+.light-theme .export-btn { background: rgba(255,255,255,0.7); border-color: rgba(0,0,0,0.1); color: #333; }
+.light-theme .export-btn:hover { background: rgba(255,255,255,0.95); border-color: var(--accent); }
+.light-theme .cp-label { color: var(--text-muted); }
+.light-theme .cp-val { color: var(--text-secondary); }
+.light-theme input[type="range"] { background: rgba(0,0,0,0.08); }
+.light-theme input[type="range"]::-webkit-slider-thumb { background: var(--accent); border-color: rgba(0,0,0,0.1); }
+.light-theme .canvas-wrap { border-color: rgba(0,0,0,0.1); }
+.light-theme .cp-color-btn { border-color: rgba(0,0,0,0.15); }
+.light-theme .cp-color-btn.active { border-color: var(--accent); }
+.light-theme .cp-switch { background: rgba(0,0,0,0.1); }
+.light-theme .cp-switch.on { background: var(--accent); }
+.light-theme .cp-switch::after { background: #fff; }
+.light-theme .shortcut-tag { background: rgba(0,0,0,0.06); color: var(--text-secondary); }
+.light-theme .embed-code { background: rgba(0,0,0,0.04); color: #333; border-color: rgba(0,0,0,0.1); }
+.light-theme .progress-bar { background: rgba(0,0,0,0.08); }
+.light-theme .navbar-logo svg .logo-fill { fill: #0a0a0a; }
+
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+body {
+  font-family: var(--font-display);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 32px 32px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Navbar */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(48px);
+  -webkit-backdrop-filter: blur(48px);
+  border-bottom: 1px solid var(--border);
+  padding: 20px clamp(24px, 5vw, 48px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.navbar-logo {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.navbar-logo svg { height: 40px; width: auto; transition: all 0.3s; }
+.navbar-logo:hover { transform: translateY(-2px); }
+.navbar-logo:hover svg { filter: brightness(1.2); }
+.navbar-link {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: color 0.2s;
+}
+.navbar-link:hover { color: var(--text); }
+.theme-toggle {
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  padding: 8px;
+  border-radius: 12px;
+}
+.theme-toggle:hover { transform: rotate(30deg); color: var(--text); }
+
+/* Main */
+.main-wrapper {
+  flex: 1;
+  padding: clamp(16px, 4vw, 48px);
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Hero */
+.hero {
+  text-align: center;
+  margin-top: clamp(24px, 4vw, 48px);
+  margin-bottom: clamp(32px, 5vw, 56px);
+  animation: fadeInUp 0.6s ease-out;
+}
+.hero h1 {
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.hero h1 span { color: var(--accent); }
+.hero p {
+  font-size: clamp(14px, 1.5vw, 18px);
+  color: var(--text-muted);
+  max-width: 580px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Canvas */
+.canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: clamp(300px, 60vh, 700px);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  margin-bottom: 32px;
+  animation: fadeInUp 0.7s ease-out;
+  box-shadow: var(--shadow-lg);
+}
+.canvas-wrap canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+.canvas-info {
+  position: absolute;
+  bottom: 16px;
+  right: 20px;
+  color: rgba(255,255,255,0.25);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  pointer-events: none;
+  user-select: none;
+  text-align: right;
+  line-height: 1.6;
+}
+.canvas-info .scene-name { font-size: 13px; color: rgba(255,255,255,0.35); letter-spacing: 3px; }
+.canvas-info .hint { font-size: 9px; color: rgba(255,255,255,0.12); letter-spacing: 1.5px; }
+.canvas-pause {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48px;
+  color: rgba(255,255,255,0.5);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.canvas-pause.visible { opacity: 1; }
+
+/* Section titles */
+.section-title {
+  font-size: clamp(18px, 2vw, 24px);
+  font-weight: 600;
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+.section-title span { color: var(--accent); }
+
+/* Scene Selector */
+.scene-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 40px;
+  animation: fadeInUp 0.8s ease-out;
+}
+.scene-card {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 14px 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.25s;
+  user-select: none;
+}
+.scene-card:hover {
+  background: var(--surface-2);
+  border-color: rgba(255,255,255,0.15);
+  transform: translateY(-2px);
+}
+.scene-card.active {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-glow);
+}
+.scene-card .scene-num {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 4px;
+}
+.scene-card.active .scene-num { color: var(--accent); }
+.scene-card .scene-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.scene-card.active .scene-label { color: var(--text); }
+
+/* Card */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: clamp(20px, 3vw, 32px);
+  margin-bottom: 32px;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+/* Controls */
+.controls-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 32px;
+}
+@media (max-width: 640px) { .controls-grid { grid-template-columns: 1fr; } }
+
+.cp-group { margin-bottom: 4px; }
+.cp-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cp-val {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid rgba(255,255,255,0.15);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid rgba(255,255,255,0.15);
+  cursor: pointer;
+}
+
+/* Color swatches */
+.cp-colors { display: flex; gap: 10px; margin-top: 4px; flex-wrap: wrap; }
+.cp-color-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.1);
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.cp-color-btn:hover { transform: scale(1.15); }
+.cp-color-btn.active { border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+.cp-color-btn[data-color="auto"] { background: linear-gradient(135deg, #fff 50%, #000 50%); }
+.cp-color-btn[data-color="orange"] { background: #E16105; }
+.cp-color-btn[data-color="cyan"] { background: #00FFFF; }
+.cp-color-btn[data-color="rainbow"] { background: conic-gradient(#f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00); }
+
+/* Toggle switch */
+.cp-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cp-switch {
+  width: 40px;
+  height: 22px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 11px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.cp-switch.on { background: var(--accent); }
+.cp-switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.8);
+  transition: transform 0.2s;
+}
+.cp-switch.on::after { transform: translateX(18px); }
+
+/* Presets */
+.presets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+.preset-card {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.preset-card:hover {
+  background: var(--surface-2);
+  border-color: rgba(255,255,255,0.15);
+  transform: translateY(-2px);
+}
+.preset-card .preset-name {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.preset-card .preset-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Export */
+.export-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.export-btn {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.25s;
+  text-align: center;
+  color: var(--text);
+  font-family: var(--font-display);
+}
+.export-btn:hover {
+  background: var(--surface-2);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+.export-btn .export-icon { font-size: 28px; margin-bottom: 8px; }
+.export-btn .export-label { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.export-btn .export-desc { font-size: 11px; color: var(--text-muted); }
+.export-btn:disabled { opacity: 0.5; pointer-events: none; }
+
+.export-options {
+  display: none;
+  margin-top: 16px;
+  padding: 20px;
+  background: var(--surface);
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+}
+.export-options.visible { display: block; }
+
+.progress-wrap { margin-top: 16px; display: none; }
+.progress-wrap.visible { display: block; }
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  transition: width 0.2s;
+  width: 0%;
+}
+.progress-text {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  text-align: center;
+}
+
+.embed-code {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  resize: none;
+  margin-top: 12px;
+}
+
+.shortcut-tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.06);
+  color: var(--text-muted);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.5px;
+  margin-left: 6px;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--accent);
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Footer */
+.footer {
+  position: relative;
+  margin-top: clamp(64px, 10vw, 120px);
+  padding: clamp(80px, 12vw, 160px) clamp(24px, 5vw, 48px) clamp(40px, 6vw, 56px);
+  text-align: center;
+  background:
+    radial-gradient(ellipse 80% 55% at 50% 100%, rgba(232,97,26,0.85) 0%, rgba(180,50,5,0.55) 30%, rgba(50,10,0,0.25) 60%, transparent 100%),
+    linear-gradient(to top, #1a0800 0%, var(--bg, #0a0a0a) 45%);
+  border-top: none;
+}
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.footer-made-with {
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: 0.02em;
+}
+.footer-made-with a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.2s;
+}
+.footer-made-with a:hover { color: rgb(232,97,26); }
+.emoji { font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; font-style: normal; }
+.footer-bmc {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 12px 28px;
+  border-radius: 50px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+}
+.footer-bmc:hover {
+  background: rgba(232,97,26,0.25);
+  border-color: rgba(232,97,26,0.5);
+  transform: translateY(-2px);
+}
+.footer-copyright {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1.8;
+}
+.footer-copyright a {
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.2s;
+}
+.footer-copyright a:hover { color: rgb(232,97,26); }
+.footer-social {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.06em;
+  margin-top: -8px;
+}
+.footer-social a {
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-social a:hover { color: rgb(232,97,26); }
+
+@media (max-width: 640px) {
+  .scene-grid { grid-template-columns: repeat(2, 1fr); }
+  .presets-grid { grid-template-columns: 1fr 1fr; }
+  .export-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a href="https://gamaleldien.com" class="navbar-logo" style="display: flex; align-items: center;">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 146.76 60.13" style="height: 40px; width: auto;">
+      <style>.logo-fill{fill:#f1f2f2}</style>
+      <path d="M75.08 24.06c1.67-1.68 3.68-2.52 6.03-2.52 1.7 0 3.22.45 4.56 1.34 1.34.9 2.35 2.1 3.04 3.62l-3.41.98c-.4-.8-.97-1.42-1.72-1.86-.75-.44-1.57-.66-2.48-.66-1.41 0-2.59.5-3.54 1.49-.95.99-1.42 2.22-1.42 3.67s.47 2.68 1.42 3.66c.94.98 2.12 1.48 3.54 1.48 1.02 0 1.94-.27 2.78-.82s1.44-1.33 1.82-2.35l-4.5.02-.05-3.05h8.03v1.37c0 2.4-.77 4.38-2.31 5.93-1.54 1.55-3.46 2.33-5.77 2.33s-4.36-.84-6.03-2.51-2.5-3.69-2.5-6.06.83-4.39 2.5-6.07Zm17.37 3.41c1.22-1.26 2.69-1.9 4.41-1.9 1.35 0 2.51.43 3.48 1.3v-1.3h3.46v13.12h-3.44v-1.24c-.97.83-2.13 1.25-3.49 1.25-1.7 0-3.17-.65-4.4-1.94-1.23-1.3-1.85-2.83-1.85-4.61s.61-3.4 1.83-4.68Zm1.38 4.68c0 .93.32 1.73.97 2.4.64.67 1.44 1.01 2.39 1.01s1.72-.34 2.38-1.02c.67-.68 1-1.48 1-2.39s-.33-1.71-1-2.4c-.67-.69-1.46-1.03-2.38-1.03s-1.75.34-2.39 1.02c-.64.68-.97 1.48-.97 2.41Zm16.04-6.58v1.39c.95-.93 2.01-1.39 3.17-1.39 1.59 0 2.86.65 3.81 1.94a5.63 5.63 0 0 1 1.88-1.43c.73-.34 1.47-.52 2.22-.52 1.27 0 2.38.45 3.34 1.36.95.9 1.43 2.13 1.43 3.68v8.08h-3.46v-7.31c0-.82-.17-1.46-.51-1.93-.34-.47-.85-.71-1.51-.71-1.45 0-2.26.85-2.43 2.54v7.4h-3.46v-7.31c0-.82-.17-1.46-.51-1.93-.34-.47-.85-.71-1.51-.71-.84 0-1.46.28-1.86.85-.4.57-.6 1.31-.6 2.22v6.88h-3.46V25.55h3.46Zm19.59 1.9c1.22-1.26 2.69-1.9 4.41-1.9 1.35 0 2.51.43 3.48 1.3v-1.3h3.46v13.12h-3.46v-1.24c-.95.83-2.11 1.25-3.48 1.25-1.7 0-3.17-.65-4.4-1.94-1.23-1.3-1.85-2.83-1.85-4.61s.61-3.4 1.83-4.68Zm1.38 4.68c0 .93.32 1.73.97 2.4.64.67 1.44 1.01 2.39 1.01s1.72-.34 2.38-1.02c.67-.68 1-1.48 1-2.39s-.33-1.71-1-2.4c-.67-.69-1.46-1.03-2.38-1.03s-1.75.34-2.39 1.02c-.64.68-.97 1.48-.97 2.41Zm12.46 6.55V21.45h3.46V38.7h-3.46Zm-59.04 4.63v1.61H74.3v6h9v1.56h-9v6.02h9.96v1.61H72.57v-16.8h11.69Zm2.83 16.8v-16.8h1.68v16.8h-1.68Zm6.02-11.24c1.25-1.26 2.76-1.9 4.54-1.9 1.09 0 2.07.26 2.94.78.87.52 1.56 1.21 2.05 2.08v-6.52h1.68v16.79h-1.68v-2.86c-.5.86-1.18 1.56-2.05 2.08-.87.52-1.85.78-2.94.78-1.78 0-3.29-.64-4.54-1.93s-1.87-2.83-1.87-4.62.62-3.4 1.87-4.68Zm-.26 4.68c0 1.38.48 2.55 1.44 3.53s2.13 1.46 3.5 1.46 2.52-.49 3.49-1.46c.97-.98 1.45-2.15 1.45-3.53s-.48-2.56-1.45-3.55c-.97-.99-2.13-1.49-3.49-1.49s-2.54.49-3.5 1.46c-.96.98-1.44 2.17-1.44 3.58Zm14.45-9.9c.24-.22.54-.34.89-.34s.67.12.91.35c.24.23.36.52.36.88s-.12.64-.36.88c-.24.23-.54.35-.91.35s-.65-.12-.89-.35c-.24-.23-.36-.52-.36-.88s.12-.65.36-.89Zm1.73 3.74v12.72h-1.68V47.41h1.68Zm4.51 1.5c1.26-1.28 2.79-1.92 4.58-1.92 1.65 0 3.08.55 4.28 1.66 1.21 1.1 1.91 2.46 2.1 4.08.06.3.1.58.1.84 0 .21-.02.41-.07.6H113.3c.11 1.3.62 2.36 1.54 3.18.91.82 2.01 1.24 3.29 1.24.88 0 1.7-.2 2.47-.61s1.38-.96 1.85-1.67l1.58.31c-.53 1.06-1.33 1.9-2.41 2.54a6.72 6.72 0 0 1-3.49.96c-1.82 0-3.36-.64-4.62-1.92-1.26-1.28-1.88-2.83-1.88-4.66s.64-3.35 1.92-4.63Zm-.24 3.89h9.55c-.13-1.22-.63-2.23-1.51-3.05-.88-.82-1.95-1.22-3.22-1.22s-2.37.41-3.28 1.22c-.9.82-1.42 1.83-1.55 3.05Zm13.56-5.81h1.68v2.87c.42-.77 1.02-1.4 1.81-1.91s1.72-.76 2.77-.76c1.49 0 2.76.48 3.82 1.44s1.58 2.25 1.58 3.86v7.63h-1.68v-7.1c0-1.33-.38-2.37-1.15-3.12-.77-.75-1.71-1.13-2.83-1.13-1.25 0-2.28.46-3.1 1.37s-1.22 2.08-1.22 3.5v6.48h-1.68V46.98ZM60.12 35.22v24.9l-24.9-24.9h24.9z" class="logo-fill"/>
+      <path d="M60.12 10.32 47.67 22.77c-3.44-3.44-7.94-5.16-12.45-5.16s-9.01 1.72-12.45 5.16c-3.44 3.43-5.16 7.94-5.16 12.45s1.72 9.01 5.16 12.45L10.32 60.12C3.94 53.75 0 44.94 0 35.22s3.94-18.53 10.32-24.9C16.69 3.94 25.49 0 35.22 0s18.53 3.94 24.9 10.32Z" class="logo-fill"/>
+    </svg>
+  </a>
+  <div style="display:flex;gap:24px;align-items:center;">
+    <a href="/" class="navbar-link">ALL TOOLS</a>
+    <a href="https://gamaleldien.com" class="navbar-link" target="_blank">GAMALELDIEN.COM</a>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme" id="themeToggle">&#x263D;</button>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main-wrapper">
+
+  <!-- Hero -->
+  <header class="hero">
+    <h1>Dot <span>Motion</span> Generator</h1>
+    <p>10 mesmerising abstract particle scenes. Tweak, preview, and export as video, GIF, or embed code — all in your browser.</p>
+  </header>
+
+  <!-- Canvas -->
+  <div class="canvas-wrap" id="canvasWrap">
+    <div id="canvasLoader" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:10;background:var(--canvas-bg);">
+      <div style="text-align:center;">
+        <div style="width:40px;height:40px;border:3px solid rgba(225,97,5,0.2);border-top-color:rgb(225,97,5);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
+        <div style="font-family:var(--font-display);font-size:14px;color:var(--text-muted);letter-spacing:2px;">LOADING</div>
+      </div>
+    </div>
+    <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+    <div class="canvas-info">
+      <div class="scene-name" id="sceneName">Wave Grid</div>
+      <div class="hint">1-0 Switch · Space Pause · E Export</div>
+    </div>
+    <div class="canvas-pause" id="pauseIcon">⏸</div>
+  </div>
+
+  <!-- Scene Selector -->
+  <h2 class="section-title"><span>01</span> — Choose Scene</h2>
+  <div class="scene-grid" id="sceneGrid"></div>
+
+  <!-- Controls -->
+  <h2 class="section-title"><span>02</span> — Customise</h2>
+  <div class="card">
+    <div class="controls-grid">
+      <div class="cp-group">
+        <div class="cp-label">Speed <span class="cp-val" id="speedVal">1.0×</span></div>
+        <input type="range" id="speedSlider" min="0.1" max="3" step="0.1" value="1">
+      </div>
+      <div class="cp-group">
+        <div class="cp-label">Dot Count <span class="cp-val" id="countVal">5000</span></div>
+        <input type="range" id="countSlider" min="500" max="10000" step="500" value="5000">
+      </div>
+      <div class="cp-group">
+        <div class="cp-label">Dot Size <span class="cp-val" id="sizeVal">3.0</span></div>
+        <input type="range" id="sizeSlider" min="1" max="8" step="0.5" value="3">
+      </div>
+      <div class="cp-group">
+        <div class="cp-label">Bloom / Glow <span class="cp-val" id="bloomVal">0.40</span></div>
+        <input type="range" id="bloomSlider" min="0" max="1" step="0.05" value="0.4">
+      </div>
+      <div class="cp-group">
+        <div class="cp-label">Camera Distance <span class="cp-val" id="camVal">1.0×</span></div>
+        <input type="range" id="camSlider" min="0.3" max="2.5" step="0.1" value="1">
+      </div>
+      <div class="cp-group">
+        <div class="cp-label">Color</div>
+        <div class="cp-colors">
+          <div class="cp-color-btn active" data-color="auto" title="Auto (theme-based)"></div>
+          <div class="cp-color-btn" data-color="orange" title="Orange #E16105"></div>
+          <div class="cp-color-btn" data-color="cyan" title="Cyan #00FFFF"></div>
+          <div class="cp-color-btn" data-color="rainbow" title="Rainbow"></div>
+        </div>
+      </div>
+      <div class="cp-group">
+        <div class="cp-toggle-row">
+          <div class="cp-label" style="margin-bottom:0">Auto-Cycle</div>
+          <div class="cp-switch on" id="autoCycleToggle"></div>
+        </div>
+      </div>
+      <div class="cp-group" id="cycleDurGroup">
+        <div class="cp-label">Cycle Duration <span class="cp-val" id="cycleVal">12s</span></div>
+        <input type="range" id="cycleSlider" min="4" max="30" step="1" value="12">
+      </div>
+    </div>
+  </div>
+
+  <!-- Presets -->
+  <h2 class="section-title"><span>03</span> — Presets</h2>
+  <div class="presets-grid" style="margin-bottom:40px;">
+    <div class="preset-card" data-preset="minimal">
+      <div class="preset-name">🌊 Minimal Wave</div>
+      <div class="preset-desc">Slow, low dot count, no glow. Clean and serene.</div>
+    </div>
+    <div class="preset-card" data-preset="cyber">
+      <div class="preset-name">🔮 Cyber Tunnel</div>
+      <div class="preset-desc">Fast, cyan glow, high bloom. Sci-fi vibes.</div>
+    </div>
+    <div class="preset-card" data-preset="dna">
+      <div class="preset-name">🧬 DNA Lab</div>
+      <div class="preset-desc">Double helix, medium speed, green tint.</div>
+    </div>
+    <div class="preset-card" data-preset="space">
+      <div class="preset-name">🌌 Deep Space</div>
+      <div class="preset-desc">Galaxy spiral, slow rotation, many dots.</div>
+    </div>
+    <div class="preset-card" data-preset="rain">
+      <div class="preset-name">💾 Digital Rain</div>
+      <div class="preset-desc">Fast falling, cyan/green, matrix style.</div>
+    </div>
+    <div class="preset-card" data-preset="breathe">
+      <div class="preset-name">🫧 Breathing Sphere</div>
+      <div class="preset-desc">Slow, organic morphing. Meditative.</div>
+    </div>
+  </div>
+
+  <!-- Export -->
+  <h2 class="section-title"><span>04</span> — Export</h2>
+  <div class="card" id="exportCard">
+    <div class="export-grid">
+      <button class="export-btn" onclick="exportHTML()">
+        <div class="export-icon">📄</div>
+        <div class="export-label">HTML Embed</div>
+        <div class="export-desc">Standalone file or iframe</div>
+      </button>
+      <button class="export-btn" onclick="exportWebM()">
+        <div class="export-icon">🎬</div>
+        <div class="export-label">WebM Video</div>
+        <div class="export-desc">High-quality recording</div>
+      </button>
+      <button class="export-btn" onclick="exportGIF()">
+        <div class="export-icon">✨</div>
+        <div class="export-label">GIF</div>
+        <div class="export-desc">Animated, shareable</div>
+      </button>
+      <button class="export-btn" onclick="exportPNG()">
+        <div class="export-icon">🗂️</div>
+        <div class="export-label">PNG Sequence</div>
+        <div class="export-desc">Frame-by-frame ZIP</div>
+      </button>
+    </div>
+
+    <!-- Export options -->
+    <div class="export-options" id="exportOptions">
+      <div class="controls-grid" style="margin-bottom:12px;">
+        <div class="cp-group">
+          <div class="cp-label">Duration <span class="cp-val" id="durationVal">5s</span></div>
+          <input type="range" id="durationSlider" min="3" max="10" step="1" value="5">
+        </div>
+        <div class="cp-group">
+          <div class="cp-label">FPS <span class="cp-val" id="fpsVal">30</span></div>
+          <input type="range" id="fpsSlider" min="15" max="60" step="5" value="30">
+        </div>
+      </div>
+      <textarea class="embed-code" id="embedCode" rows="3" readonly style="display:none" onclick="this.select()"></textarea>
+      <button class="export-btn" id="copyEmbedBtn" style="display:none;margin-top:8px;" onclick="copyEmbed()">
+        <div class="export-label">📋 Copy Embed Code</div>
+      </button>
+    </div>
+
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-text" id="progressText">Preparing...</div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-made-with">Made with <span class="emoji">❤️</span> in Egypt <span class="emoji">🇪🇬</span> by <a href="https://gamaleldien.com" target="_blank" rel="noopener">Gamal Eldien</a></div>
+    <a href="https://buymeacoffee.com/gamaleldien" target="_blank" rel="noopener" class="footer-bmc">☕ Buy me a coffee</a>
+    <div class="footer-copyright">©2026 Gamal Eldien <span style="color:rgba(255,255,255,0.2);margin:0 8px">//</span> All tools are free &amp; open for everyone</div>
+    <div class="footer-social"><a href="https://www.behance.net/Gamal_eldin" target="_blank" rel="noopener">Behance</a> <span style="color:rgba(255,255,255,0.15);margin:0 6px">·</span> <a href="https://www.linkedin.com/in/gamaleldien" target="_blank" rel="noopener">LinkedIn</a></div>
+  </div>
+</footer>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Three.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" onerror="document.getElementById('canvasLoader').innerHTML='<p style=color:red;font-family:sans-serif;text-align:center>Failed to load Three.js</p>'"></script>
+<script>
+(() => {
+  // ─── Config ───
+  const config = {
+    speed: 1.0,
+    dotCount: 5000,
+    dotSize: 3.0,
+    color: 'auto',
+    bloom: 0.4,
+    camDistance: 1.0,
+    autoCycle: true,
+    cycleDuration: 12,
+  };
+
+  let isLightTheme = false;
+
+  // ─── Renderer ───
+  const wrap = document.getElementById('canvasWrap');
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, preserveDrawingBuffer: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 1);
+  wrap.insertBefore(renderer.domElement, wrap.firstChild);
+  const loader = document.getElementById('canvasLoader');
+  if (loader) setTimeout(() => { loader.style.opacity = '0'; loader.style.transition = 'opacity 0.5s'; setTimeout(() => loader.remove(), 500); }, 300);
+
+  function resizeRenderer() {
+    const w = wrap.clientWidth, h = wrap.clientHeight;
+    renderer.setSize(w, h);
+    scenesList.forEach(s => { s.camera.aspect = w / h; s.camera.updateProjectionMatrix(); });
+  }
+  resizeRenderer();
+
+  const baseCamera = new THREE.PerspectiveCamera(60, wrap.clientWidth / wrap.clientHeight, 0.1, 1000);
+  baseCamera.position.set(0, 0, 50);
+
+  // ─── Simplex Noise ───
+  const noise3D = (() => {
+    const F3 = 1/3, G3 = 1/6;
+    const grad3 = [[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],[1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],[0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]];
+    const p = new Uint8Array(256);
+    for (let i = 0; i < 256; i++) p[i] = i;
+    for (let i = 255; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [p[i], p[j]] = [p[j], p[i]]; }
+    const perm = new Uint8Array(512), permMod12 = new Uint8Array(512);
+    for (let i = 0; i < 512; i++) { perm[i] = p[i & 255]; permMod12[i] = perm[i] % 12; }
+    function dot3(g, x, y, z) { return g[0]*x + g[1]*y + g[2]*z; }
+    return function(xin, yin, zin) {
+      const s = (xin+yin+zin)*F3;
+      const i = Math.floor(xin+s), j = Math.floor(yin+s), k = Math.floor(zin+s);
+      const t = (i+j+k)*G3;
+      const X0 = i-t, Y0 = j-t, Z0 = k-t;
+      const x0 = xin-X0, y0 = yin-Y0, z0 = zin-Z0;
+      let i1,j1,k1,i2,j2,k2;
+      if (x0>=y0) { if(y0>=z0){i1=1;j1=0;k1=0;i2=1;j2=1;k2=0;}else if(x0>=z0){i1=1;j1=0;k1=0;i2=1;j2=0;k2=1;}else{i1=0;j1=0;k1=1;i2=1;j2=0;k2=1;}}
+      else { if(y0<z0){i1=0;j1=0;k1=1;i2=0;j2=1;k2=1;}else if(x0<z0){i1=0;j1=1;k1=0;i2=0;j2=1;k2=1;}else{i1=0;j1=1;k1=0;i2=1;j2=1;k2=0;}}
+      const x1=x0-i1+G3,y1=y0-j1+G3,z1=z0-k1+G3;
+      const x2=x0-i2+2*G3,y2=y0-j2+2*G3,z2=z0-k2+2*G3;
+      const x3=x0-1+3*G3,y3=y0-1+3*G3,z3=z0-1+3*G3;
+      const ii=i&255,jj=j&255,kk=k&255;
+      let n0=0,n1=0,n2=0,n3=0;
+      let t0=0.6-x0*x0-y0*y0-z0*z0;if(t0>0){t0*=t0;n0=t0*t0*dot3(grad3[permMod12[ii+perm[jj+perm[kk]]]],x0,y0,z0);}
+      let t1=0.6-x1*x1-y1*y1-z1*z1;if(t1>0){t1*=t1;n1=t1*t1*dot3(grad3[permMod12[ii+i1+perm[jj+j1+perm[kk+k1]]]],x1,y1,z1);}
+      let t2=0.6-x2*x2-y2*y2-z2*z2;if(t2>0){t2*=t2;n2=t2*t2*dot3(grad3[permMod12[ii+i2+perm[jj+j2+perm[kk+k2]]]],x2,y2,z2);}
+      let t3=0.6-x3*x3-y3*y3-z3*z3;if(t3>0){t3*=t3;n3=t3*t3*dot3(grad3[permMod12[ii+1+perm[jj+1+perm[kk+1]]]],x3,y3,z3);}
+      return 32*(n0+n1+n2+n3);
+    };
+  })();
+
+  // ─── Dot Texture ───
+  function createDotTexture() {
+    const size = 64, c = document.createElement('canvas');
+    c.width = c.height = size;
+    const ctx = c.getContext('2d');
+    const half = size / 2;
+    const gradient = ctx.createRadialGradient(half, half, 0, half, half, half);
+    gradient.addColorStop(0, 'rgba(255,255,255,1)');
+    gradient.addColorStop(0.15, 'rgba(255,255,255,0.9)');
+    gradient.addColorStop(0.4, 'rgba(255,255,255,0.3)');
+    gradient.addColorStop(0.7, 'rgba(255,255,255,0.05)');
+    gradient.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+    const tex = new THREE.CanvasTexture(c);
+    tex.needsUpdate = true;
+    return tex;
+  }
+  const dotTexture = createDotTexture();
+
+  // ─── Color ───
+  function getColorUniform() {
+    switch (config.color) {
+      case 'orange': return { r: 0.882, g: 0.380, b: 0.020 };
+      case 'cyan': return { r: 0.0, g: 1.0, b: 1.0 };
+      case 'auto': return isLightTheme ? { r: 0.0, g: 0.0, b: 0.0 } : { r: 1.0, g: 1.0, b: 1.0 };
+      default: return { r: 1.0, g: 1.0, b: 1.0 };
+    }
+  }
+  const isRainbow = () => config.color === 'rainbow';
+
+  // ─── Shaders ───
+  function makeVertexShader(sizeFactor = 250) {
+    return `
+      attribute float size;
+      varying float vAlpha;
+      varying vec3 vWorldPos;
+      uniform float uSizeMult;
+      void main() {
+        vWorldPos = position;
+        vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+        gl_PointSize = size * uSizeMult * (${sizeFactor.toFixed(1)} / -mvPos.z);
+        gl_Position = projectionMatrix * mvPos;
+        vAlpha = smoothstep(-80.0, -5.0, mvPos.z);
+      }
+    `;
+  }
+  function makeFragmentShader() {
+    return `
+      uniform sampler2D uTexture;
+      uniform float uOpacity;
+      uniform float uBloom;
+      uniform vec3 uColor;
+      uniform float uTime;
+      uniform float uRainbow;
+      varying float vAlpha;
+      varying vec3 vWorldPos;
+      vec3 hsv2rgb(vec3 c) {
+        vec4 K = vec4(1.0, 2.0/3.0, 1.0/3.0, 3.0);
+        vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+        return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+      }
+      void main() {
+        vec4 tex = texture2D(uTexture, gl_PointCoord);
+        vec3 col = uColor;
+        if (uRainbow > 0.5) {
+          float h = fract(length(vWorldPos) * 0.02 + uTime * 0.1);
+          col = hsv2rgb(vec3(h, 0.8, 1.0));
+        }
+        float bloom = 1.0 + uBloom * 1.5;
+        float alpha = tex.a * vAlpha * uOpacity * bloom;
+        gl_FragColor = vec4(col * bloom, alpha);
+      }
+    `;
+  }
+  function createMaterial(sizeFactor) {
+    const c = getColorUniform();
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        uTexture: { value: dotTexture },
+        uOpacity: { value: 1.0 },
+        uBloom: { value: config.bloom },
+        uColor: { value: new THREE.Vector3(c.r, c.g, c.b) },
+        uTime: { value: 0 },
+        uRainbow: { value: isRainbow() ? 1.0 : 0.0 },
+        uSizeMult: { value: config.dotSize / 3.0 },
+      },
+      vertexShader: makeVertexShader(sizeFactor || 250),
+      fragmentShader: makeFragmentShader(),
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+  }
+  function syncMaterials() {
+    const c = getColorUniform();
+    const rb = isRainbow() ? 1.0 : 0.0;
+    scenesList.forEach(s => {
+      const u = s.material.uniforms;
+      u.uBloom.value = config.bloom;
+      u.uColor.value.set(c.r, c.g, c.b);
+      u.uRainbow.value = rb;
+      u.uSizeMult.value = config.dotSize / 3.0;
+    });
+    // Update clear color based on theme
+    renderer.setClearColor(isLightTheme ? 0xffffff : 0x000000, 1);
+  }
+
+  // ─── Scene Definitions ───
+  const scenesList = [];
+  let currentScene = 0;
+  let paused = false;
+  let transitionAlpha = 1;
+  let transitioning = false;
+  let pendingScene = -1;
+
+  function makeParticleGeo(count) {
+    const positions = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+    for (let i = 0; i < count; i++) sizes[i] = 2.0;
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    return geo;
+  }
+
+  // ── 1. Wave Grid ──
+  (() => {
+    const scene = new THREE.Scene();
+    const gridSize = 80, spacing = 0.6, count = gridSize * gridSize;
+    const basePositions = new Float32Array(count * 3);
+    for (let i = 0; i < gridSize; i++) for (let j = 0; j < gridSize; j++) {
+      const idx = i * gridSize + j;
+      basePositions[idx*3] = (i - gridSize/2) * spacing;
+      basePositions[idx*3+1] = 0;
+      basePositions[idx*3+2] = (j - gridSize/2) * spacing;
+    }
+    const geo = makeParticleGeo(count);
+    const posArr = geo.attributes.position.array;
+    for (let i = 0; i < count * 3; i++) posArr[i] = basePositions[i];
+    const mat = createMaterial(300);
+    scene.add(new THREE.Points(geo, mat));
+    scenesList.push({
+      name: 'Wave Grid', scene,
+      camera: (() => { const c = baseCamera.clone(); c.position.set(0, 22, 28); c.lookAt(0,0,0); return c; })(),
+      update(time) {
+        const pos = geo.attributes.position.array, sz = geo.attributes.size.array, t = time * 0.8;
+        for (let i = 0; i < count; i++) {
+          const bx = basePositions[i*3], bz = basePositions[i*3+2];
+          const dist = Math.sqrt(bx*bx + bz*bz);
+          const y = Math.sin(dist * 0.3 - t * 1.2) * 2.5 + Math.cos(bx * 0.2 + t * 0.7) * Math.sin(bz * 0.2 + t * 0.9) * 1.5;
+          pos[i*3+1] = y; sz[i] = 1.5 + y * 0.2;
+        }
+        geo.attributes.position.needsUpdate = true; geo.attributes.size.needsUpdate = true;
+        const cam = scenesList[0].camera, a = time * 0.08;
+        cam.position.x = Math.sin(a) * 12; cam.position.z = 28 + Math.cos(a) * 8; cam.position.y = 22 + Math.sin(time * 0.15) * 3; cam.lookAt(0,0,0);
+      }, material: mat,
+    });
+  })();
+
+  // ── 2. Tunnel Vortex ──
+  (() => {
+    const scene = new THREE.Scene();
+    const rings = 60, dotsPerRing = 48, count = rings * dotsPerRing, tunnelLength = 70;
+    const geo = makeParticleGeo(count);
+    const mat = createMaterial(200);
+    scene.add(new THREE.Points(geo, mat));
+    scenesList.push({
+      name: 'Tunnel Vortex', scene,
+      camera: (() => { const c = baseCamera.clone(); c.position.set(0,0,5); c.lookAt(0,0,-50); return c; })(),
+      update(time) {
+        const pos = geo.attributes.position.array, sz = geo.attributes.size.array, t = time * 0.5;
+        for (let r = 0; r < rings; r++) {
+          const z = -(r / rings) * tunnelLength + ((t * 12) % tunnelLength);
+          const finalZ = z > 5 ? z - tunnelLength : z;
+          const depthRatio = (finalZ + tunnelLength) / tunnelLength;
+          const radius = 8 + Math.sin(r * 0.3 + t * 2) * 1.5;
+          for (let d = 0; d < dotsPerRing; d++) {
+            const idx = r * dotsPerRing + d;
+            const angle = (d / dotsPerRing) * Math.PI * 2 + r * 0.08 + t * 0.6;
+            pos[idx*3] = Math.cos(angle) * radius; pos[idx*3+1] = Math.sin(angle) * radius; pos[idx*3+2] = finalZ;
+            sz[idx] = 1.2 + depthRatio * 1.8;
+          }
+        }
+        geo.attributes.position.needsUpdate = true; geo.attributes.size.needsUpdate = true;
+        const cam = scenesList[1].camera;
+        cam.position.x = Math.sin(time * 0.2) * 1.2; cam.position.y = Math.cos(time * 0.25) * 1.0;
+        cam.lookAt(Math.sin(time * 0.1) * 0.5, Math.cos(time * 0.12) * 0.5, -50);
+      }, material: mat,
+    });
+  })();
+
+  // ── 3. Sphere Morph ──
+  (() => {
+    const scene = new THREE.Scene();
+    const count = 4000;
+    const spherePos = new Float32Array(count * 3);
+    const phi = (1 + Math.sqrt(5)) / 2;
+    for (let i = 0; i < count; i++) {
+      const y = 1 - (i / (count - 1)) * 2, rY = Math.sqrt(1 - y * y), theta = 2 * Math.PI * i / phi;
+      spherePos[i*3] = Math.cos(theta) * rY * 12; spherePos[i*3+1] = y * 12; spherePos[i*3+2] = Math.sin(theta) * rY * 12;
+    }
+    const geo = makeParticleGeo(count);
+    const mat = createMaterial(250);
+    scene.add(new THREE.Points(geo, mat));
+    scenesList.push({
+      name: 'Sphere Morph', scene,
+      camera: (() => { const c = baseCamera.clone(); c.position.set(0,0,35); c.lookAt(0,0,0); return c; })(),
+      update(time) {
+        const pos = geo.attributes.position.array, sz = geo.attributes.size.array, t = time * 0.6;
+        const breathe = 1.0 + Math.sin(t * 0.8) * 0.15, morph = Math.sin(t * 0.3) * 0.5 + 0.5;
+        for (let i = 0; i < count; i++) {
+          const sx = spherePos[i*3], sy = spherePos[i*3+1], sz2 = spherePos[i*3+2];
+          const nx = sx/12, ny = sy/12, nz = sz2/12;
+          const nv = noise3D(nx*2+t*0.4, ny*2+t*0.3, nz*2+t*0.2);
+          const d = nv * 3 * morph;
+          pos[i*3] = (sx + nx*d) * breathe; pos[i*3+1] = (sy + ny*d) * breathe; pos[i*3+2] = (sz2 + nz*d) * breathe;
+          sz[i] = 1.2 + Math.abs(nv) * 1.5;
+        }
+        geo.attributes.position.needsUpdate = true; geo.attributes.size.needsUpdate = true;
+        const cam = scenesList[2].camera, a = time * 0.15;
+        cam.position.set(Math.sin(a)*35, Math.sin(time*0.1)*8, Math.cos(a)*35); cam.lookAt(0,0,0);
+      }, material: mat,
+    });
+  })();
+
+  // ── 4. Flow Field ──
+  (() => {
+    const scene = new THREE.Scene();
+    const count = 5000, bounds = 25;
+    const velocities = new Float32Array(count * 3);
+    const geo = makeParticleGeo(count);
+    const pos = geo.attributes.position.array;
+    function resetP(i) {
+      pos[i*3]=(Math.random()-0.5)*bounds*2; pos[i*3+1]=(Math.random()-0.5)*bounds*2; pos[i*3+2]=(Math.random()-0.5)*bounds*2;
+      velocities[i*3]=0; velocities[i*3+1]=0; velocities[i*3+2]=0;
+    }
+    for (let i = 0; i < count; i++) resetP(i);
+    const mat = createMaterial(200);
+    scene.add(new THREE.Points(geo, mat));
+    scenesList.push({
+      name: 'Flow Field', scene,
+      camera: (() => { const c = baseCamera.clone(); c.position.set(0,0,40); c.lookAt(0,0,0); return c; })(),
+      update(time, delta) {
+        const sz = geo.attributes.size.array, t = time * 0.15, dt = Math.min(delta, 0.05), spd = 8;
+        for (let i = 0; i < count; i++) {
+          const x=pos[i*3]*0.05, y=pos[i*3+1]*0.05, z=pos[i*3+2]*0.05;
+          velocities[i*3]+=(noise3D(x+t,y,z)*spd-velocities[i*3])*0.05;
+          velocities[i*3+1]+=(noise3D(x,y+t,z+10)*spd-velocities[i*3+1])*0.05;
+          velocities[i*3+2]+=(noise3D(x,y+20,z+t)*spd-velocities[i*3+2])*0.05;
+          pos[i*3]+=velocities[i*3]*dt; pos[i*3+1]+=velocities[i*3+1]*dt; pos[i*3+2]+=velocities[i*3+2]*dt;
+          if(Math.abs(pos[i*3])>bounds||Math.abs(pos[i*3+1])>bounds||Math.abs(pos[i*3+2])>bounds) resetP(i);
+          const vel=Math.sqrt(velocities[i*3]**2+velocities[i*3+1]**2+velocities[i*3+2]**2);
+          sz[i]=1.0+vel*0.15;
+        }
+        geo.attributes.position.needsUpdate = true; geo.attributes.size.needsUpdate = true;
+        const cam = scenesList[3].camera, a = time*0.1;
+        cam.position.set(Math.sin(a)*40, Math.sin(time*0.07)*10, Math.cos(a)*40); cam.lookAt(0,0,0);
+      }, material: mat,
+    });
+  })();
+
+  // ── 5. DNA Helix ──
+  (() => {
+    const scene = new THREE.Scene();
+    const dotsPerStrand = 200, rungs = 60, count = dotsPerStrand * 2 + rungs * 2;
+    const geo = makeParticleGeo(count);
+    const mat = createMaterial(250);
+    scene.add(new THREE.Points(geo, mat));
+    scenesList.push({
+      name: 'DNA Helix', scene,
+      camera: (() => { const c = baseCamera.clone(); c.position.set(0,0,35); c.lookAt(0,0,0); return c; })(),
+      update(time) {
+        const pos = geo.attributes.position.array, sz = geo.attributes.size.array, t = time * 0.7;
+        const helixR = 8, helixH = 30, twists = 3;
+        let idx = 0;
+        for (let strand = 0; strand < 2; strand++) {
+          const offset = strand * Math.PI;
+          for (let i = 0; i < dotsPerStrand; i++) {
+            const frac = i / dotsPerStrand, y = (frac - 0.5) * helixH, angle = frac * Math.PI * 2 * twists + t + offset;
+            pos[idx*3] = Math.cos(angle) * helixR; pos[idx*3+1] = y; pos[idx*3+2] = Math.sin(angle) * helixR;
+            sz[idx] = 1.8 + Math.sin(frac * 10 + t * 2) * 0.4; idx++;
+          }
+        }
+        for (let i = 0; i < rungs; i++) {
+          const frac = i / rungs, y = (frac - 0.5) * helixH, angle = frac * Math.PI * 2 * twists + t;
+          for (let side = 0; side < 2; side++) {
+            const rungR = helixR * (side === 0 ? 0.35 : 0.65);
+            pos[idx*3] = Math.cos(angle) * rungR; pos[idx*3+1] = y; pos[idx*3+2] = Math.sin(angle) * rungR;
+            sz[idx] = 1.2; idx++;
+          }
+        }
+        while (idx < count) { pos[idx*3]=0; pos[idx*3+1]=999; pos[idx*3+2]=0; sz[idx]=0; idx++; }
+        geo.attributes.position.needsUpdate = true; geo.attributes.size.needsUpdate = true;
+        const cam = scenesList[4].camera, a = time * 0.12;
+        cam.position.set(Math.sin(a)*30, Math.sin(time*0.08)*10, Math.cos(a)*30); cam.lookAt(0,0,0);
+      }, material: mat,
+    });
+  })();
+
+  // ── 6. Galaxy Spiral ──
+  (() => {
+    const scene = new THREE.Scene();
+    const count = 6000;
+    const geo = makeParticleGeo(count);
+    const mat = createMaterial(220);
+    scene.add(new THREE.Points(geo, mat));
+    const armAngles = new Float32Array(count), armRadii = new Float32Array(count), armOffsets = new Float32Array(count * 2);
+    const arms = 4;
+    for (let i = 0; i < count; i++) {
+      const arm = i % arms, armFrac = Math.floor(i / arms) / Math.floor(count / arms);
+      armRadii[i] = armFrac * 18 + Math.random() * 1.5;
+      armAngles[i] = (arm / arms) * Math.PI * 2 + armFrac * Math.PI * 1.2;
+      armOffsets[i*2] = (Math.random() - 0.5) * (1.5 + armFrac * 3);
+      armOffsets[i*2+1] = (Math.random() - 0.5) * (0.8 + armFrac * 0.5);
+    }
+    scenesList.push({
+      name: 'Galaxy Spiral', scene,
+      camera: (() => { const c = baseCamera.clone(); c.position.set(0,25,25); c.lookAt(0,0,0); return c; })(),
+      update(time) {
+        const pos = geo.attributes.position.array, sz = geo.attributes.size.array, t = time * 0.15;
+        for (let i = 0; i < count; i++) {
+          const r = armRadii[i], angle = armAngles[i] + t;
+          pos[i*3] = Math.cos(angle) * r + armOffsets[i*2];
+          pos[i*3+1] = armOffsets[i*2+1] * Math.sin(time * 0.3 + r * 0.1);
+          pos[i*3+2] = Math.sin(angle) * r + armOffsets[i*2] * 0.6;
+          sz[i] = 1.0 + (1.0 - r / 18) * 1.5;
+        }
+        geo.attributes.position.needsUpdate = true; geo.attributes.size.needsUpdate = true;
+        const cam = scenesList[5].camera, a = time * 0.06;
+        cam.position.set(Math.sin(a)*15, 25 + Math.sin(time*0.1)*5, 25 + Math.cos(a)*10); cam.lookAt(0,0,0);
+      }, material: mat,
+    });
+  })();
+
+  // ── 7. Rain / Matrix ──
+  (() => {
+    const scene = new THREE.Scene();
+    const count = 4000;
+    const geo = makeParticleGeo(count);
+    const mat = createMaterial(180);
+    scene.add(new THREE.Points(geo, mat));
+    const pos = geo.attributes.position.array;
+    const speeds = new Float32Array(count), trails = new Float32Array(count);
+    const spreadX = 40, spreadZ = 40, height = 50;
+    for (let i = 0; i < count; i++) {
+      pos[i*3] = (Math.random()-0.5) * spreadX; pos[i*3+1] = Math.random() * height - height/2; pos[i*3+2] = (Math.random()-0.5) * spreadZ;
+      speeds[i] = 8 + Math.random() * 16; trails[i] = 0.5 + Math.random() * 0.5;
+    }
+    scenesList.push({
+      name: 'Rain / Matrix', scene,
+      camera: (() => { const c = baseCamera.clone(); c.position.set(0,5,30); c.lookAt(0,0,0); return c; })(),
+      update(time, delta) {
+        const sz = geo.attributes.size.array, dt = Math.min(delta, 0.05);
+        for (let i = 0; i < count; i++) {
+          pos[i*3+1] -= speeds[i] * dt;
+          if (pos[i*3+1] < -height/2) { pos[i*3+1] = height/2 + Math.random() * 5; pos[i*3] = (Math.random()-0.5) * spreadX; pos[i*3+2] = (Math.random()-0.5) * spreadZ; }
+          const normY = (pos[i*3+1] + height/2) / height;
+          sz[i] = 0.8 + normY * 2.2 * trails[i];
+        }
+        geo.attributes.position.needsUpdate = true; geo.attributes.size.needsUpdate = true;
+        const cam = scenesList[6].camera;
+        cam.position.x = Math.sin(time * 0.05) * 3; cam.position.y = 5 + Math.sin(time * 0.08) * 2; cam.lookAt(0, -5, -10);
+      }, material: mat,
+    });
+  })();
+
+  // ── 8. Expanding Rings ──
+  (() => {
+    const scene = new THREE.Scene();
+    const ringCount = 12, dotsPerRing = 120, count = ringCount * dotsPerRing;
+    const geo = makeParticleGeo(count);
+    const mat = createMaterial(250);
+    scene.add(new THREE.Points(geo, mat));
+    scenesList.push({
+      name: 'Expanding Rings', scene,
+      camera: (() => { const c = baseCamera.clone(); c.position.set(0,20,25); c.lookAt(0,0,0); return c; })(),
+      update(time) {
+        const pos = geo.attributes.position.array, sz = geo.attributes.size.array, t = time * 0.6;
+        const maxR = 22, cyclePeriod = 4;
+        for (let r = 0; r < ringCount; r++) {
+          const phase = (t + r * (cyclePeriod / ringCount)) % cyclePeriod, frac = phase / cyclePeriod;
+          const radius = frac * maxR, alpha = 1.0 - frac, y = Math.sin(frac * Math.PI) * 3;
+          for (let d = 0; d < dotsPerRing; d++) {
+            const idx = r * dotsPerRing + d, angle = (d / dotsPerRing) * Math.PI * 2 + r * 0.5;
+            pos[idx*3] = Math.cos(angle) * radius; pos[idx*3+1] = y; pos[idx*3+2] = Math.sin(angle) * radius;
+            sz[idx] = (1.5 + alpha * 2.0) * (0.5 + alpha);
+          }
+        }
+        geo.attributes.position.needsUpdate = true; geo.attributes.size.needsUpdate = true;
+        const cam = scenesList[7].camera, a = time * 0.08;
+        cam.position.set(Math.sin(a)*10, 20 + Math.sin(time*0.12)*5, 25 + Math.cos(a)*8); cam.lookAt(0,0,0);
+      }, material: mat,
+    });
+  })();
+
+  // ── 9. Tornado ──
+  (() => {
+    const scene = new THREE.Scene();
+    const count = 5000;
+    const geo = makeParticleGeo(count);
+    const mat = createMaterial(230);
+    scene.add(new THREE.Points(geo, mat));
+    const baseAngles = new Float32Array(count), baseHeights = new Float32Array(count), baseRadiusJitter = new Float32Array(count);
+    for (let i = 0; i < count; i++) { baseAngles[i] = Math.random() * Math.PI * 2; baseHeights[i] = Math.random(); baseRadiusJitter[i] = 0.8 + Math.random() * 0.4; }
+    scenesList.push({
+      name: 'Tornado', scene,
+      camera: (() => { const c = baseCamera.clone(); c.position.set(15,10,30); c.lookAt(0,8,0); return c; })(),
+      update(time) {
+        const pos = geo.attributes.position.array, sz = geo.attributes.size.array, t = time * 0.5;
+        const totalH = 35, baseR = 1.5, topR = 14;
+        for (let i = 0; i < count; i++) {
+          const h = baseHeights[i], y = h * totalH - totalH * 0.3;
+          const radius = (baseR + (topR - baseR) * h * h) * baseRadiusJitter[i];
+          const spinSpeed = 2.0 - h * 1.2, angle = baseAngles[i] + t * spinSpeed + h * Math.PI * 2;
+          pos[i*3] = Math.cos(angle) * radius; pos[i*3+1] = y + Math.sin(t + h * 5) * 0.5; pos[i*3+2] = Math.sin(angle) * radius;
+          sz[i] = 1.0 + h * 1.8;
+        }
+        geo.attributes.position.needsUpdate = true; geo.attributes.size.needsUpdate = true;
+        const cam = scenesList[8].camera, a = time * 0.1;
+        cam.position.set(Math.sin(a)*28, 12 + Math.sin(time*0.08)*4, Math.cos(a)*28); cam.lookAt(0, 8, 0);
+      }, material: mat,
+    });
+  })();
+
+  // ── 10. Cube Grid ──
+  (() => {
+    const scene = new THREE.Scene();
+    const edgeDots = 18;
+    const s = 10;
+    const vertices = [[-s,-s,-s],[s,-s,-s],[s,s,-s],[-s,s,-s],[-s,-s,s],[s,-s,s],[s,s,s],[-s,s,s]];
+    const edgePairs = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+    const count = edgePairs.length * edgeDots;
+    const geo = makeParticleGeo(count);
+    const mat = createMaterial(250);
+    scene.add(new THREE.Points(geo, mat));
+    const edgeData = edgePairs.map(([a, b]) => ({ from: vertices[a], to: vertices[b] }));
+    scenesList.push({
+      name: 'Cube Grid', scene,
+      camera: (() => { const c = baseCamera.clone(); c.position.set(0,0,35); c.lookAt(0,0,0); return c; })(),
+      update(time) {
+        const pos = geo.attributes.position.array, sz = geo.attributes.size.array, t = time * 0.4;
+        const cosY = Math.cos(t), sinY = Math.sin(t), cosX = Math.cos(t*0.6), sinX = Math.sin(t*0.6);
+        let idx = 0;
+        for (const edge of edgeData) {
+          for (let d = 0; d < edgeDots; d++) {
+            const frac = d / (edgeDots - 1);
+            let x = edge.from[0] + (edge.to[0] - edge.from[0]) * frac;
+            let y = edge.from[1] + (edge.to[1] - edge.from[1]) * frac;
+            let z = edge.from[2] + (edge.to[2] - edge.from[2]) * frac;
+            const breathe = 1.0 + Math.sin(t * 1.5 + frac * 3) * 0.08;
+            x *= breathe; y *= breathe; z *= breathe;
+            const rx = x * cosY - z * sinY, rz = x * sinY + z * cosY;
+            const ry = y * cosX - rz * sinX, rz2 = y * sinX + rz * cosX;
+            pos[idx*3] = rx; pos[idx*3+1] = ry; pos[idx*3+2] = rz2;
+            const distToEnd = Math.min(frac, 1 - frac) * 2;
+            sz[idx] = 2.0 + (1.0 - distToEnd) * 1.5 + Math.sin(t * 2 + idx * 0.1) * 0.3;
+            idx++;
+          }
+        }
+        geo.attributes.position.needsUpdate = true; geo.attributes.size.needsUpdate = true;
+        const cam = scenesList[9].camera;
+        cam.position.set(Math.sin(time*0.06)*8, Math.sin(time*0.09)*5, 35 + Math.cos(time*0.05)*5); cam.lookAt(0,0,0);
+      }, material: mat,
+    });
+  })();
+
+  // ─── Scene Management ───
+  const sceneLabel = document.getElementById('sceneName');
+
+  function switchScene(idx) {
+    if (idx === currentScene || transitioning || idx < 0 || idx >= scenesList.length) return;
+    pendingScene = idx;
+    transitioning = true;
+  }
+  function updateLabel() {
+    sceneLabel.textContent = scenesList[currentScene].name;
+    updateSceneButtons();
+  }
+  updateLabel();
+
+  // ─── Build Scene Grid ───
+  const sceneGrid = document.getElementById('sceneGrid');
+  scenesList.forEach((s, i) => {
+    const card = document.createElement('div');
+    card.className = 'scene-card' + (i === 0 ? ' active' : '');
+    card.innerHTML = `<div class="scene-num">${i + 1}</div><div class="scene-label">${s.name}</div>`;
+    card.addEventListener('click', () => { switchScene(i); config.autoCycle = false; syncAutoCycleUI(); });
+    sceneGrid.appendChild(card);
+  });
+
+  function updateSceneButtons() {
+    sceneGrid.querySelectorAll('.scene-card').forEach((card, i) => {
+      card.classList.toggle('active', i === currentScene);
+    });
+  }
+
+  // ─── Controls ───
+  let autoCycleTimer = 0;
+
+  const speedSlider = document.getElementById('speedSlider'), speedVal = document.getElementById('speedVal');
+  speedSlider.addEventListener('input', () => { config.speed = parseFloat(speedSlider.value); speedVal.textContent = config.speed.toFixed(1) + '×'; });
+
+  const countSlider = document.getElementById('countSlider'), countVal = document.getElementById('countVal');
+  countSlider.addEventListener('input', () => { config.dotCount = parseInt(countSlider.value); countVal.textContent = config.dotCount; });
+
+  const sizeSlider = document.getElementById('sizeSlider'), sizeVal = document.getElementById('sizeVal');
+  sizeSlider.addEventListener('input', () => { config.dotSize = parseFloat(sizeSlider.value); sizeVal.textContent = config.dotSize.toFixed(1); syncMaterials(); });
+
+  const bloomSlider = document.getElementById('bloomSlider'), bloomVal = document.getElementById('bloomVal');
+  bloomSlider.addEventListener('input', () => { config.bloom = parseFloat(bloomSlider.value); bloomVal.textContent = config.bloom.toFixed(2); syncMaterials(); });
+
+  const camSlider = document.getElementById('camSlider'), camVal = document.getElementById('camVal');
+  camSlider.addEventListener('input', () => { config.camDistance = parseFloat(camSlider.value); camVal.textContent = config.camDistance.toFixed(1) + '×'; });
+
+  const cycleSlider = document.getElementById('cycleSlider'), cycleVal = document.getElementById('cycleVal');
+  cycleSlider.addEventListener('input', () => { config.cycleDuration = parseInt(cycleSlider.value); cycleVal.textContent = config.cycleDuration + 's'; });
+
+  const durationSlider = document.getElementById('durationSlider'), durationVal = document.getElementById('durationVal');
+  durationSlider.addEventListener('input', () => { durationVal.textContent = durationSlider.value + 's'; });
+
+  const fpsSlider = document.getElementById('fpsSlider'), fpsVal = document.getElementById('fpsVal');
+  fpsSlider.addEventListener('input', () => { fpsVal.textContent = fpsSlider.value; });
+
+  // Color buttons
+  document.querySelectorAll('.cp-color-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.cp-color-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      config.color = btn.dataset.color;
+      syncMaterials();
+    });
+  });
+
+  // Auto-cycle
+  const autoCycleToggle = document.getElementById('autoCycleToggle');
+  const cycleDurGroup = document.getElementById('cycleDurGroup');
+  function syncAutoCycleUI() {
+    autoCycleToggle.classList.toggle('on', config.autoCycle);
+    cycleDurGroup.style.opacity = config.autoCycle ? '1' : '0.3';
+    cycleDurGroup.style.pointerEvents = config.autoCycle ? 'all' : 'none';
+  }
+  autoCycleToggle.addEventListener('click', () => {
+    config.autoCycle = !config.autoCycle;
+    if (config.autoCycle) autoCycleTimer = 0;
+    syncAutoCycleUI();
+  });
+  syncAutoCycleUI();
+
+  // ─── Presets ───
+  const presets = {
+    minimal: { scene: 0, speed: 0.5, dotSize: 2, bloom: 0, camDistance: 1.0, color: 'auto' },
+    cyber: { scene: 1, speed: 2.0, dotSize: 3.5, bloom: 0.9, camDistance: 0.8, color: 'cyan' },
+    dna: { scene: 4, speed: 1.0, dotSize: 3.0, bloom: 0.3, camDistance: 1.0, color: 'auto' },
+    space: { scene: 5, speed: 0.5, dotSize: 2.5, bloom: 0.5, camDistance: 1.2, color: 'auto' },
+    rain: { scene: 6, speed: 2.0, dotSize: 2.5, bloom: 0.6, camDistance: 1.0, color: 'cyan' },
+    breathe: { scene: 2, speed: 0.5, dotSize: 3.0, bloom: 0.2, camDistance: 1.0, color: 'auto' },
+  };
+
+  document.querySelectorAll('.preset-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const p = presets[card.dataset.preset];
+      if (!p) return;
+      config.speed = p.speed; config.dotSize = p.dotSize; config.bloom = p.bloom; config.camDistance = p.camDistance; config.color = p.color;
+      config.autoCycle = false;
+      // Update UI
+      speedSlider.value = p.speed; speedVal.textContent = p.speed.toFixed(1) + '×';
+      sizeSlider.value = p.dotSize; sizeVal.textContent = p.dotSize.toFixed(1);
+      bloomSlider.value = p.bloom; bloomVal.textContent = p.bloom.toFixed(2);
+      camSlider.value = p.camDistance; camVal.textContent = p.camDistance.toFixed(1) + '×';
+      document.querySelectorAll('.cp-color-btn').forEach(b => b.classList.toggle('active', b.dataset.color === p.color));
+      syncAutoCycleUI();
+      syncMaterials();
+      switchScene(p.scene);
+      showToast('Preset: ' + card.querySelector('.preset-name').textContent);
+    });
+  });
+
+  // ─── Keyboard Shortcuts ───
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    const key = e.key;
+    if (key >= '1' && key <= '9') { switchScene(parseInt(key) - 1); config.autoCycle = false; syncAutoCycleUI(); }
+    else if (key === '0') { switchScene(9); config.autoCycle = false; syncAutoCycleUI(); }
+    else if (key === ' ') { e.preventDefault(); paused = !paused; document.getElementById('pauseIcon').classList.toggle('visible', paused); }
+    else if (key.toLowerCase() === 'e') { document.getElementById('exportCard').scrollIntoView({ behavior: 'smooth' }); }
+  });
+
+  // ─── Animation Loop ───
+  let lastTime = 0, elapsed = 0;
+
+  // Camera distance is applied in the animation loop by scaling camera.position
+
+  function animate(timestamp) {
+    requestAnimationFrame(animate);
+    const ts = timestamp / 1000;
+    const rawDelta = lastTime ? ts - lastTime : 0.016;
+    lastTime = ts;
+    if (paused) return;
+    const delta = rawDelta * config.speed;
+    elapsed += delta;
+
+    if (config.autoCycle) {
+      autoCycleTimer += rawDelta;
+      if (autoCycleTimer > config.cycleDuration) { autoCycleTimer = 0; switchScene((currentScene + 1) % scenesList.length); }
+    }
+
+    if (transitioning) {
+      transitionAlpha -= rawDelta * 2.5;
+      if (transitionAlpha <= 0) { transitionAlpha = 0; currentScene = pendingScene; updateLabel(); transitioning = false; }
+    } else if (transitionAlpha < 1) {
+      transitionAlpha += rawDelta * 2.5;
+      if (transitionAlpha > 1) transitionAlpha = 1;
+    }
+
+    const s = scenesList[currentScene];
+    s.update(elapsed, delta);
+    s.material.uniforms.uOpacity.value = transitionAlpha;
+    s.material.uniforms.uTime.value = elapsed;
+    // Apply camera distance
+    const cam = s.camera;
+    const origPos = cam.position.clone();
+    cam.position.multiplyScalar(config.camDistance);
+    cam.updateProjectionMatrix();
+    renderer.render(s.scene, cam);
+    cam.position.copy(origPos);
+  }
+
+  window.addEventListener('resize', resizeRenderer);
+  animate(0);
+
+  // ─── Theme ───
+  window.toggleTheme = function() {
+    isLightTheme = document.body.classList.toggle('light-theme');
+    document.getElementById('themeToggle').innerHTML = isLightTheme ? '&#x2600;' : '&#x263D;';
+    document.body.style.backgroundImage = isLightTheme
+      ? 'radial-gradient(circle, rgba(0,0,0,0.03) 1px, transparent 1px)'
+      : 'radial-gradient(circle, rgba(255,255,255,0.015) 1px, transparent 1px)';
+    syncMaterials();
+    localStorage.setItem('dot-motion-theme', isLightTheme ? 'light' : 'dark');
+  };
+  // Load saved theme
+  (function() {
+    const saved = localStorage.getItem('dot-motion-theme');
+    if (saved === 'light') {
+      isLightTheme = true;
+      document.body.classList.add('light-theme');
+      document.getElementById('themeToggle').innerHTML = '&#x2600;';
+      document.body.style.backgroundImage = 'radial-gradient(circle, rgba(0,0,0,0.03) 1px, transparent 1px)';
+      syncMaterials();
+    }
+  })();
+
+  // ─── Toast ───
+  window.showToast = function(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), 2000);
+  };
+
+  // ─── Export: HTML Embed ───
+  window.exportHTML = function() {
+    const opts = document.getElementById('exportOptions');
+    const embedCode = document.getElementById('embedCode');
+    const copyBtn = document.getElementById('copyEmbedBtn');
+    opts.classList.add('visible');
+    embedCode.style.display = 'block';
+    copyBtn.style.display = 'block';
+
+    const iframeSrc = window.location.href;
+    embedCode.value = `<iframe src="${iframeSrc}" width="100%" height="500" style="border:none;border-radius:16px;" allowfullscreen></iframe>`;
+
+    // Also download standalone HTML
+    const sceneIdx = currentScene;
+    const blob = new Blob([`<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Dot Motion — ${scenesList[sceneIdx].name}</title>
+<style>*{margin:0;padding:0}html,body{width:100%;height:100%;overflow:hidden;background:${isLightTheme?'#fff':'#000'}}canvas{display:block}</style></head><body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>
+<script>
+// Embedded scene: ${scenesList[sceneIdx].name}
+// Generated by Dot Motion Generator — tools.gamaleldien.com/dots
+document.body.innerHTML='<p style="color:${isLightTheme?'#333':'#ccc'};font-family:sans-serif;text-align:center;margin-top:40vh">Loading scene...</p>';
+window.location.href='https://tools.gamaleldien.com/dots';
+<\/script></body></html>`], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `dot-motion-${scenesList[sceneIdx].name.toLowerCase().replace(/\s+/g,'-')}.html`;
+    a.click(); URL.revokeObjectURL(url);
+    showToast('HTML downloaded + embed code ready');
+  };
+
+  window.copyEmbed = function() {
+    const code = document.getElementById('embedCode').value;
+    navigator.clipboard.writeText(code).then(() => showToast('Embed code copied!'));
+  };
+
+  // ─── Export: WebM ───
+  window.exportWebM = function() {
+    const opts = document.getElementById('exportOptions');
+    opts.classList.add('visible');
+    document.getElementById('embedCode').style.display = 'none';
+    document.getElementById('copyEmbedBtn').style.display = 'none';
+
+    const duration = parseInt(durationSlider.value) * 1000;
+    const canvas = renderer.domElement;
+    const stream = canvas.captureStream(60);
+    let mimeType = 'video/webm;codecs=vp9';
+    if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
+    const recorder = new MediaRecorder(stream, { mimeType });
+    const chunks = [];
+    recorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
+    recorder.onstop = () => {
+      const blob = new Blob(chunks, { type: 'video/webm' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `dot-motion-${scenesList[currentScene].name.toLowerCase().replace(/\s+/g,'-')}.webm`;
+      a.click(); URL.revokeObjectURL(url);
+      hideProgress();
+      showToast('WebM video downloaded!');
+    };
+
+    showProgress(0, 'Recording...');
+    recorder.start();
+    const startTime = Date.now();
+    const progressInterval = setInterval(() => {
+      const pct = Math.min(((Date.now() - startTime) / duration) * 100, 100);
+      showProgress(pct, `Recording... ${Math.round(pct)}%`);
+    }, 100);
+
+    setTimeout(() => {
+      clearInterval(progressInterval);
+      recorder.stop();
+    }, duration);
+  };
+
+  // ─── Export: GIF ───
+  window.exportGIF = function() {
+    const opts = document.getElementById('exportOptions');
+    opts.classList.add('visible');
+    document.getElementById('embedCode').style.display = 'none';
+    document.getElementById('copyEmbedBtn').style.display = 'none';
+    showProgress(0, 'Loading gif.js...');
+
+    loadScript('https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js', () => {
+      const duration = parseInt(durationSlider.value);
+      const fps = parseInt(fpsSlider.value);
+      const totalFrames = duration * fps;
+      const canvas = renderer.domElement;
+      const gif = new GIF({
+        workers: 2,
+        quality: 10,
+        width: canvas.width,
+        height: canvas.height,
+        workerScript: 'https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js'
+      });
+
+      let frameCount = 0;
+      const delay = 1000 / fps;
+
+      function captureFrame() {
+        if (frameCount >= totalFrames) {
+          showProgress(100, 'Encoding GIF...');
+          gif.render();
+          return;
+        }
+        gif.addFrame(canvas, { copy: true, delay });
+        frameCount++;
+        showProgress((frameCount / totalFrames) * 80, `Capturing frame ${frameCount}/${totalFrames}`);
+        requestAnimationFrame(captureFrame);
+      }
+
+      gif.on('finished', (blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = `dot-motion-${scenesList[currentScene].name.toLowerCase().replace(/\s+/g,'-')}.gif`;
+        a.click(); URL.revokeObjectURL(url);
+        hideProgress();
+        showToast('GIF downloaded!');
+      });
+
+      captureFrame();
+    });
+  };
+
+  // ─── Export: PNG Sequence ───
+  window.exportPNG = function() {
+    const opts = document.getElementById('exportOptions');
+    opts.classList.add('visible');
+    document.getElementById('embedCode').style.display = 'none';
+    document.getElementById('copyEmbedBtn').style.display = 'none';
+    showProgress(0, 'Loading JSZip...');
+
+    loadScript('https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js', () => {
+      const duration = parseInt(durationSlider.value);
+      const fps = parseInt(fpsSlider.value);
+      const totalFrames = duration * fps;
+      const canvas = renderer.domElement;
+      const zip = new JSZip();
+      let frameCount = 0;
+
+      function captureFrame() {
+        if (frameCount >= totalFrames) {
+          showProgress(95, 'Creating ZIP...');
+          zip.generateAsync({ type: 'blob' }).then((blob) => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = `dot-motion-${scenesList[currentScene].name.toLowerCase().replace(/\s+/g,'-')}-frames.zip`;
+            a.click(); URL.revokeObjectURL(url);
+            hideProgress();
+            showToast('PNG sequence downloaded!');
+          });
+          return;
+        }
+        const dataUrl = canvas.toDataURL('image/png');
+        const base64 = dataUrl.split(',')[1];
+        const padded = String(frameCount).padStart(5, '0');
+        zip.file(`frame-${padded}.png`, base64, { base64: true });
+        frameCount++;
+        showProgress((frameCount / totalFrames) * 90, `Capturing frame ${frameCount}/${totalFrames}`);
+        requestAnimationFrame(captureFrame);
+      }
+
+      captureFrame();
+    });
+  };
+
+  // ─── Progress helpers ───
+  function showProgress(pct, text) {
+    const wrap = document.getElementById('progressWrap');
+    wrap.classList.add('visible');
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressText').textContent = text;
+  }
+  function hideProgress() {
+    setTimeout(() => {
+      document.getElementById('progressWrap').classList.remove('visible');
+      document.getElementById('progressFill').style.width = '0%';
+    }, 1000);
+  }
+
+  // ─── Script loader ───
+  const loadedScripts = {};
+  function loadScript(src, cb) {
+    if (loadedScripts[src]) { cb(); return; }
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = () => { loadedScripts[src] = true; cb(); };
+    document.head.appendChild(s);
+  }
+
+})();
+</script>
+</body>
+</html>

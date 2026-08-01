@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lottie Color Editor — Professional Color Editing Tool</title>
+
+    <!-- Open Graph / Social Preview -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tools.gamaleldien.com/lottie/color-editor">
+    <meta property="og:title" content="Lottie Color Editor — Professional Color Editing Tool">
+    <meta property="og:description"
+        content="Edit colors in Lottie animations with a layer-based approach. Supports controller colors and expressions. Free forever by Gamal Eldien.">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Lottie Color Editor — Professional Color Editing Tool">
+    <meta name="twitter:description"
+        content="Edit colors in Lottie animations with a layer-based approach. Supports controller colors and expressions.">
+
+    <!-- General Meta -->
+    <meta name="description"
+        content="Professional Lottie color editor with layer-based editing. Edit fill colors, stroke colors, and controller colors. Live preview and instant download.">
+    <meta name="author" content="Gamal Eldien">
+    <meta name="keywords" content="lottie editor, lottie color editor, edit lottie colors, lottie animation editor">
+
+    <!-- Lottie Library (CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="https://tools.gamaleldien.com/lottie" class="navbar-logo" title="Lottie Hub">
+            <span class="navbar-logo-text"><strong>LOTTIE</strong><br>COLOR EDITOR</span>
+        </a>
+        <div style="display: flex; gap: 24px; align-items: center;">
+            <a href="https://tools.gamaleldien.com" class="navbar-link">Tools</a>
+            <a href="https://gamaleldien.com" class="navbar-link">Gamaleldien.com</a>
+            <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path id="sunIcon"
+                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                        style="display: block;"></path>
+                    <path id="moonIcon" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" style="display: none;"></path>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+
+        <!-- Upload Section (Initial State) -->
+        <section class="upload-section" id="uploadSection">
+            <header class="header">
+                <h1>LOTTIE<br>COLOR EDITOR</h1>
+                <p>Edit colors in your Lottie animations with a professional layer-based approach. Upload a JSON file to
+                    get started.</p>
+            </header>
+
+            <div class="drop-zone" id="dropZone">
+                <div class="drop-zone-content">
+                    <div class="drop-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                    </div>
+                    <p class="drop-text">DROP LOTTIE JSON HERE</p>
+                    <p class="drop-hint">or click to browse files</p>
+                </div>
+                <input type="file" id="fileInput" accept=".json,application/json" hidden>
+            </div>
+
+            <div class="sample-button-container">
+                <div class="sample-buttons">
+                    <button class="btn btn-sample" id="btnTrySample">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <polygon points="10,8 16,12 10,16" fill="currentColor" />
+                        </svg>
+                        TRY A SAMPLE
+                    </button>
+                    <a href="/lottie/preview" class="btn btn-sample">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7" />
+                            <rect x="14" y="3" width="7" height="7" />
+                            <rect x="3" y="14" width="7" height="7" />
+                            <rect x="14" y="14" width="7" height="7" />
+                        </svg>
+                        MULTI PREVIEW
+                    </a>
+                </div>
+                <span class="sample-hint">Don't have a file? Try the shopping cart animation!</span>
+            </div>
+        </section>
+
+        <!-- Editor Section (After Upload) -->
+        <section class="editor-section" id="editorSection" style="display: none;">
+
+            <!-- Preview Area -->
+            <div class="preview-area">
+                <div class="player-container" id="playerContainer">
+                    <div class="animation-player" id="animationPlayer"></div>
+                </div>
+
+                <!-- Animation Info -->
+                <div class="animation-info" id="animationInfo">
+                    <span>--×--</span>
+                    <span>-- FPS</span>
+                    <span>--s</span>
+                </div>
+
+                <!-- Playback Controls -->
+                <div class="playback-controls">
+                    <div class="control-buttons">
+                        <button class="ctrl-btn active" id="btnPlay" title="Play">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="5,3 19,12 5,21" />
+                            </svg>
+                        </button>
+                        <button class="ctrl-btn" id="btnPause" title="Pause">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <rect x="6" y="4" width="4" height="16" />
+                                <rect x="14" y="4" width="4" height="16" />
+                            </svg>
+                        </button>
+                        <button class="ctrl-btn" id="btnStop" title="Stop">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <rect x="5" y="5" width="14" height="14" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progressBar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <span class="time-display" id="timeDisplay">0.0s / 0.0s</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Colors Panel (Simplified UI - P2) -->
+            <div class="colors-panel-container">
+                <div class="panel colors-panel" id="colorsPanel">
+                    <div class="panel-header colors-panel-header">
+                        <span>🎨 COLORS IN FILE</span>
+                        <span class="color-count-badge" id="colorCountBadge">0 colors</span>
+                    </div>
+                    <div class="colors-grid" id="colorsGrid">
+                        <!-- Colors populated by JS -->
+                        <div class="colors-placeholder">
+                            <p>Upload a Lottie file to see colors</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <div class="history-controls">
+                    <button class="btn btn-icon" id="btnUndo" disabled title="Undo (Ctrl+Z)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M9 14L4 9l5-5" />
+                            <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11" />
+                        </svg>
+                    </button>
+                    <button class="btn btn-icon" id="btnRedo" disabled title="Redo (Ctrl+Y)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M15 14l5-5-5-5" />
+                            <path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="separator-vertical"></div>
+                <button class="btn" id="btnNewFile">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                    UPLOAD NEW
+                </button>
+                <button class="btn btn-primary" id="btnDownload">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    DOWNLOAD JSON
+                </button>
+
+                <!-- Export Dropdown -->
+                <div class="dropdown" id="exportDropdown">
+                    <button class="btn btn-export" id="btnExport">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="2" y="2" width="20" height="20" rx="2" />
+                            <polygon points="10,8 16,12 10,16" fill="currentColor" />
+                        </svg>
+                        EXPORT
+                        <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu" id="exportMenu">
+                        <button class="dropdown-item" id="btnExportWebM">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="2" y="2" width="20" height="20" rx="2" />
+                                <polygon points="10,8 16,12 10,16" fill="currentColor" />
+                            </svg>
+                            Export as WebM Video
+                        </button>
+                        <button class="dropdown-item" id="btnExportGIF">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="2" y="2" width="20" height="20" rx="2" />
+                                <text x="7" y="16" font-size="8" fill="currentColor">GIF</text>
+                            </svg>
+                            Export as GIF
+                        </button>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item" id="btnExportSettings">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="3" />
+                                <path
+                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                            </svg>
+                            Export Settings...
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- How It Works -->
+        <section class="info-section">
+            <div class="section-divider">
+                <span>HOW IT WORKS</span>
+            </div>
+            <div class="info-content">
+                <p>Upload your Lottie JSON file and instantly see <strong>all colors</strong> used in the animation.
+                    Click any color to edit it - all instances of that color update automatically with live preview.</p>
+                <p><strong>Batch Editing:</strong> Each color shows how many times it appears in the file. Edit once,
+                    update everywhere. Export as JSON, WebM video, or transparent GIF when you're done.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Export Settings Modal -->
+    <div class="modal-overlay" id="exportSettingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Export Settings</h3>
+                <button class="modal-close" id="closeExportSettings">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Format</label>
+                    <select id="exportFormat" class="form-select">
+                        <option value="webm">WebM Video (Recommended)</option>
+                        <option value="gif">Animated GIF</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Size</label>
+                    <select id="exportSize" class="form-select">
+                        <option value="1">Original Size</option>
+                        <option value="0.5">50% (Half Size)</option>
+                        <option value="2">200% (Double Size)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Quality</label>
+                    <select id="exportQuality" class="form-select">
+                        <option value="0.5">Low (Smaller file)</option>
+                        <option value="0.8" selected>Medium (Balanced)</option>
+                        <option value="1">High (Best quality)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Background</label>
+                    <select id="exportBackground" class="form-select">
+                        <option value="">Transparent</option>
+                        <option value="#ffffff">White</option>
+                        <option value="#000000">Black</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Frame Rate</label>
+                    <select id="exportFps" class="form-select">
+                        <option value="15">15 FPS</option>
+                        <option value="24">24 FPS</option>
+                        <option value="30" selected>30 FPS</option>
+                        <option value="60">60 FPS</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="cancelExportSettings">Cancel</button>
+                <button class="btn btn-primary" id="startExport">Export</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Progress Modal -->
+    <div class="modal-overlay" id="exportProgressModal">
+        <div class="modal modal-progress">
+            <div class="modal-header">
+                <h3>Exporting...</h3>
+            </div>
+            <div class="modal-body">
+                <div class="export-progress-container">
+                    <div class="export-progress-bar">
+                        <div class="export-progress-fill" id="exportProgressFill"></div>
+                    </div>
+                    <div class="export-progress-text" id="exportProgressText">Preparing...</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="cancelExport">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-text">
+            ©2026 <span class="footer-divider">//</span> MADE BY <a href="https://gamaleldien.com"
+                class="footer-link">GAMAL ELDIEN</a>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- GIF.js Library for GIF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+
+</html>

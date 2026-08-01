@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Tools | Gamal Eldien</title>
+<style>
+  @import url('https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap');
+  
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  :root {
+    --bg: #0a0a0a;
+    --surface: rgba(63, 63, 63, 0.3);
+    --surface-2: rgba(80, 80, 80, 0.35);
+    --surface-elevated: rgba(90, 90, 90, 0.25);
+    --text: rgb(255, 255, 255);
+    --text-muted: rgb(128, 128, 128);
+    --text-secondary: rgb(153, 153, 153);
+    --border: rgb(51, 51, 51);
+    --border-light: rgba(255, 255, 255, 0.08);
+    --accent: rgb(225, 97, 5);
+    --accent-hover: rgb(255, 117, 25);
+    --accent-glow: rgba(225, 97, 5, 0.15);
+    --radius: 24px;
+    --radius-lg: 32px;
+    --font-display: 'Clash Display', -apple-system, sans-serif;
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.16), 0 2px 4px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.24), 0 4px 8px rgba(0, 0, 0, 0.12);
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  body {
+    font-family: var(--font-display);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 32px 32px;
+    animation: fadeIn 0.4s ease-out;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Navbar - Full Width */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(48px);
+    border-bottom: 1px solid var(--border);
+    padding: 20px clamp(24px, 5vw, 48px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeIn 0.3s ease-out;
+    width: 100%;
+  }
+  
+  .navbar-logo {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .navbar-logo svg {
+    height: 40px;
+    width: auto;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .navbar-logo:hover {
+    transform: translateY(-2px);
+  }
+  
+  .navbar-logo:hover svg {
+    filter: brightness(1.2);
+  }
+  
+  .navbar-link {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: color 0.2s;
+  }
+  
+  .navbar-link:hover {
+    color: var(--text);
+  }
+  
+  /* Main content wrapper */
+  .main-wrapper {
+    flex: 1;
+    padding: clamp(24px, 5vw, 64px) clamp(24px, 5vw, 48px);
+  }
+  
+  .container { 
+    max-width: 1280px; 
+    margin: 0 auto; 
+  }
+  
+  /* Hero Section */
+  header {
+    text-align: center;
+    margin-bottom: clamp(64px, 10vw, 96px);
+    animation: fadeInUp 0.5s ease-out;
+  }
+  
+  header h1 {
+    font-size: clamp(40px, 8vw, 72px);
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    line-height: 1.1;
+  }
+  
+  header p {
+    color: var(--text-muted);
+    font-size: clamp(12px, 2.5vw, 16px);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    line-height: 1.6;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  
+  /* Tools Grid */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    margin-bottom: clamp(64px, 10vw, 96px);
+  }
+  
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInUp 0.6s ease-out;
+    animation-fill-mode: both;
+  }
+  
+  .tool-card:nth-child(2) { animation-delay: 0.1s; }
+  .tool-card:nth-child(3) { animation-delay: 0.2s; }
+  .tool-card:nth-child(4) { animation-delay: 0.3s; }
+  
+  .tool-card:hover {
+    transform: translateY(-4px);
+    background: var(--surface-2);
+    border-color: var(--accent);
+    box-shadow: var(--shadow-lg), 0 0 32px var(--accent-glow);
+  }
+  
+  .tool-card h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+  }
+  
+  .tool-card p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+    font-weight: 500;
+  }
+  
+  .tool-badge {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 6px 12px;
+    background: var(--accent-glow);
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 8px;
+  }
+  
+  /* Footer */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: clamp(32px, 5vw, 48px);
+    text-align: center;
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  .footer-text {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1.8;
+  }
+  
+  .footer-link {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.2s;
+  }
+  
+  .footer-link:hover {
+    color: var(--accent);
+  }
+  
+  .footer-divider {
+    color: var(--border);
+    margin: 0 8px;
+  }
+  
+  @media (max-width: 768px) {
+    .tools-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a href="https://gamaleldien.com" class="navbar-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 146.76 60.13" style="height: 40px; width: auto;">
+      <style>.logo-fill{fill:#f1f2f2}</style>
+      <path d="M75.08 24.06c1.67-1.68 3.68-2.52 6.03-2.52 1.7 0 3.22.45 4.56 1.34 1.34.9 2.35 2.1 3.04 3.62l-3.41.98c-.4-.8-.97-1.42-1.72-1.86-.75-.44-1.57-.66-2.48-.66-1.41 0-2.59.5-3.54 1.49-.95.99-1.42 2.22-1.42 3.67s.47 2.68 1.42 3.66c.94.98 2.12 1.48 3.54 1.48 1.02 0 1.94-.27 2.78-.82s1.44-1.33 1.82-2.35l-4.5.02-.05-3.05h8.03v1.37c0 2.4-.77 4.38-2.31 5.93-1.54 1.55-3.46 2.33-5.77 2.33s-4.36-.84-6.03-2.51-2.5-3.69-2.5-6.06.83-4.39 2.5-6.07Zm17.37 3.41c1.22-1.26 2.69-1.9 4.41-1.9 1.35 0 2.51.43 3.48 1.3v-1.3h3.46v13.12h-3.44v-1.24c-.97.83-2.13 1.25-3.49 1.25-1.7 0-3.17-.65-4.4-1.94-1.23-1.3-1.85-2.83-1.85-4.61s.61-3.4 1.83-4.68Zm1.38 4.68c0 .93.32 1.73.97 2.4.64.67 1.44 1.01 2.39 1.01s1.72-.34 2.38-1.02c.67-.68 1-1.48 1-2.39s-.33-1.71-1-2.4c-.67-.69-1.46-1.03-2.38-1.03s-1.75.34-2.39 1.02c-.64.68-.97 1.48-.97 2.41Zm16.04-6.58v1.39c.95-.93 2.01-1.39 3.17-1.39 1.59 0 2.86.65 3.81 1.94a5.63 5.63 0 0 1 1.88-1.43c.73-.34 1.47-.52 2.22-.52 1.27 0 2.38.45 3.34 1.36.95.9 1.43 2.13 1.43 3.68v8.08h-3.46v-7.31c0-.82-.17-1.46-.51-1.93-.34-.47-.85-.71-1.51-.71-1.45 0-2.26.85-2.43 2.54v7.4h-3.46v-7.31c0-.82-.17-1.46-.51-1.93-.34-.47-.85-.71-1.51-.71-.84 0-1.46.28-1.86.85-.4.57-.6 1.31-.6 2.22v6.88h-3.46V25.55h3.46Zm19.59 1.9c1.22-1.26 2.69-1.9 4.41-1.9 1.35 0 2.51.43 3.48 1.3v-1.3h3.46v13.12h-3.46v-1.24c-.95.83-2.11 1.25-3.48 1.25-1.7 0-3.17-.65-4.4-1.94-1.23-1.3-1.85-2.83-1.85-4.61s.61-3.4 1.83-4.68Zm1.38 4.68c0 .93.32 1.73.97 2.4.64.67 1.44 1.01 2.39 1.01s1.72-.34 2.38-1.02c.67-.68 1-1.48 1-2.39s-.33-1.71-1-2.4c-.67-.69-1.46-1.03-2.38-1.03s-1.75.34-2.39 1.02c-.64.68-.97 1.48-.97 2.41Zm12.46 6.55V21.45h3.46V38.7h-3.46Zm-59.04 4.63v1.61H74.3v6h9v1.56h-9v6.02h9.96v1.61H72.57v-16.8h11.69Zm2.83 16.8v-16.8h1.68v16.8h-1.68Zm6.02-11.24c1.25-1.26 2.76-1.9 4.54-1.9 1.09 0 2.07.26 2.94.78.87.52 1.56 1.21 2.05 2.08v-6.52h1.68v16.79h-1.68v-2.86c-.5.86-1.18 1.56-2.05 2.08-.87.52-1.85.78-2.94.78-1.78 0-3.29-.64-4.54-1.93s-1.87-2.83-1.87-4.62.62-3.4 1.87-4.68Zm-.26 4.68c0 1.38.48 2.55 1.44 3.53s2.13 1.46 3.5 1.46 2.52-.49 3.49-1.46c.97-.98 1.45-2.15 1.45-3.53s-.48-2.56-1.45-3.55c-.97-.99-2.13-1.49-3.49-1.49s-2.54.49-3.5 1.46c-.96.98-1.44 2.17-1.44 3.58Zm14.45-9.9c.24-.22.54-.34.89-.34s.67.12.91.35c.24.23.36.52.36.88s-.12.64-.36.88c-.24.23-.54.35-.91.35s-.65-.12-.89-.35c-.24-.23-.36-.52-.36-.88s.12-.65.36-.89Zm1.73 3.74v12.72h-1.68V47.41h1.68Zm4.51 1.5c1.26-1.28 2.79-1.92 4.58-1.92 1.65 0 3.08.55 4.28 1.66 1.21 1.1 1.91 2.46 2.1 4.08.06.3.1.58.1.84 0 .21-.02.41-.07.6H113.3c.11 1.3.62 2.36 1.54 3.18.91.82 2.01 1.24 3.29 1.24.88 0 1.7-.2 2.47-.61s1.38-.96 1.85-1.67l1.58.31c-.53 1.06-1.33 1.9-2.41 2.54a6.72 6.72 0 0 1-3.49.96c-1.82 0-3.36-.64-4.62-1.92-1.26-1.28-1.88-2.83-1.88-4.66s.64-3.35 1.92-4.63Zm-.24 3.89h9.55c-.13-1.22-.63-2.23-1.51-3.05-.88-.82-1.95-1.22-3.22-1.22s-2.37.41-3.28 1.22c-.9.82-1.42 1.83-1.55 3.05Zm13.56-5.81h1.68v2.87c.42-.77 1.02-1.4 1.81-1.91s1.72-.76 2.77-.76c1.49 0 2.76.48 3.82 1.44s1.58 2.25 1.58 3.86v7.63h-1.68v-7.1c0-1.33-.38-2.37-1.15-3.12-.77-.75-1.71-1.13-2.83-1.13-1.25 0-2.28.46-3.1 1.37s-1.22 2.08-1.22 3.5v6.48h-1.68V46.98ZM60.12 35.22v24.9l-24.9-24.9h24.9z" class="logo-fill"/>
+      <path d="M60.12 10.32 47.67 22.77c-3.44-3.44-7.94-5.16-12.45-5.16s-9.01 1.72-12.45 5.16c-3.44 3.43-5.16 7.94-5.16 12.45s1.72 9.01 5.16 12.45L10.32 60.12C3.94 53.75 0 44.94 0 35.22s3.94-18.53 10.32-24.9C16.69 3.94 25.49 0 35.22 0s18.53 3.94 24.9 10.32Z" class="logo-fill"/>
+    </svg>
+  </a>
+  <div style="display:flex;gap:24px;align-items:center;">
+    <a href="/" class="navbar-link">ALL TOOLS</a>
+    <a href="https://gamaleldien.com" class="navbar-link" target="_blank">GAMALELDIEN.COM</a>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main-wrapper">
+  <div class="container">
+    <header>
+      <h1>All Tools</h1>
+      <p>Utilities & Converters — Built for Designers & Developers</p>
+    </header>
+
+    <div class="tools-grid">
+      <!-- Dark Mode Converter Tool Card -->
+      <a href="/dark-mode-converter" class="tool-card">
+        <h2>Dark Mode Converter</h2>
+        <p>Convert light mode colors to dark mode equivalents using OKLCH perceptual color science. Supports multiple conversion methods including OKLCH invert, remap, HSL invert, and Ant Design.</p>
+        <span class="tool-badge">Color Science</span>
+      </a>
+
+      <!-- Future tool cards will go here -->
+      <!-- Example placeholder for future tools:
+      <a href="/tool-name" class="tool-card">
+        <h2>Tool Name</h2>
+        <p>Tool description goes here</p>
+        <span class="tool-badge">Category</span>
+      </a>
+      -->
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <p class="footer-text">
+    Built by <a href="https://gamaleldien.com" class="footer-link" target="_blank">Gamal Eldien</a>
+    <span class="footer-divider">·</span>
+    Creative Director & Designer
+  </p>
+</footer>
+
+</body>
+</html>

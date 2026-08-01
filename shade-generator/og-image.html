@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap');
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    width: 1200px;
+    height: 630px;
+    background: #1a1a1a;
+    font-family: 'Clash Display', 'Arial Black', sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    padding: 60px 70px;
+    padding-bottom: 0;
+  }
+
+  .left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 24px;
+    padding-bottom: 70px;
+  }
+
+  .title {
+    font-size: 72px;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+
+  .title .white { color: #ffffff; }
+  .title .orange { color: rgb(225, 97, 5); }
+
+  .subtitle {
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.35);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-top: 4px;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .tag {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    padding: 8px 18px;
+    border-radius: 100px;
+  }
+
+  .right {
+    width: 380px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 70px;
+  }
+
+  .shades-column {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 280px;
+  }
+
+  .shade-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 36px;
+  }
+
+  .shade-swatch {
+    width: 200px;
+    height: 32px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  .shade-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.04em;
+    width: 40px;
+    text-align: right;
+  }
+
+  .footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: rgba(0,0,0,0.4);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 70px;
+  }
+
+  .footer-left, .footer-right {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.35);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="left">
+      <div class="title">
+        <div class="white">UI Colors</div>
+        <div class="orange">Generator</div>
+      </div>
+      <div class="subtitle">OKLCH Perceptual Color Science</div>
+      <div class="tags">
+        <div class="tag">Tailwind V4</div>
+        <div class="tag">Figma Vars</div>
+        <div class="tag">CSS Vars</div>
+        <div class="tag">JSON Tokens</div>
+        <div class="tag">WCAG</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="shades-column">
+        <div class="shade-row">
+          <div class="shade-swatch" style="background: #fff3e0;"></div>
+          <div class="shade-label">50</div>
+        </div>
+        <div class="shade-row">
+          <div class="shade-swatch" style="background: #ffe0b2;"></div>
+          <div class="shade-label">100</div>
+        </div>
+        <div class="shade-row">
+          <div class="shade-swatch" style="background: #ffcc80;"></div>
+          <div class="shade-label">200</div>
+        </div>
+        <div class="shade-row">
+          <div class="shade-swatch" style="background: #ffb74d;"></div>
+          <div class="shade-label">300</div>
+        </div>
+        <div class="shade-row">
+          <div class="shade-swatch" style="background: #ffa726;"></div>
+          <div class="shade-label">400</div>
+        </div>
+        <div class="shade-row">
+          <div class="shade-swatch" style="background: rgb(225, 97, 5);"></div>
+          <div class="shade-label">500</div>
+        </div>
+        <div class="shade-row">
+          <div class="shade-swatch" style="background: #e65100;"></div>
+          <div class="shade-label">600</div>
+        </div>
+        <div class="shade-row">
+          <div class="shade-swatch" style="background: #bf360c;"></div>
+          <div class="shade-label">700</div>
+        </div>
+        <div class="shade-row">
+          <div class="shade-swatch" style="background: #8c2700;"></div>
+          <div class="shade-label">800</div>
+        </div>
+        <div class="shade-row">
+          <div class="shade-swatch" style="background: #5c1a00;"></div>
+          <div class="shade-label">900</div>
+        </div>
+        <div class="shade-row">
+          <div class="shade-swatch" style="background: #3d1100;"></div>
+          <div class="shade-label">950</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="footer-left">tools.gamaleldien.com</div>
+    <div class="footer-right">by Gamal Eldien</div>
+  </div>
+</body>
+</html>

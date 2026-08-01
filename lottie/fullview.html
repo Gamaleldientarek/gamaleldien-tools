@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lottie Previewer - Full View</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fa;
+      min-height: 100vh;
+      color: #1a1a2e;
+      padding: 40px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .header h1 {
+      font-size: 2rem;
+      background: linear-gradient(90deg, #155DFC, #0099ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .header p { color: #666; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 24px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #e0e4ea;
+      overflow: hidden;
+      transition: all 0.3s;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .card:hover {
+      border-color: #155DFC;
+      box-shadow: 0 8px 30px rgba(21,93,252,0.15);
+    }
+    .player-wrap {
+      background: #fafbfc;
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #eee;
+    }
+    .player { width: 220px; height: 220px; }
+    .info { padding: 20px; }
+    .info h3 {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #1a1a2e;
+    }
+    .meta {
+      display: flex;
+      gap: 10px;
+      font-size: 0.8rem;
+      color: #666;
+      margin-bottom: 16px;
+    }
+    .meta span {
+      background: #f0f2f5;
+      padding: 5px 10px;
+      border-radius: 6px;
+    }
+    .controls { display: flex; gap: 10px; }
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      background: #f0f2f5;
+      color: #333;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+    .btn:hover { background: #e4e7eb; }
+    .btn-play { background: #155DFC; color: #fff; }
+    .btn-play:hover { background: #0d4fd1; }
+    .empty {
+      text-align: center;
+      padding: 80px;
+      color: #888;
+    }
+    .empty p { font-size: 1.2rem; margin-bottom: 10px; }
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 30px;
+      padding: 10px 20px;
+      background: #fff;
+      border: 1px solid #e0e4ea;
+      border-radius: 8px;
+      color: #333;
+      text-decoration: none;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .back-btn:hover {
+      border-color: #155DFC;
+      color: #155DFC;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Lottie Previewer</h1>
+    <p>Full screen animation view — <a href="https://99.zone" target="_blank" style="color: #155DFC; text-decoration: none;">Zone 99</a></p>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none;">
+    <p>No animations loaded</p>
+    <span>Use the extension popup to add animations first, then click "Open Full View"</span>
+  </div>
+  <script src="libs/lottie.min.js"></script>
+  <script>
+    const grid = document.getElementById('grid');
+    const empty = document.getElementById('empty');
+    const anims = [];
+
+    // Check if lottie loaded
+    if (typeof lottie === 'undefined') {
+      empty.innerHTML = '<p style="color: #ff4757;">Error: Lottie library failed to load</p>';
+      empty.style.display = 'block';
+    } else {
+      // Load animations from storage
+      chrome.storage.local.get(['lottieAnimations'], result => {
+        console.log('Storage result:', result);
+        const data = result.lottieAnimations || [];
+        if (data.length === 0) {
+          empty.style.display = 'block';
+          return;
+        }
+        data.forEach((item, i) => createCard(item.animData, item.name, i));
+      });
+    }
+
+    function createCard(animData, name, idx) {
+      const fps = animData.fr || 30;
+      const dur = ((animData.op - animData.ip) / fps).toFixed(1);
+
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="player-wrap">
+          <div class="player" id="p${idx}"></div>
+        </div>
+        <div class="info">
+          <h3>${name}</h3>
+          <div class="meta">
+            <span>${animData.w || '?'}x${animData.h || '?'}</span>
+            <span>${fps} fps</span>
+            <span>${dur}s</span>
+          </div>
+          <div class="controls">
+            <button class="btn btn-play" data-idx="${idx}" data-action="play">Play</button>
+            <button class="btn" data-idx="${idx}" data-action="pause">Pause</button>
+            <button class="btn" data-idx="${idx}" data-action="stop">Stop</button>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+
+      try {
+        anims[idx] = lottie.loadAnimation({
+          container: document.getElementById(`p${idx}`),
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          animationData: animData
+        });
+
+        console.log('Animation loaded:', name);
+
+        // Add event listeners for buttons
+        card.querySelectorAll('.btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const action = btn.dataset.action;
+            const animIdx = parseInt(btn.dataset.idx);
+            if (action === 'play') anims[animIdx].play();
+            if (action === 'pause') anims[animIdx].pause();
+            if (action === 'stop') anims[animIdx].stop();
+          });
+        });
+      } catch (err) {
+        console.error('Failed to load animation:', name, err);
+      }
+    }
+  </script>
+</body>
+</html>

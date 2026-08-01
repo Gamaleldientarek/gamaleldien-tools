@@ -1,0 +1,2857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UI Color Generator — Free Tailwind CSS Color Tool</title>
+  <meta name="description" content="Generate perfect Tailwind color shades (50-950) from any color. Uses OKLCH for perceptually uniform colors. Export to CSS, Figma, Tailwind v3/v4. Free forever.">
+  <meta name="keywords" content="tailwind css, shade generator, color palette, oklch, color tool, figma variables, css variables">
+  <meta name="author" content="Gamal Eldien">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://tools.gamaleldien.com/shades">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tools.gamaleldien.com/shades">
+  <meta property="og:title" content="UI Color Generator: Free Tailwind CSS Color Tool">
+  <meta property="og:description" content="Generate perfect Tailwind color shades (50-950) from any color. Uses OKLCH for perceptually uniform colors. Export to CSS, Figma, Tailwind v3/v4. Free forever.">
+  <meta property="og:site_name" content="Gamal Eldien Tools">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="UI Color Generator: Free Tailwind CSS Color Tool">
+  <meta name="twitter:description" content="Generate perfect Tailwind color shades (50-950) from any color. Uses OKLCH for perceptually uniform colors.">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap">
+  <style>
+    /* ==========================================
+       1. CSS Variables / Design Tokens
+       ========================================== */
+    :root {
+      --bg: #0a0a0a;
+      --surface: rgba(63, 63, 63, 0.3);
+      --surface-2: rgba(80, 80, 80, 0.35);
+      --surface-elevated: rgba(90, 90, 90, 0.25);
+      --text: rgb(255, 255, 255);
+      --text-muted: rgb(128, 128, 128);
+      --text-secondary: rgb(153, 153, 153);
+      --border: rgb(51, 51, 51);
+      --border-light: rgba(255, 255, 255, 0.08);
+      --accent: rgb(225, 97, 5);
+      --accent-hover: rgb(255, 117, 25);
+      --accent-glow: rgba(225, 97, 5, 0.15);
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+      --radius: 24px;
+      --radius-lg: 32px;
+      --radius-pill: 64px;
+      --font-display: 'Clash Display', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.12);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.16), 0 2px 4px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.24), 0 4px 8px rgba(0, 0, 0, 0.12);
+      --shadow-glow: 0 0 24px rgba(225, 97, 5, 0.12);
+    }
+
+    /* ==========================================
+       1b. Light Theme Overrides
+       ========================================== */
+    body.light-theme {
+      --bg: #f5f5f5;
+      --surface: rgba(255, 255, 255, 0.8);
+      --surface-2: rgba(240, 240, 240, 0.9);
+      --surface-elevated: rgba(230, 230, 230, 0.6);
+      --text: #0a0a0a;
+      --text-muted: #6b6b6b;
+      --text-secondary: #4a4a4a;
+      --border: #e0e0e0;
+      --border-light: rgba(0, 0, 0, 0.08);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+    }
+    .light-theme .navbar { background: rgba(245, 245, 245, 0.9); }
+    .light-theme .btn { border-color: #333; color: #333; }
+    .light-theme .btn::before { background: #333; }
+    .light-theme .btn-primary { background: var(--accent); border-color: var(--accent); color: white; }
+    .light-theme .btn-outline { border-color: rgba(0,0,0,0.2); color: #333; }
+    .light-theme .btn-outline:hover { background: rgba(0,0,0,0.06); border-color: #333; }
+    .light-theme .btn-danger { border-color: var(--danger); color: var(--danger); }
+    .light-theme .btn-success { background: var(--success); border-color: var(--success); color: white; }
+    .light-theme .export-code { background: rgba(240,240,240,0.8); color: #333; }
+    .light-theme .shade-label { color: #0a0a0a; }
+    .light-theme .shade-value { color: #4a4a4a; }
+    .light-theme .palette-header { background: linear-gradient(135deg, rgba(250,250,250,0.98), rgba(240,240,240,0.95)); }
+    .light-theme .palette-card::before { background: linear-gradient(135deg, rgba(255,255,255,0.5), rgba(200,200,200,0.2)); }
+    .light-theme .hex-input,
+    .light-theme select { background: rgba(255,255,255,0.9); color: #333; border-color: rgba(0,0,0,0.15); }
+    .light-theme .modal { background: rgba(255,255,255,0.95); }
+    .light-theme .modal select option { background: #f5f5f5; }
+    .light-theme .scale-name-input { color: #0a0a0a; }
+    .light-theme .scale-name-input:hover,
+    .light-theme .scale-name-input:focus { background: rgba(225, 97, 5, 0.08); }
+    .light-theme .base-color-row { background: rgba(240, 240, 240, 0.5); }
+    .light-theme .base-color-picker-small { background: rgba(240, 240, 240, 0.6); }
+    .light-theme .color-picker-input { background: rgba(240, 240, 240, 0.6); }
+    .light-theme .preview-tab { background: rgba(240, 240, 240, 0.6); }
+    .light-theme .export-tab { background: rgba(240, 240, 240, 0.6); }
+    .light-theme .chart-container { background: rgba(240, 240, 240, 0.6); }
+    .light-theme .format-toggle { color: #6b6b6b; }
+    .light-theme .btn-hint { background: rgba(0,0,0,0.1); }
+    .light-theme .shortcuts-hint { background: rgba(255,255,255,0.8); }
+    .light-theme .toast { background: rgba(255,255,255,0.95); color: #0a0a0a; }
+    .light-theme .logo-fill { fill: #0a0a0a; }
+    .theme-toggle { font-size: 20px; cursor: pointer; transition: all 0.3s; }
+    .theme-toggle:hover { transform: rotate(30deg); }
+
+    /* ==========================================
+       2. Reset + Base Styles
+       ========================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-display);
+      background: var(--bg);
+      background-image: radial-gradient(circle, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 32px 32px;
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      animation: fadeIn 0.4s ease-out;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: var(--font-display); }
+    ::selection { background: var(--accent); color: white; }
+
+    /* ==========================================
+       3. Keyframe Animations
+       ========================================== */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    @keyframes flashGreen { 0%, 100% { background: transparent; } 50% { background: rgba(16, 185, 129, 0.3); } }
+
+    /* ==========================================
+       4. Navbar
+       ========================================== */
+    .navbar {
+      position: sticky; top: 0; z-index: 900;
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(48px); -webkit-backdrop-filter: blur(48px);
+      border-bottom: 1px solid var(--border);
+      padding: 20px clamp(24px, 5vw, 48px);
+      display: flex; justify-content: space-between; align-items: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+    .navbar-logo {
+      display: flex; align-items: center; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: var(--font-display); font-weight: 700; font-size: 18px;
+      line-height: 1.1; letter-spacing: -0.02em; color: var(--text);
+      text-decoration: none;
+    }
+    .navbar-logo:hover { filter: brightness(1.2); transform: translateY(-2px); }
+    .navbar-links { display: flex; gap: 32px; align-items: center; }
+    .navbar-link {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--text-muted);
+      transition: color 0.2s;
+    }
+    .navbar-link:hover { color: var(--accent); }
+
+    /* ==========================================
+       5. Main Wrapper + Container
+       ========================================== */
+    .main-wrapper { padding: clamp(16px, 4vw, 48px); }
+    .container { max-width: 1280px; margin: 0 auto; }
+
+    /* ==========================================
+       6. Header / Hero
+       ========================================== */
+    header {
+      margin-top: clamp(32px, 6vw, 64px);
+      margin-bottom: clamp(48px, 8vw, 80px);
+      padding-bottom: clamp(32px, 6vw, 56px);
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+      animation: fadeInUp 0.5s ease-out;
+    }
+    header h1 {
+      font-size: clamp(32px, 6vw, 56px); font-weight: 700;
+      text-transform: uppercase; letter-spacing: -0.03em;
+      line-height: 1.1; color: var(--accent);
+    }
+    header .hero-subtitle {
+      font-size: clamp(16px, 3vw, 22px); font-weight: 600;
+      color: var(--text-secondary); max-width: 680px; margin: 16px auto 0;
+      text-transform: uppercase; letter-spacing: 0.02em;
+    }
+    header .hero-description {
+      font-size: clamp(11px, 2vw, 14px); font-weight: 500;
+      color: var(--text-muted); max-width: 680px; margin: 12px auto 0;
+      line-height: 1.6; letter-spacing: 0.02em;
+    }
+
+    /* ==========================================
+       7. Controls
+       ========================================== */
+    .controls {
+      display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;
+      margin-bottom: clamp(24px, 4vw, 40px);
+      animation: fadeInUp 0.6s ease-out;
+    }
+    .controls > .btn { align-self: center; margin-top: 10px; }
+    .control-item { display: flex; flex-direction: column; gap: 8px; }
+    .control-label {
+      font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-muted); font-weight: 700;
+    }
+
+    /* ==========================================
+       8. Buttons
+       ========================================== */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 14px 32px; border: 1.5px solid white;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-display); font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      background: transparent; color: white;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      position: relative; overflow: hidden; min-width: 140px; line-height: 1;
+    }
+    .btn::before {
+      content: ''; position: absolute; inset: 0;
+      background: white; opacity: 0; transition: opacity 0.25s;
+    }
+    .btn:hover::before { opacity: 0.08; }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary {
+      background: var(--accent); border-color: var(--accent);
+      box-shadow: var(--shadow-glow);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover); border-color: var(--accent-hover);
+      transform: translateY(-2px); box-shadow: var(--shadow-glow), var(--shadow-md);
+    }
+    .btn-outline { background: transparent; color: white; border: 1.5px solid rgba(255,255,255,0.3); }
+    .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: white; }
+    .btn-danger { background: transparent; border-color: var(--danger); color: var(--danger); }
+    .btn-danger:hover { background: var(--danger); color: white; border-color: var(--danger); }
+    .btn-success { background: var(--success); border-color: var(--success); color: white; }
+    .btn-success:hover { opacity: 0.9; transform: translateY(-2px); }
+    .btn-small { padding: 8px 16px; min-width: auto; font-size: 11px; }
+    .btn-header-action {
+      padding: 6px 14px; font-size: 10px; letter-spacing: 0.06em;
+      opacity: 0.7; transition: opacity 0.2s, background 0.2s, border-color 0.2s;
+    }
+    .btn-header-action:hover { opacity: 1; }
+    .btn-hint {
+      font-size: 9px; opacity: 0.6; letter-spacing: 0.04em;
+      background: rgba(255,255,255,0.15); padding: 2px 6px; border-radius: 4px;
+    }
+    .icon-btn {
+      background: none; border: none; color: var(--text-muted); cursor: pointer;
+      font-size: 18px; padding: 6px; border-radius: 8px; line-height: 1;
+      transition: all 0.2s; font-weight: 600;
+    }
+    .icon-btn:hover { color: var(--accent); background: rgba(225, 97, 5, 0.1); }
+    .btn-remove {
+      background: none; border: none; color: var(--danger); cursor: pointer;
+      font-size: 20px; padding: 6px; border-radius: 8px; line-height: 1;
+      opacity: 0.4; transition: all 0.2s; font-weight: 600;
+    }
+    .btn-remove:hover { opacity: 1; background: rgba(239, 68, 68, 0.1); transform: scale(1.15); }
+
+    /* ==========================================
+       9. Color Input Controls
+       ========================================== */
+    .color-picker-input {
+      width: 56px; height: 56px; border: 2px solid var(--border-light);
+      border-radius: 14px; cursor: pointer; -webkit-appearance: none;
+      padding: 4px; background: rgba(20, 20, 20, 0.6); transition: all 0.2s;
+    }
+    .color-picker-input:hover { border-color: var(--accent); transform: scale(1.05); }
+    .color-picker-input::-webkit-color-swatch-wrapper { padding: 0; }
+    .color-picker-input::-webkit-color-swatch { border: none; border-radius: 10px; }
+    .color-picker-input::-moz-color-swatch { border: none; border-radius: 10px; }
+    .hex-input {
+      width: 140px; height: 56px; font-size: 14px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.04em; padding: 0 16px;
+      border: 1.5px solid var(--border-light); border-radius: 14px;
+      background: rgba(30, 30, 30, 0.8); color: white;
+      font-family: var(--font-mono); transition: all 0.2s;
+    }
+    .hex-input:focus {
+      outline: none; border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    /* ==========================================
+       10. Palette Card
+       ========================================== */
+    .palettes {
+      display: flex; flex-direction: column; gap: clamp(20px, 4vw, 32px);
+      animation: fadeInUp 0.7s ease-out;
+    }
+    .palette-card {
+      background: var(--surface); backdrop-filter: blur(48px); -webkit-backdrop-filter: blur(48px);
+      border: 1px solid var(--border-light); border-radius: var(--radius-lg);
+      overflow: hidden; box-shadow: var(--shadow-lg);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative;
+    }
+    .palette-card::before {
+      content: ''; position: absolute; inset: 0;
+      border-radius: var(--radius-lg); padding: 1px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+    }
+    .palette-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: clamp(20px, 4vw, 28px) clamp(24px, 4vw, 32px);
+      border-bottom: 1px solid var(--border-light);
+      background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(20, 20, 20, 0.9));
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .header-right { display: flex; align-items: center; gap: 8px; }
+    .palette-indicator {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 16px var(--accent-glow), 0 0 4px var(--accent);
+      animation: pulse 3s ease-in-out infinite;
+    }
+    .scale-name-input {
+      font-size: 14px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: white; background: transparent;
+      border: 1px solid transparent; padding: 8px 12px; border-radius: 8px;
+      transition: all 0.2s; font-family: var(--font-display); max-width: 200px;
+    }
+    .scale-name-input:hover, .scale-name-input:focus {
+      outline: none; border-color: var(--accent); background: rgba(225, 97, 5, 0.1);
+    }
+    .base-color-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px clamp(24px, 4vw, 32px);
+      border-bottom: 1px solid var(--border-light);
+      background: rgba(20, 20, 20, 0.3);
+    }
+    .base-color-picker-small {
+      width: 44px; height: 44px; border: 2px solid var(--border-light);
+      border-radius: 12px; cursor: pointer; -webkit-appearance: none;
+      padding: 3px; background: rgba(20, 20, 20, 0.6); transition: all 0.2s;
+    }
+    .base-color-picker-small:hover { border-color: var(--accent); transform: scale(1.05); }
+    .base-color-picker-small::-webkit-color-swatch-wrapper { padding: 0; }
+    .base-color-picker-small::-webkit-color-swatch { border: none; border-radius: 8px; }
+    .base-color-picker-small::-moz-color-swatch { border: none; border-radius: 8px; }
+    .base-hex-display {
+      font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+      color: var(--text-secondary); letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .base-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-muted);
+    }
+
+    /* ==========================================
+       11. Shade Items Grid
+       ========================================== */
+    .shade-list {
+      display: flex; padding: 0 clamp(20px, 4vw, 32px);
+      padding-bottom: 8px;
+    }
+    .shade-item {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      gap: 0; padding: 0; position: relative; cursor: pointer;
+      transition: all 0.2s; min-width: 0;
+    }
+    .shade-item:hover { transform: translateY(-3px); z-index: 2; }
+    .shade-item.locked .shade-swatch { box-shadow: inset 0 0 0 2px var(--warning); }
+    .shade-item.edited .shade-swatch { box-shadow: inset 0 0 0 2px #60a5fa; }
+    .shade-item.is-anchor .shade-swatch { box-shadow: inset 0 0 0 3px var(--accent), 0 4px 12px rgba(225, 97, 5, 0.3); }
+    .shade-swatch-container { position: relative; width: 100%; height: 100px; }
+    .shade-swatch {
+      width: 100%; height: 100%; cursor: pointer; transition: all 0.2s;
+    }
+    .shade-item:first-child .shade-swatch { border-radius: 12px 0 0 12px; }
+    .shade-item:last-child .shade-swatch { border-radius: 0 12px 12px 0; }
+    .shade-swatch:hover { filter: brightness(1.08); }
+    .shade-color-picker {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer;
+      width: 100%; height: 100%;
+    }
+    .shade-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.04em; color: var(--text); text-align: center;
+      padding: 8px 0 2px;
+    }
+    .shade-value {
+      font-size: 10px; font-weight: 600; font-family: var(--font-mono);
+      letter-spacing: 0.02em; color: var(--text-secondary); cursor: pointer;
+      transition: color 0.2s; text-align: center; word-break: break-all;
+      padding: 0 2px;
+    }
+    .shade-value:hover { color: var(--accent); }
+    .shade-value.flash-green { animation: flashGreen 0.3s ease-out; }
+    .shade-formats {
+      display: flex; gap: 2px; justify-content: center; margin-top: 4px; flex-wrap: wrap;
+    }
+    .format-toggle {
+      font-size: 7px; padding: 2px 4px; border: 1px solid var(--border-light);
+      border-radius: 4px; background: transparent; color: var(--text-muted);
+      cursor: pointer; text-transform: uppercase; letter-spacing: 0.04em;
+      transition: all 0.2s; font-family: var(--font-display); font-weight: 600;
+    }
+    .format-toggle.active { background: var(--accent); border-color: var(--accent); color: white; }
+    .format-toggle:hover:not(.active) { border-color: rgba(255,255,255,0.2); color: white; }
+    .shade-actions {
+      display: flex; gap: 4px; justify-content: center; margin-top: 4px;
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .shade-item:hover .shade-actions { opacity: 1; }
+    .shade-actions .icon-btn { font-size: 12px; padding: 2px; }
+    .edited-badge {
+      position: absolute; top: 4px; left: 50%; transform: translateX(-50%); z-index: 3;
+      font-size: 6px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.04em; background: rgba(96, 165, 250, 0.9);
+      color: white; padding: 2px 5px; border-radius: 3px;
+    }
+    .anchor-badge {
+      position: absolute; top: 4px; left: 50%; transform: translateX(-50%); z-index: 3;
+      font-size: 6px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.04em; background: rgba(225, 97, 5, 0.9);
+      color: white; padding: 2px 5px; border-radius: 3px;
+    }
+    .locked-indicator { color: var(--warning); }
+    .empty-state {
+      text-align: center; padding: 80px 40px; color: var(--text-muted);
+      font-size: 14px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    }
+
+    /* ==========================================
+       12. Section Divider
+       ========================================== */
+    .section-divider {
+      display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+      margin: clamp(32px, 6vw, 48px) 0 clamp(32px, 6vw, 48px) 0;
+      padding-top: clamp(16px, 3vw, 24px); border-top: 1px solid var(--border);
+    }
+    .section-divider::before, .section-divider::after {
+      content: '//'; color: var(--border); font-weight: 700; font-size: 14px;
+    }
+    .section-divider span {
+      font-size: 13px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.12em; color: var(--text-muted);
+    }
+    .preview-hint {
+      display: flex; align-items: center; gap: 24px;
+      margin: -16px 0 24px;
+    }
+    .preview-hint-text {
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .preview-hint-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-secondary);
+    }
+    .preview-hint-body {
+      font-size: 13px; font-weight: 500; color: var(--text-muted);
+      opacity: 0.7;
+    }
+    .tooltip-mock {
+      position: relative; flex-shrink: 0; margin-left: auto;
+    }
+    .tooltip-mock-card {
+      display: flex; gap: 10px; align-items: center;
+      background: var(--border-light); border-radius: 10px;
+      padding: 10px 14px; width: 180px;
+    }
+    .tooltip-mock-color {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: var(--accent); flex-shrink: 0;
+    }
+    .tooltip-mock-lines { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+    .tooltip-mock-line {
+      height: 5px; border-radius: 3px;
+      background: var(--text-muted); opacity: 0.3;
+    }
+    .tooltip-mock-bubble {
+      position: absolute; bottom: calc(100% + 6px); left: 10px;
+      background: rgba(255,255,255,0.95); color: #555;
+      padding: 6px 10px; border-radius: 8px; white-space: nowrap;
+      font-size: 10px; font-weight: 600; font-family: var(--font-display);
+      box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+      display: flex; align-items: center; gap: 5px;
+    }
+    .tooltip-mock-swatch {
+      display: inline-block; width: 12px; height: 12px;
+      border-radius: 3px; background: var(--accent);
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+    .tooltip-mock-arrow {
+      position: absolute; top: 100%; left: 20px;
+      width: 0; height: 0;
+      border-left: 5px solid transparent; border-right: 5px solid transparent;
+      border-top: 5px solid rgba(255,255,255,0.95);
+    }
+
+    /* ==========================================
+       13. Preview Section
+       ========================================== */
+    .preview-section { animation: fadeInUp 0.85s ease-out; display: flex; flex-direction: column; gap: 64px; }
+    .preview-tabs {
+      display: flex; gap: 8px; margin-bottom: -24px;
+      flex-wrap: wrap; border-bottom: 1px solid var(--border-light); padding-bottom: 16px;
+    }
+    .preview-tab {
+      padding: 12px 24px; border: 1.5px solid var(--border-light);
+      background: rgba(30, 30, 30, 0.4); font-family: var(--font-display);
+      font-size: 11px; font-weight: 700; color: var(--text-secondary);
+      cursor: pointer; border-radius: var(--radius-pill);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .preview-tab.active {
+      background: var(--accent); border-color: var(--accent);
+      color: white; box-shadow: var(--shadow-glow);
+    }
+    .preview-tab:hover:not(.active) {
+      background: var(--surface-2); border-color: rgba(255,255,255,0.2);
+      color: white; transform: translateY(-1px);
+    }
+    .light-theme .preview-tab:hover:not(.active) {
+      background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.15);
+      color: #333;
+    }
+    .preview-content {
+      min-height: 300px; padding: clamp(24px, 4vw, 40px);
+      background: var(--surface); backdrop-filter: blur(48px); -webkit-backdrop-filter: blur(48px);
+      border: 1px solid var(--border-light); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg); position: relative;
+      transition: opacity 0.3s ease;
+    }
+    .preview-content::before {
+      content: ''; position: absolute; inset: 0;
+      border-radius: var(--radius-lg); padding: 1px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+    }
+    .preview-carousel {
+      position: relative; overflow: clip; width: 100%;
+      overflow-clip-margin: 8px;
+      mask-image: linear-gradient(to right, transparent, black 1.5%, black 98.5%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, black 1.5%, black 98.5%, transparent);
+      padding: 8px 0;
+    }
+    .preview-carousel-track {
+      display: flex; gap: 24px; width: max-content;
+      animation: carouselScroll 35s linear infinite;
+    }
+    .preview-carousel:hover .preview-carousel-track { animation-play-state: paused; }
+    @keyframes carouselScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    @keyframes progressFill {
+      0% { width: 0%; }
+      50% { width: 85%; }
+      100% { width: 0%; }
+    }
+    @keyframes toggleSlide {
+      0% { left: 2px; }
+      100% { left: 26px; }
+    }
+    @keyframes barGrow {
+      0% { transform: scaleY(0); }
+      100% { transform: scaleY(1); }
+    }
+    @keyframes pulseBtn {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(0.95); }
+    }
+    @keyframes spinSlow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+    @keyframes fadeInSlide {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes typewriter {
+      0% { width: 0; }
+      100% { width: 100%; }
+    }
+    @keyframes drawLine {
+      0% { stroke-dashoffset: 1000; }
+      100% { stroke-dashoffset: 0; }
+    }
+    @keyframes floatUp {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .preview-card {
+      flex: 0 0 320px; min-height: 340px;
+      padding: clamp(24px, 4vw, 32px); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md); transition: all 0.3s;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .preview-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .preview-card h3 {
+      font-size: 16px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .preview-card p { font-size: 14px; font-weight: 500; line-height: 1.6; }
+    .preview-btn {
+      display: inline-block; padding: 12px 24px; border-radius: var(--radius-pill);
+      font-family: var(--font-display); font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em; border: none;
+      cursor: pointer; width: fit-content; transition: all 0.2s;
+    }
+    .preview-badge {
+      display: inline-block; padding: 6px 14px; border-radius: var(--radius-pill);
+      font-size: 10px; font-weight: 700; width: fit-content;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .preview-empty {
+      text-align: center; padding: 60px 20px; color: var(--text-muted);
+      font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em;
+    }
+
+    /* Component preview styles */
+    .components-showcase { display: flex; flex-direction: column; gap: 32px; }
+    .component-section { display: flex; flex-direction: column; gap: 16px; }
+    .component-section h4 {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-muted);
+    }
+    .component-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .comp-btn {
+      padding: 12px 24px; border-radius: var(--radius-pill);
+      font-family: var(--font-display); font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em; border: none; cursor: pointer;
+    }
+    .comp-input {
+      padding: 12px 16px; border-radius: 12px; font-family: var(--font-display);
+      font-size: 13px; font-weight: 500; width: 220px;
+    }
+    .comp-badge {
+      padding: 6px 12px; border-radius: 12px; font-size: 11px;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .comp-alert {
+      padding: 16px 20px; border-radius: 16px; font-size: 14px;
+      font-weight: 500; line-height: 1.6; border-left: 4px solid;
+    }
+    .comp-toggle {
+      width: 48px; height: 24px; border-radius: 24px;
+      position: relative; cursor: pointer; transition: all 0.2s;
+    }
+    .comp-toggle-handle {
+      width: 20px; height: 20px; border-radius: 50%;
+      position: absolute; top: 2px; transition: all 0.2s;
+    }
+    .comp-progress { height: 12px; border-radius: 12px; overflow: hidden; width: 100%; max-width: 300px; }
+    .comp-progress-fill { height: 100%; border-radius: 12px; transition: all 0.3s; }
+
+    /* Chart styles */
+    .charts-showcase { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .chart-container {
+      background: rgba(20, 20, 20, 0.4); border: 1px solid var(--border-light);
+      border-radius: 16px; padding: 24px;
+    }
+    .chart-container h4 {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 16px;
+    }
+    .bar-chart { display: flex; gap: 12px; align-items: flex-end; height: 180px; }
+    .bar {
+      flex: 1; border-radius: 8px 8px 0 0; transition: all 0.3s;
+      min-width: 20px;
+    }
+    .bar:hover { opacity: 0.85; transform: scaleY(1.02); transform-origin: bottom; }
+
+    /* Gradient styles */
+    .gradients-showcase { display: flex; flex-direction: column; gap: 32px; }
+    .gradient-section h4 {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 16px;
+    }
+    .gradient-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+    .gradient-box {
+      aspect-ratio: 16/9; border-radius: 16px; display: flex;
+      align-items: center; justify-content: center; box-shadow: var(--shadow-md);
+      transition: all 0.3s;
+    }
+    .gradient-box:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .gradient-box span {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      color: white; text-shadow: 0 2px 8px rgba(0,0,0,0.5); letter-spacing: 0.06em;
+    }
+    .gradient-text {
+      font-size: clamp(32px, 6vw, 48px); font-weight: 700;
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; text-transform: uppercase;
+      letter-spacing: -0.02em; line-height: 1.2;
+    }
+
+    /* Logos styles */
+    .logos-showcase { display: flex; flex-direction: column; gap: 24px; }
+    .logos-showcase > h4 {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-muted);
+    }
+    .logos-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: clamp(20px, 4vw, 32px);
+    }
+    .logo-container { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+    .logo-mockup {
+      width: 100%; aspect-ratio: 1/1; border-radius: 16px;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 16px; box-shadow: var(--shadow-md);
+      transition: transform 0.3s; max-width: 200px;
+    }
+    .logo-mockup:hover { transform: scale(1.05); }
+    .logo-mockup svg { width: 60px; height: 60px; }
+    .logo-text {
+      font-size: 16px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; font-family: var(--font-display);
+    }
+    .logo-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-muted);
+    }
+
+    /* Headings styles */
+    .headings-showcase { display: flex; flex-direction: column; gap: 32px; }
+    .typography-section {
+      padding-bottom: 24px; border-bottom: 1px solid var(--border-light);
+    }
+    .typography-section:last-child { border-bottom: none; }
+    .typography-meta {
+      font-size: 11px; color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: 0.06em; margin-top: 12px; font-weight: 600;
+    }
+    .bg-section {
+      padding: 40px; border-radius: 16px; margin: 16px 0;
+      box-shadow: var(--shadow-md); display: flex; flex-direction: column; gap: 12px;
+    }
+    .contrast-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px;
+    }
+    .contrast-box {
+      padding: 32px 24px; border-radius: 12px; text-align: center;
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; transition: all 0.3s;
+    }
+    .contrast-box:hover { transform: translateY(-2px); }
+
+    /* ==========================================
+       14. Export Section
+       ========================================== */
+    .export-section {
+      background: var(--surface); backdrop-filter: blur(48px); -webkit-backdrop-filter: blur(48px);
+      border: 1px solid var(--border-light); border-radius: var(--radius-lg);
+      padding: clamp(28px, 5vw, 40px); box-shadow: var(--shadow-lg);
+      position: relative; animation: fadeInUp 0.9s ease-out;
+    }
+    .export-section::before {
+      content: ''; position: absolute; inset: 0;
+      border-radius: var(--radius-lg); padding: 1px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+    }
+    .export-tabs {
+      display: flex; gap: 8px; margin-bottom: 24px;
+      padding-bottom: 20px; border-bottom: 1px solid var(--border-light); flex-wrap: wrap;
+    }
+    .export-tab {
+      padding: 10px 20px; border: 1.5px solid var(--border-light);
+      background: rgba(30, 30, 30, 0.4); font-family: var(--font-display);
+      font-size: 11px; font-weight: 700; color: var(--text-secondary);
+      cursor: pointer; border-radius: var(--radius-pill);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .export-tab.active {
+      background: var(--accent); border-color: var(--accent);
+      color: white; box-shadow: var(--shadow-glow);
+    }
+    .export-tab:hover:not(.active) {
+      background: var(--surface-2); border-color: rgba(255,255,255,0.2);
+      color: white; transform: translateY(-1px);
+    }
+    .light-theme .export-tab:hover:not(.active) {
+      background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.15);
+      color: #333;
+    }
+    .export-code-container { position: relative; }
+    .export-code {
+      background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border);
+      border-radius: 16px; padding: 24px;
+      font-family: var(--font-mono); font-size: 11px; line-height: 1.6;
+      color: var(--text-secondary); max-height: 200px; overflow-y: auto;
+      white-space: pre-wrap; word-break: break-word;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    .export-actions {
+      display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;
+    }
+
+    /* ==========================================
+       15. Modal
+       ========================================== */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center; z-index: 999;
+    }
+    .modal-overlay.show { display: flex; animation: fadeIn 0.3s ease-out; }
+    .modal {
+      background: var(--surface); backdrop-filter: blur(48px); -webkit-backdrop-filter: blur(48px);
+      border: 1px solid var(--border-light); border-radius: var(--radius-lg);
+      padding: 32px; max-width: 500px; width: 90%;
+      box-shadow: var(--shadow-lg); animation: fadeInUp 0.4s ease-out; position: relative;
+    }
+    .modal::before {
+      content: ''; position: absolute; inset: 0;
+      border-radius: var(--radius-lg); padding: 1px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+    }
+    .modal h3 {
+      font-size: 18px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; margin-bottom: 24px;
+    }
+    .modal-body { display: flex; flex-direction: column; gap: 20px; }
+    .modal-actions { display: flex; gap: 12px; margin-top: 24px; }
+    .modal select {
+      padding: 10px 16px; border: 1.5px solid var(--border-light);
+      border-radius: 12px; font-family: var(--font-display); font-size: 12px;
+      font-weight: 600; background: rgba(30, 30, 30, 0.8); color: white;
+      text-transform: uppercase; cursor: pointer; transition: all 0.2s;
+      letter-spacing: 0.04em; width: 100%;
+    }
+    .modal select:hover { border-color: var(--accent); }
+    .modal select option { background: #1a1a1a; }
+    .modal .color-picker-input { width: 100%; height: 56px; }
+
+    /* ==========================================
+       16. Toast
+       ========================================== */
+    .toast {
+      position: fixed; bottom: 32px; left: 50%;
+      transform: translateX(-50%) translateY(120px);
+      background: var(--surface); backdrop-filter: blur(48px); -webkit-backdrop-filter: blur(48px);
+      border: 1px solid var(--border-light); color: white;
+      padding: 16px 32px; border-radius: var(--radius-pill);
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000; box-shadow: var(--shadow-lg);
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* Footer */
+.footer {
+    position: relative;
+    margin-top: clamp(64px, 10vw, 120px);
+    padding: clamp(80px, 12vw, 160px) clamp(24px, 5vw, 48px) clamp(100px, 14vw, 140px);
+    text-align: center;
+    background:
+        radial-gradient(ellipse 80% 55% at 50% 100%, rgba(232,97,26,0.85) 0%, rgba(180,50,5,0.55) 30%, rgba(50,10,0,0.25) 60%, transparent 100%),
+        linear-gradient(to top, #1a0800 0%, var(--bg, #0a0a0a) 45%);
+    border-top: none;
+}
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+.footer-made-with {
+    font-size: 16px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.02em;
+}
+.footer-made-with a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.2s;
+}
+.footer-made-with a:hover {
+    color: rgb(232,97,26);
+}
+.emoji { font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", sans-serif; font-style: normal; }
+.footer-bmc {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 12px 28px;
+    border-radius: 50px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    cursor: pointer;
+}
+.footer-bmc:hover {
+    background: rgba(232,97,26,0.25);
+    border-color: rgba(232,97,26,0.5);
+    transform: translateY(-2px);
+}
+.footer-copyright {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1.8;
+}
+.footer-copyright a {
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.2s;
+}
+.footer-copyright a:hover {
+    color: rgb(232,97,26);
+}
+.footer-social {
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.06em;
+    margin-top: -8px;
+}
+.footer-social a {
+    color: rgba(255,255,255,0.45);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.footer-social a:hover {
+    color: rgb(232,97,26);
+}
+
+/* Footer — Light Theme */
+.light-theme .footer {
+    background:
+        radial-gradient(ellipse 80% 55% at 50% 100%, rgba(232,97,26,0.35) 0%, rgba(232,97,26,0.18) 30%, rgba(232,97,26,0.05) 60%, transparent 100%),
+        linear-gradient(to top, rgba(232,97,26,0.06) 0%, var(--bg) 45%);
+}
+.light-theme .footer-made-with { color: rgba(10,10,10,0.8); }
+.light-theme .footer-made-with a { color: #0a0a0a; }
+.light-theme .footer-made-with a:hover { color: rgb(232,97,26); }
+.light-theme .footer-bmc {
+    background: rgba(0,0,0,0.05);
+    border-color: rgba(0,0,0,0.12);
+    color: #1a1a1a;
+}
+.light-theme .footer-bmc:hover {
+    background: rgba(232,97,26,0.15);
+    border-color: rgba(232,97,26,0.4);
+}
+.light-theme .footer-copyright { color: rgba(10,10,10,0.4); }
+.light-theme .footer-copyright a { color: rgba(10,10,10,0.6); }
+.light-theme .footer-copyright a:hover { color: rgb(232,97,26); }
+.light-theme .footer-social { color: rgba(10,10,10,0.3); }
+.light-theme .footer-social a { color: rgba(10,10,10,0.45); }
+.light-theme .footer-social a:hover { color: rgb(232,97,26); }
+
+    /* ==========================================
+       18. Keyboard Hint
+       ========================================== */
+    .shortcuts-hint {
+      position: fixed; bottom: 32px; right: 24px; z-index: 100;
+      background: var(--surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-light); border-radius: 12px;
+      padding: 12px 16px; font-size: 10px; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
+      line-height: 1.8; opacity: 0.6; transition: opacity 0.3s;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .shortcuts-hint:hover { opacity: 1; }
+    .shortcuts-hint kbd {
+      background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;
+      font-family: var(--font-mono); font-size: 10px;
+    }
+
+    /* ==========================================
+       18b. Shade Tooltip
+       ========================================== */
+    .shade-tooltip {
+      position: fixed; z-index: 1000; pointer-events: none;
+      background: rgba(255,255,255,0.95); color: #333;
+      padding: 8px 14px; border-radius: 10px;
+      font-size: 12px; font-weight: 600; font-family: var(--font-display);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      display: none; white-space: nowrap;
+      letter-spacing: 0.02em;
+    }
+    .shade-tooltip .tooltip-swatch {
+      display: inline-block; width: 14px; height: 14px;
+      border-radius: 4px; vertical-align: middle; margin-left: 6px;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    /* ==========================================
+       19. Responsive
+       ========================================== */
+    @media (max-width: 768px) {
+      .shade-swatch-container { height: 70px; }
+      .shade-label { font-size: 9px; padding: 6px 0 1px; }
+      .shade-value { font-size: 8px; }
+      .gradient-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+      .logos-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+      .charts-showcase { grid-template-columns: 1fr; }
+      .preview-card { flex: 0 0 260px; min-height: 300px; }
+    }
+    @media (max-width: 640px) {
+      .controls { gap: 8px; }
+      .btn { min-width: auto; padding: 12px 20px; font-size: 11px; }
+      .export-tabs { gap: 6px; }
+      .export-tab { padding: 8px 14px; font-size: 10px; }
+      .preview-tab { padding: 10px 16px; font-size: 10px; }
+      .modal { padding: 24px; }
+      .shade-swatch-container { height: 56px; }
+      .shade-label { font-size: 8px; }
+      .shade-value { font-size: 7px; }
+      .shade-formats { display: none; }
+      .shortcuts-hint { display: none; }
+      .navbar-links { gap: 16px; }
+    }
+  </style>
+<!-- Google Analytics (consent-gated) -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  function _loadGA() {
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-KSQ52DZN13';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-KSQ52DZN13');
+  }
+  if (localStorage.getItem('ga-consent') === 'yes') { _loadGA(); }
+  else if (!localStorage.getItem('ga-consent')) {
+    document.addEventListener('DOMContentLoaded', function() {
+      var b = document.createElement('div');
+      b.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#1a1a1a;border-top:1px solid #333;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:99999;font-family:system-ui,sans-serif;font-size:13px;color:#999';
+      b.innerHTML = 'We use cookies for analytics to improve this tool. <span style="display:flex;gap:8px;flex-shrink:0"><button onclick="localStorage.setItem(\'ga-consent\',\'yes\');_loadGA();this.parentElement.parentElement.remove()" style="background:#e16105;color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;white-space:nowrap">Accept</button><button onclick="localStorage.setItem(\'ga-consent\',\'no\');this.parentElement.parentElement.remove()" style="background:transparent;color:#666;border:1px solid #444;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;white-space:nowrap">Decline</button></span>';
+      document.body.appendChild(b);
+    });
+  }
+</script>
+<!-- Open Graph -->
+<meta property="og:title" content="UI Color Generator — Free Shade Scale Tool">
+<meta property="og:description" content="Create perfect 11-shade color scales (50-950) for Tailwind CSS, Figma Variables, and modern design systems. OKLCH color science. Free forever.">
+<meta property="og:image" content="https://tools.gamaleldien.com/shades/og-image.png">
+<meta property="og:url" content="https://tools.gamaleldien.com/shades">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="UI Color Generator — Free Shade Scale Tool">
+<meta name="twitter:description" content="11 shades from any color. OKLCH. Tailwind + Figma export. Free.">
+<meta name="twitter:image" content="https://tools.gamaleldien.com/shades/og-image.png">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/" class="navbar-logo">UI<br>Color</a>
+    <div class="navbar-links">
+      <button class="icon-btn theme-toggle" onclick="toggleTheme()" title="Toggle theme" id="themeToggle">&#x263D;</button>
+      <a href="/" class="navbar-link">TOOLS</a>
+      <a href="https://gamaleldien.com" class="navbar-link" target="_blank" rel="noopener">ABOUT</a>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <div class="main-wrapper">
+    <div class="container">
+      <!-- Header -->
+      <header>
+        <h1>UI COLOR GENERATOR</h1>
+        <p class="hero-subtitle">The only tool you need for your UI Colors</p>
+        <p class="hero-description">Create perfect 11-shade color scales (50-950) for Tailwind CSS, Figma Variables, and modern design systems. Export to multiple formats.</p>
+      </header>
+
+      <!-- Controls -->
+      <section class="controls">
+        <div class="control-item">
+          <span class="control-label">COLOR</span>
+          <input type="color" class="color-picker-input" id="primaryColorInput" value="#3b82f6">
+        </div>
+        <div class="control-item">
+          <span class="control-label">HEX</span>
+          <input type="text" class="hex-input" id="hexInput" value="#3b82f6" placeholder="#000000" maxlength="7">
+        </div>
+        <button class="btn btn-primary" id="randomBtn" onclick="randomColor()">
+          GENERATE RANDOM <span class="btn-hint">SPACE</span>
+        </button>
+        <button class="btn btn-outline" id="addSecondaryBtn" onclick="showSecondaryModal()">
+          ADD SECONDARY COLOR
+        </button>
+      </section>
+
+      <!-- Palettes -->
+      <div class="palettes" id="palettesContainer"></div>
+
+      <!-- Preview Section -->
+      <div class="section-divider"><span>PREVIEW</span></div>
+      <div class="preview-hint">
+        <div class="preview-hint-text">
+          <span class="preview-hint-title">PREVIEW YOUR COLORS</span>
+          <span class="preview-hint-body">Hover over any element to reveal its color name and hex code</span>
+        </div>
+        <div class="tooltip-mock">
+          <div class="tooltip-mock-bubble">
+            primary &middot; Core 500 &middot; #e16105
+            <span class="tooltip-mock-swatch"></span>
+            <div class="tooltip-mock-arrow"></div>
+          </div>
+          <div class="tooltip-mock-card">
+            <div class="tooltip-mock-color"></div>
+            <div class="tooltip-mock-lines">
+              <div class="tooltip-mock-line" style="width:70%"></div>
+              <div class="tooltip-mock-line" style="width:50%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <section class="preview-section">
+        <!-- Row 1: Cards carousel (always visible) -->
+        <div class="preview-content" id="previewCardsContent"></div>
+
+        <!-- Row 2: Switchable previews -->
+        <div class="preview-tabs" id="previewTabs">
+          <button class="preview-tab active" data-tab="components" onclick="switchPreview('components', this)">COMPONENTS</button>
+          <button class="preview-tab" data-tab="charts" onclick="switchPreview('charts', this)">CHARTS</button>
+          <button class="preview-tab" data-tab="gradients" onclick="switchPreview('gradients', this)">GRADIENTS</button>
+          <button class="preview-tab" data-tab="headings" onclick="switchPreview('headings', this)">HEADINGS</button>
+        </div>
+        <div class="preview-content" id="previewContent"></div>
+      </section>
+
+      <!-- Export Section -->
+      <div class="section-divider"><span>EXPORT CODE</span></div>
+      <p class="preview-hint">Export your color system as code or Figma variables, ready to drop into any workflow</p>
+      <section class="export-section">
+        <div class="export-tabs" id="exportTabs">
+          <button class="export-tab" data-format="tailwind3" onclick="switchExport('tailwind3', this)">TAILWIND V3</button>
+          <button class="export-tab" data-format="tailwind4" onclick="switchExport('tailwind4', this)">TAILWIND V4</button>
+          <button class="export-tab" data-format="css" onclick="switchExport('css', this)">CSS VARIABLES</button>
+          <button class="export-tab active" data-format="figma" onclick="switchExport('figma', this)">FIGMA VARIABLES</button>
+          <button class="export-tab" data-format="json" onclick="switchExport('json', this)">JSON TOKENS</button>
+          <button class="export-tab" data-format="scss" onclick="switchExport('scss', this)">CSS</button>
+        </div>
+        <div class="export-code-container">
+          <pre class="export-code" id="exportCode">// Add a color to see export code...</pre>
+          <div class="export-actions">
+            <button class="btn btn-primary btn-small" onclick="copyExport()">COPY TO CLIPBOARD</button>
+            <button class="btn btn-outline btn-small" onclick="downloadExport()">DOWNLOAD FILE</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-made-with">Made with <span class="emoji">❤️</span> in Egypt <span class="emoji">🇪🇬</span> by <a href="https://gamaleldien.com" target="_blank" rel="noopener">Gamal Eldien</a></div>
+        <a href="https://buymeacoffee.com/gamaleldien" target="_blank" rel="noopener" class="footer-bmc">☕ Buy me a coffee</a>
+        <div class="footer-copyright">©2026 Gamal Eldien <span style="color:rgba(255,255,255,0.2);margin:0 8px">//</span> All tools are free & open for everyone</div>
+        <div class="footer-social"><a href="https://www.behance.net/Gamal_eldin" target="_blank" rel="noopener">Behance</a> <span style="color:rgba(255,255,255,0.15);margin:0 6px">·</span> <a href="https://www.linkedin.com/in/gamaleldien" target="_blank" rel="noopener">LinkedIn</a></div>
+    </div>
+</footer>
+
+  <!-- Secondary Color Modal -->
+  <div class="modal-overlay" id="secondaryModal">
+    <div class="modal">
+      <h3>ADD SECONDARY COLOR SCALE</h3>
+      <div class="modal-body">
+        <div class="control-item">
+          <span class="control-label">SECONDARY COLOR</span>
+          <input type="color" class="color-picker-input" id="secondaryColorInput" value="#10b981" style="width:100%">
+        </div>
+        <div class="control-item">
+          <span class="control-label">COLOR SCHEME</span>
+          <select id="schemeSelect">
+            <option value="custom">CUSTOM (PICK ANY)</option>
+            <option value="complementary">COMPLEMENTARY</option>
+            <option value="analogous">ANALOGOUS</option>
+            <option value="triadic">TRIADIC</option>
+            <option value="split-complementary">SPLIT COMPLEMENTARY</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary btn-small" onclick="addSecondaryColor()">ADD SCALE</button>
+        <button class="btn btn-outline btn-small" onclick="hideSecondaryModal()">CANCEL</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shade Tooltip -->
+  <div class="shade-tooltip" id="shadeTooltip"></div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Keyboard Hints -->
+  <div class="shortcuts-hint">
+    <kbd>SPACE</kbd> RANDOM &nbsp; <kbd>CMD/CTRL+Z</kbd> UNDO &nbsp; <kbd>CMD/CTRL+Y</kbd> REDO
+  </div>
+
+<script>
+/* ==============================================================
+   MODULE 1: COLOR SCIENCE
+   ============================================================== */
+
+// sRGB <-> Linear
+function srgbToLinear(c) {
+  return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+}
+function linearToSrgb(c) {
+  return c <= 0.0031308 ? c * 12.92 : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
+}
+
+// Linear RGB <-> OKLab
+function linearRgbToOklab(r, g, b) {
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  return {
+    L: 0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s,
+    a: 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s,
+    b: 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s
+  };
+}
+
+function oklabToLinearRgb(L, a, b) {
+  const l = (L + 0.3963377774 * a + 0.2158037573 * b);
+  const m = (L - 0.1055613458 * a - 0.0638541728 * b);
+  const s = (L - 0.0894841775 * a - 1.2914855480 * b);
+  const l3 = l * l * l;
+  const m3 = m * m * m;
+  const s3 = s * s * s;
+  return {
+    r: 4.0767416621 * l3 - 3.3077115913 * m3 + 0.2309699292 * s3,
+    g: -1.2684380046 * l3 + 2.6097574011 * m3 - 0.3413193965 * s3,
+    b: -0.0041960863 * l3 - 0.7034186147 * m3 + 1.7076147010 * s3
+  };
+}
+
+// Hex -> OKLCH
+function hexToOklch(hex) {
+  const rgb = hexToRgb(hex);
+  const lr = srgbToLinear(rgb.r / 255);
+  const lg = srgbToLinear(rgb.g / 255);
+  const lb = srgbToLinear(rgb.b / 255);
+  const lab = linearRgbToOklab(lr, lg, lb);
+  const C = Math.sqrt(lab.a * lab.a + lab.b * lab.b);
+  let H = Math.atan2(lab.b, lab.a) * (180 / Math.PI);
+  if (H < 0) H += 360;
+  return { L: lab.L, C: C, H: H };
+}
+
+// OKLCH -> Hex (with gamut clamping)
+function oklchToHex(L, C, H) {
+  L = Math.max(0, Math.min(1, L));
+  C = Math.max(0, C);
+  const hRad = H * (Math.PI / 180);
+  const a = C * Math.cos(hRad);
+  const b = C * Math.sin(hRad);
+  const rgb = oklabToLinearRgb(L, a, b);
+  // Gamut clamping: reduce chroma if out of gamut
+  let r = rgb.r, g = rgb.g, bl = rgb.b;
+  if (r < 0 || r > 1 || g < 0 || g > 1 || bl < 0 || bl > 1) {
+    // Binary search for max in-gamut chroma
+    let lo = 0, hi = C;
+    for (let i = 0; i < 20; i++) {
+      const mid = (lo + hi) / 2;
+      const ma = mid * Math.cos(hRad);
+      const mb = mid * Math.sin(hRad);
+      const t = oklabToLinearRgb(L, ma, mb);
+      if (t.r >= -0.001 && t.r <= 1.001 && t.g >= -0.001 && t.g <= 1.001 && t.b >= -0.001 && t.b <= 1.001) {
+        lo = mid;
+      } else {
+        hi = mid;
+      }
+    }
+    const fa = lo * Math.cos(hRad);
+    const fb = lo * Math.sin(hRad);
+    const frgb = oklabToLinearRgb(L, fa, fb);
+    r = frgb.r; g = frgb.g; bl = frgb.b;
+  }
+  const sr = Math.round(Math.max(0, Math.min(255, linearToSrgb(Math.max(0, Math.min(1, r))) * 255)));
+  const sg = Math.round(Math.max(0, Math.min(255, linearToSrgb(Math.max(0, Math.min(1, g))) * 255)));
+  const sb = Math.round(Math.max(0, Math.min(255, linearToSrgb(Math.max(0, Math.min(1, bl))) * 255)));
+  return '#' + [sr, sg, sb].map(v => v.toString(16).padStart(2, '0')).join('');
+}
+
+// Hex <-> RGB
+function hexToRgb(hex) {
+  hex = hex.replace('#', '');
+  if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+  return {
+    r: parseInt(hex.substring(0, 2), 16),
+    g: parseInt(hex.substring(2, 4), 16),
+    b: parseInt(hex.substring(4, 6), 16)
+  };
+}
+function rgbToHex(r, g, b) {
+  return '#' + [r, g, b].map(v => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, '0')).join('');
+}
+
+// Hex -> HSL
+function hexToHsl(hex) {
+  const rgb = hexToRgb(hex);
+  const r = rgb.r / 255, g = rgb.g / 255, b = rgb.b / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h, s, l = (max + min) / 2;
+  if (max === min) { h = s = 0; }
+  else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+      case g: h = ((b - r) / d + 2) / 6; break;
+      case b: h = ((r - g) / d + 4) / 6; break;
+    }
+  }
+  return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+}
+
+// WCAG contrast
+function getLuminance(hex) {
+  const rgb = hexToRgb(hex);
+  const [r, g, b] = [rgb.r, rgb.g, rgb.b].map(c => {
+    c = c / 255;
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+function getContrastRatio(hex1, hex2) {
+  const l1 = getLuminance(hex1);
+  const l2 = getLuminance(hex2);
+  const lighter = Math.max(l1, l2);
+  const darker = Math.min(l1, l2);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+function contrastText(bgHex) {
+  const L = getLuminance(bgHex);
+  return L > 0.179 ? '#000000' : '#ffffff';
+}
+
+// Format color value for display
+function formatColor(hex, format) {
+  switch (format) {
+    case 'hex': return hex;
+    case 'hsl': {
+      const hsl = hexToHsl(hex);
+      return `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+    }
+    case 'oklch': {
+      const oklch = hexToOklch(hex);
+      return `oklch(${oklch.L.toFixed(2)} ${oklch.C.toFixed(3)} ${oklch.H.toFixed(0)})`;
+    }
+    case 'rgb': {
+      const rgb = hexToRgb(hex);
+      return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+    }
+    default: return hex;
+  }
+}
+
+/* ==============================================================
+   MODULE 2: SHADE GENERATION
+   ============================================================== */
+
+const SHADE_KEYS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
+
+// Reference lightness for each shade weight
+const SHADE_LIGHTNESS = {
+  50: 0.97, 100: 0.93, 200: 0.87, 300: 0.78, 400: 0.67,
+  500: 0.56, 600: 0.48, 700: 0.39, 800: 0.31, 900: 0.24, 950: 0.16
+};
+
+// Standard chroma curve — peaks in mid-range, drops at extremes
+const CHROMA_CURVE = {
+  50: 0.45, 100: 0.65, 200: 0.82, 300: 0.92, 400: 0.97,
+  500: 1.0, 600: 1.08, 700: 1.12, 800: 1.08, 900: 0.98, 950: 0.8
+};
+
+// Poetic nicknames for each shade weight
+const SHADE_NICKNAMES = {
+  50: 'Ghost', 100: 'Mist', 200: 'Breeze', 300: 'Sky',
+  400: 'Clear', 500: 'Core', 600: 'Deep', 700: 'Bold',
+  800: 'Night', 900: 'Shadow', 950: 'Abyss'
+};
+
+// Auto-detect which shade weight best matches the input color's lightness
+function detectShadeWeight(L) {
+  let bestKey = 500, bestDist = Infinity;
+  for (const key of SHADE_KEYS) {
+    const dist = Math.abs(L - SHADE_LIGHTNESS[key]);
+    if (dist < bestDist) { bestDist = dist; bestKey = key; }
+  }
+  return bestKey;
+}
+
+function generateShades(baseHex) {
+  const oklch = hexToOklch(baseHex);
+  const anchorKey = detectShadeWeight(oklch.L);
+  const anchorCurveFactor = CHROMA_CURVE[anchorKey];
+  const shades = {};
+
+  for (const key of SHADE_KEYS) {
+    if (key === anchorKey) {
+      shades[key] = baseHex;
+      continue;
+    }
+    const targetL = SHADE_LIGHTNESS[key];
+    const targetC = oklch.C * (CHROMA_CURVE[key] / anchorCurveFactor);
+    shades[key] = oklchToHex(targetL, targetC, oklch.H);
+  }
+  return { shades, anchorKey };
+}
+
+// Color scheme calculations for secondary color
+function getSchemeColor(hex, scheme) {
+  const oklch = hexToOklch(hex);
+  switch (scheme) {
+    case 'complementary': return oklchToHex(oklch.L, oklch.C, (oklch.H + 180) % 360);
+    case 'analogous': return oklchToHex(oklch.L, oklch.C, (oklch.H + 30) % 360);
+    case 'triadic': return oklchToHex(oklch.L, oklch.C, (oklch.H + 120) % 360);
+    case 'split-complementary': return oklchToHex(oklch.L, oklch.C, (oklch.H + 150) % 360);
+    default: return hex;
+  }
+}
+
+/* ==============================================================
+   MODULE 3: STATE MANAGEMENT
+   ============================================================== */
+
+let colors = [];
+let history = [];
+let historyIndex = -1;
+let currentPreviewTab = 'components';
+let currentExportTab = 'figma';
+let shadeFormats = {}; // per-shade format: { colorId_shadeKey: 'hex'|'hsl'|... }
+
+function pushHistory() {
+  const state = JSON.stringify(colors);
+  if (historyIndex < history.length - 1) {
+    history = history.slice(0, historyIndex + 1);
+  }
+  history.push(state);
+  historyIndex++;
+  if (history.length > 50) { history.shift(); historyIndex--; }
+  saveToStorage();
+}
+
+function undo() {
+  if (historyIndex > 0) {
+    historyIndex--;
+    colors = JSON.parse(history[historyIndex]);
+    render();
+    showToast('UNDO');
+  }
+}
+function redo() {
+  if (historyIndex < history.length - 1) {
+    historyIndex++;
+    colors = JSON.parse(history[historyIndex]);
+    render();
+    showToast('REDO');
+  }
+}
+
+function saveToStorage() {
+  try { localStorage.setItem('shade-gen-colors', JSON.stringify(colors)); } catch(e) {}
+}
+function loadFromStorage() {
+  try {
+    const saved = localStorage.getItem('shade-gen-colors');
+    if (saved) {
+      colors = JSON.parse(saved);
+      // Backward compat: add anchorKey if missing
+      colors.forEach(c => {
+        if (!c.anchorKey) {
+          const oklch = hexToOklch(c.baseHex);
+          c.anchorKey = detectShadeWeight(oklch.L);
+        }
+      });
+      if (colors.length > 0) { pushHistory(); return true; }
+    }
+  } catch(e) {}
+  return false;
+}
+
+/* ==============================================================
+   MODULE 4: RENDERING SYSTEM
+   ============================================================== */
+
+function render() {
+  renderPalettes();
+  renderPreview();
+  renderExport();
+}
+
+function renderPalettes() {
+  const container = document.getElementById('palettesContainer');
+  if (colors.length === 0) {
+    container.innerHTML = '<div class="empty-state">Add a color to generate shades</div>';
+    updateControlsUI();
+    return;
+  }
+  container.innerHTML = colors.map((color, idx) => {
+    const isPrimary = idx === 0;
+    return `
+    <div class="palette-card" data-id="${color.id}">
+      <div class="palette-header">
+        <div class="header-left">
+          <span class="palette-indicator"></span>
+          <input type="text" class="scale-name-input" value="${escHtml(color.name)}"
+            onchange="updateColorName('${color.id}', this.value)">
+        </div>
+        <div class="header-right">
+          <button class="btn btn-small btn-outline btn-header-action" onclick="unlockAllShades('${color.id}')" title="Unlock all locked shades">UNLOCK ALL</button>
+          <button class="btn btn-small btn-outline btn-header-action" onclick="resetAllEdits('${color.id}')" title="Revert all manual edits">RESET EDITS</button>
+          ${!isPrimary ? `<button class="btn-remove" onclick="removeColor('${color.id}')" title="Remove scale">&times;</button>` : ''}
+        </div>
+      </div>
+      <div class="base-color-row">
+        <input type="color" class="base-color-picker-small" value="${color.baseHex}"
+          onchange="updateColorBase('${color.id}', this.value)">
+        <span class="base-label">BASE (${color.anchorKey || 500})</span>
+        <span class="base-hex-display">${color.baseHex.toUpperCase()}</span>
+      </div>
+      <div class="shade-list">
+        ${renderShadeItems(color)}
+      </div>
+    </div>`;
+  }).join('');
+  updateControlsUI();
+}
+
+function renderShadeItems(color) {
+  const anchor = color.anchorKey || 500;
+  return SHADE_KEYS.map(key => {
+    const hex = color.shades[key];
+    const isLocked = color.lockedShades && color.lockedShades[key];
+    const isEdited = color.manualShades && color.manualShades[key];
+    const isAnchor = key === anchor;
+    const fmtKey = color.id + '_' + key;
+    const fmt = shadeFormats[fmtKey] || 'hex';
+    const displayVal = formatColor(hex, fmt);
+
+    return `
+    <div class="shade-item ${isLocked ? 'locked' : ''} ${isEdited ? 'edited' : ''} ${isAnchor ? 'is-anchor' : ''}" data-shade="${key}">
+      ${isAnchor ? '<span class="anchor-badge">BASE</span>' : ''}
+      ${isEdited && !isAnchor ? '<span class="edited-badge">EDITED</span>' : ''}
+      <div class="shade-swatch-container">
+        <div class="shade-swatch" style="background:${hex}"></div>
+        <input type="color" class="shade-color-picker" value="${hex}"
+          onchange="editShade('${color.id}', ${key}, this.value)">
+      </div>
+      <div class="shade-label">${key}</div>
+      <div class="shade-value" id="sv_${color.id}_${key}"
+        onclick="copyShadeValue('${displayVal.replace(/'/g, "\\'")}', this)">${displayVal}</div>
+      <div class="shade-formats">
+        ${['hex','hsl','oklch','rgb'].map(f => `<button class="format-toggle ${fmt === f ? 'active' : ''}"
+          onclick="setShadeFormat('${color.id}', ${key}, '${f}')">${f.toUpperCase()}</button>`).join('')}
+      </div>
+      <div class="shade-actions">
+        <button class="icon-btn" onclick="copyShadeValue('${hex}', document.getElementById('sv_${color.id}_${key}'))" title="Copy">&#x2398;</button>
+        <button class="icon-btn ${isLocked ? 'locked-indicator' : ''}" onclick="toggleLockShade('${color.id}', ${key})" title="${isLocked ? 'Unlock' : 'Lock'}">${isLocked ? '&#x1F512;' : '&#x1F513;'}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateControlsUI() {
+  const btn = document.getElementById('addSecondaryBtn');
+  if (colors.length >= 2) {
+    btn.textContent = 'REMOVE SECONDARY';
+    btn.className = 'btn btn-danger';
+    btn.onclick = function() { removeColor(colors[1].id); };
+  } else if (colors.length === 1) {
+    btn.textContent = 'ADD SECONDARY COLOR';
+    btn.className = 'btn btn-outline';
+    btn.onclick = showSecondaryModal;
+  } else {
+    btn.textContent = 'ADD SECONDARY COLOR';
+    btn.className = 'btn btn-outline';
+    btn.onclick = showSecondaryModal;
+    btn.style.display = 'none';
+  }
+  if (colors.length >= 1) btn.style.display = '';
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ==============================================================
+   MODULE 5: EXPORT GENERATORS
+   ============================================================== */
+
+function renderExport() {
+  const el = document.getElementById('exportCode');
+  if (colors.length === 0) { el.textContent = '// Add a color to see export code...'; return; }
+  switch (currentExportTab) {
+    case 'tailwind3': el.textContent = exportTailwind3(); break;
+    case 'tailwind4': el.textContent = exportTailwind4(); break;
+    case 'css': el.textContent = exportCSS(); break;
+    case 'figma': el.textContent = exportFigma(); break;
+    case 'json': el.textContent = exportJSON(); break;
+    case 'scss': el.textContent = exportSCSS(); break;
+  }
+}
+
+function exportTailwind3() {
+  let out = '// tailwind.config.js\nmodule.exports = {\n  theme: {\n    extend: {\n      colors: {\n';
+  colors.forEach(c => {
+    out += `        '${c.name.toLowerCase().replace(/\s+/g, '-')}': {\n`;
+    SHADE_KEYS.forEach(k => { out += `          ${k}: '${c.shades[k]}',\n`; });
+    out += '        },\n';
+  });
+  out += '      },\n    },\n  },\n}';
+  return out;
+}
+
+function exportTailwind4() {
+  let out = '/* Tailwind CSS v4 */\n@theme {\n';
+  colors.forEach(c => {
+    const name = c.name.toLowerCase().replace(/\s+/g, '-');
+    SHADE_KEYS.forEach(k => {
+      const oklch = hexToOklch(c.shades[k]);
+      out += `  --color-${name}-${k}: oklch(${oklch.L.toFixed(3)} ${oklch.C.toFixed(3)} ${oklch.H.toFixed(1)});\n`;
+    });
+    out += '\n';
+  });
+  out += '}';
+  return out;
+}
+
+function exportCSS() {
+  let out = ':root {\n';
+  colors.forEach(c => {
+    const name = c.name.toLowerCase().replace(/\s+/g, '-');
+    out += `  /* ${c.name} */\n`;
+    SHADE_KEYS.forEach(k => { out += `  --${name}-${k}: ${c.shades[k]};\n`; });
+    out += '\n';
+  });
+  out += '}';
+  return out;
+}
+
+function exportFigma() {
+  const tokens = {
+    $extensions: { 'com.figma.modeName': 'Default' }
+  };
+  colors.forEach(c => {
+    const name = c.name.toLowerCase().replace(/\s+/g, '-');
+    tokens[name] = {};
+    SHADE_KEYS.forEach(k => {
+      const rgb = hexToRgb(c.shades[k]);
+      tokens[name][k] = {
+        $type: 'color',
+        $value: {
+          colorSpace: 'srgb',
+          components: [
+            Math.round((rgb.r / 255) * 1000) / 1000,
+            Math.round((rgb.g / 255) * 1000) / 1000,
+            Math.round((rgb.b / 255) * 1000) / 1000
+          ],
+          alpha: 1,
+          hex: c.shades[k].toUpperCase()
+        },
+        $extensions: {
+          'com.figma.scopes': ['ALL_SCOPES']
+        }
+      };
+    });
+  });
+  return JSON.stringify(tokens, null, 2);
+}
+
+function exportJSON() {
+  const tokens = {};
+  colors.forEach(c => {
+    const name = c.name.toLowerCase().replace(/\s+/g, '-');
+    tokens[name] = { baseColor: c.baseHex, shades: {} };
+    SHADE_KEYS.forEach(k => {
+      const hsl = hexToHsl(c.shades[k]);
+      const oklch = hexToOklch(c.shades[k]);
+      const rgb = hexToRgb(c.shades[k]);
+      tokens[name].shades[k] = {
+        hex: c.shades[k],
+        rgb: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
+        hsl: `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`,
+        oklch: `oklch(${oklch.L.toFixed(3)} ${oklch.C.toFixed(3)} ${oklch.H.toFixed(1)})`
+      };
+    });
+  });
+  return JSON.stringify(tokens, null, 2);
+}
+
+function exportSCSS() {
+  let out = '';
+  colors.forEach(c => {
+    const name = c.name.toLowerCase().replace(/\s+/g, '-');
+    out += `// ${c.name}\n`;
+    SHADE_KEYS.forEach(k => { out += `$${name}-${k}: ${c.shades[k]};\n`; });
+    out += `\n$${name}: (\n`;
+    SHADE_KEYS.forEach(k => { out += `  ${k}: $${name}-${k},\n`; });
+    out += ');\n\n';
+  });
+  return out;
+}
+
+function getExportFilename() {
+  const name = colors.length > 0 ? colors[0].name.toLowerCase().replace(/\s+/g, '-') : 'shades';
+  switch (currentExportTab) {
+    case 'tailwind3': return `${name}-tailwind.config.js`;
+    case 'tailwind4': return `${name}-tailwind-v4.css`;
+    case 'css': return `${name}-variables.css`;
+    case 'figma': return `${name}-figma.tokens.json`;
+    case 'json': return `${name}-tokens.json`;
+    case 'scss': return `${name}-variables.scss`;
+    default: return `${name}-export.txt`;
+  }
+}
+
+/* ==============================================================
+   MODULE 6: PREVIEW RENDERERS
+   ============================================================== */
+
+function renderPreview() {
+  const cardsEl = document.getElementById('previewCardsContent');
+  const el = document.getElementById('previewContent');
+  if (colors.length === 0) {
+    cardsEl.innerHTML = '<div class="preview-empty">Add a color to see previews</div>';
+    el.innerHTML = '';
+    return;
+  }
+  const s = colors[0].shades;
+  cardsEl.innerHTML = renderCardsPreview(s);
+  switch (currentPreviewTab) {
+    case 'components': el.innerHTML = renderComponentsPreview(s); break;
+    case 'charts': el.innerHTML = renderChartsPreview(s); break;
+    case 'gradients': el.innerHTML = renderGradientsPreview(s); break;
+    case 'headings': el.innerHTML = renderHeadingsPreview(s); break;
+  }
+}
+
+function renderCardsPreview(s) {
+  const s2 = colors.length > 1 ? colors[1].shades : null;
+  const accent = s2 || s; // fallback to primary when no secondary
+  const pName = colors[0].name;
+  const sName = colors.length > 1 ? colors[1].name : '';
+
+  // Build card arrays — photos and text separately for interleaving
+  const photoCards = [];
+  const textCards = [];
+
+  // 1. FULL-PHOTO HUMAN CARD — Hannah Laurent
+  photoCards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:380px;padding:0;overflow:hidden;position:relative;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+    <img src="https://images.unsplash.com/photo-1613005798967-632017e477c8?w=400&h=400&fit=crop&crop=face" alt="Hannah Laurent" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0">
+    <div style="position:absolute;bottom:0;left:0;right:0;height:55%;background:linear-gradient(to top,${s[600]}ee,transparent);display:flex;align-items:flex-end;padding:24px" data-shade-color="${s[600]}" data-shade-weight="600" data-color-name="${pName}">
+      <div style="flex:1">
+        <div style="font-size:26px;font-weight:700;color:white;line-height:1.2;text-shadow:0 2px 8px rgba(0,0,0,0.3)">Hannah<br>Laurent</div>
+      </div>
+      <div style="width:40px;height:40px;border-radius:50%;background:${s[500]};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0" data-shade-color="${s[500]}" data-shade-weight="500" data-color-name="${pName}">
+        <span style="color:white;font-size:18px">&rarr;</span>
+      </div>
+    </div>
+  </div>`);
+
+  // 2. FULL-PHOTO HUMAN CARD — Marcus Rivera
+  photoCards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:380px;padding:0;overflow:hidden;position:relative;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&crop=face" alt="Marcus Rivera" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0">
+    <div style="position:absolute;bottom:0;left:0;right:0;height:55%;background:linear-gradient(to top,${s[700]}ee,transparent);display:flex;align-items:flex-end;padding:24px" data-shade-color="${s[700]}" data-shade-weight="700" data-color-name="${pName}">
+      <div style="flex:1">
+        <div style="font-size:26px;font-weight:700;color:white;line-height:1.2;text-shadow:0 2px 8px rgba(0,0,0,0.3)">Marcus<br>Rivera</div>
+      </div>
+      <div style="width:40px;height:40px;border-radius:50%;background:${s[500]};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0" data-shade-color="${s[500]}" data-shade-weight="500" data-color-name="${pName}">
+        <span style="color:white;font-size:18px">&rarr;</span>
+      </div>
+    </div>
+  </div>`);
+
+  // 3. FULL-PHOTO HUMAN CARD — Elise Moreau (accent color overlay)
+  photoCards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:380px;padding:0;overflow:hidden;position:relative;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+    <img src="https://images.unsplash.com/photo-1753486986377-1395ccfb4a8a?w=400&h=400&fit=crop&crop=face" alt="Elise Moreau" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0">
+    <div style="position:absolute;bottom:0;left:0;right:0;height:55%;background:linear-gradient(to top,${accent[500]}ee,transparent);display:flex;align-items:flex-end;padding:24px" data-shade-color="${accent[500]}" data-shade-weight="500" data-color-name="${s2 ? sName : pName}">
+      <div style="flex:1">
+        <div style="font-size:26px;font-weight:700;color:white;line-height:1.2;text-shadow:0 2px 8px rgba(0,0,0,0.3)">Elise<br>Moreau</div>
+      </div>
+      <div style="width:40px;height:40px;border-radius:50%;background:${accent[600]};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0" data-shade-color="${accent[600]}" data-shade-weight="600" data-color-name="${s2 ? sName : pName}">
+        <span style="color:white;font-size:18px">&rarr;</span>
+      </div>
+    </div>
+  </div>`);
+
+  // 4. FULL-PHOTO HUMAN CARD — David Okafor
+  photoCards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:380px;padding:0;overflow:hidden;position:relative;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop&crop=face" alt="David Okafor" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0">
+    <div style="position:absolute;bottom:0;left:0;right:0;height:55%;background:linear-gradient(to top,${s[800]}ee,transparent);display:flex;align-items:flex-end;padding:24px" data-shade-color="${s[800]}" data-shade-weight="800" data-color-name="${pName}">
+      <div style="flex:1">
+        <div style="font-size:26px;font-weight:700;color:white;line-height:1.2;text-shadow:0 2px 8px rgba(0,0,0,0.3)">David<br>Okafor</div>
+      </div>
+      <div style="width:40px;height:40px;border-radius:50%;background:${s[500]};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0" data-shade-color="${s[500]}" data-shade-weight="500" data-color-name="${pName}">
+        <span style="color:white;font-size:18px">&rarr;</span>
+      </div>
+    </div>
+  </div>`);
+
+  // 5. HERO CARD - gradient header with badge
+  textCards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s[50]};color:${s[900]};padding:0;overflow:hidden;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+    <div style="height:160px;background:linear-gradient(135deg,${s[300]},${s[500]},${s[700]});position:relative" data-shade-color="${s[500]}" data-shade-weight="500" data-color-name="${pName}">
+      <div style="position:absolute;top:16px;right:16px">
+        <span class="preview-badge" style="background:${accent[500]};color:white;animation:floatUp 3s infinite ease-in-out" data-shade-color="${accent[500]}" data-shade-weight="500" data-color-name="${s2 ? sName : pName}">FEATURED</span>
+      </div>
+      <div style="position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(to top,${s[50]},transparent)"></div>
+    </div>
+    <div style="padding:20px 24px 24px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <h3 style="color:${s[700]};margin:0">HERO CARD</h3>
+        <span style="width:8px;height:8px;border-radius:50%;background:${accent[400]};display:inline-block"></span>
+      </div>
+      <p style="color:${s[600]}">A card with a gradient image area using your color scale.</p>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="preview-btn" style="background:${s[500]};color:white" data-shade-color="${s[500]}" data-shade-weight="500" data-color-name="${pName}">READ MORE</button>
+        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:${accent[500]}">NEW</span>
+      </div>
+    </div>
+  </div>`);
+
+  // 6. PRODUCT CARD - with price accent and border
+  textCards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s[100]};border:2px solid ${accent[200]};color:${s[800]};padding:0;overflow:hidden;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+    <div style="height:140px;background:radial-gradient(circle at 30% 40%,${s[200]},${s[400]},${s[600]});display:flex;align-items:center;justify-content:center;position:relative" data-shade-color="${s[400]}" data-shade-weight="400" data-color-name="${pName}">
+      <div style="width:80px;height:80px;border-radius:16px;background:rgba(255,255,255,0.2);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;font-size:32px;color:white;font-weight:700">&#x2726;</div>
+      <div style="position:absolute;top:12px;right:12px">
+        <span class="preview-badge" style="background:${accent[600]};color:white;animation:pulseBtn 2s infinite" data-shade-color="${accent[600]}" data-shade-weight="600" data-color-name="${s2 ? sName : pName}">SALE</span>
+      </div>
+    </div>
+    <div style="padding:20px;display:flex;flex-direction:column;gap:10px">
+      <h3 style="color:${s[700]}">PRODUCT NAME</h3>
+      <div style="display:flex;align-items:baseline;gap:8px">
+        <p style="color:${accent[600]};font-size:22px;font-weight:700;margin:0">$49.99</p>
+        <span style="color:${s[400]};font-size:13px;text-decoration:line-through">$79.99</span>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="preview-btn" style="background:${s[600]};color:white" data-shade-color="${s[600]}" data-shade-weight="600" data-color-name="${pName}">ADD TO CART</button>
+        <button class="preview-btn" style="background:transparent;border:2px solid ${accent[400]};color:${accent[600]}">&#x2661;</button>
+      </div>
+    </div>
+  </div>`);
+
+  // 7. TESTIMONIAL CARD - human photo with quote
+  textCards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s[900]};color:${s[50]};border-radius:var(--radius-lg);box-shadow:var(--shadow-md);border-left:4px solid ${accent[400]}" data-shade-color="${s[900]}" data-shade-weight="900" data-color-name="${pName}">
+    <div style="font-size:36px;line-height:1;color:${accent[400]};font-family:Georgia,serif">&#x201C;</div>
+    <p style="color:${s[300]};font-style:italic;line-height:1.7;flex:1">"This color palette completely transformed our brand identity. The shades are perfectly balanced and harmonious."</p>
+    <div style="display:flex;align-items:center;gap:14px;padding-top:8px;border-top:1px solid ${s[700]}">
+      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face" alt="Testimonial author" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid ${accent[500]}">
+      <div>
+        <div style="font-weight:700;font-size:14px;color:${s[200]}">JANE SMITH</div>
+        <div style="font-size:11px;color:${accent[400]};text-transform:uppercase;letter-spacing:0.06em">CREATIVE DIRECTOR</div>
+      </div>
+    </div>
+  </div>`);
+
+  // 8. SHADE SCALE CARD - typographic hero
+  textCards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:linear-gradient(135deg,${s[200]},${s[500]});color:white;padding:0;overflow:hidden;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)" data-shade-color="${s[500]}" data-shade-weight="500" data-color-name="${pName}">
+    <div style="padding:32px;display:flex;flex-direction:column;gap:16px;height:100%;justify-content:center">
+      <div style="font-size:48px;font-weight:700;line-height:1;letter-spacing:-0.02em;text-transform:uppercase">SHADE<br>SCALE</div>
+      <div style="width:48px;height:4px;border-radius:2px;background:${accent[300]}"></div>
+      <p style="font-size:13px;opacity:0.85;line-height:1.5">11 perfectly balanced shades from your input color.</p>
+      <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:${accent[100]};animation:fadeInSlide 1s ease-out infinite alternate">EXPLORE SHADES</span>
+    </div>
+  </div>`);
+
+  // 9. SECONDARY PHOTO CARD (only when s2 exists) — Sophia Kim
+  if (s2) {
+    photoCards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:380px;padding:0;overflow:hidden;position:relative;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+      <img src="https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=400&h=400&fit=crop&crop=face" alt="Sophia Kim" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0">
+      <div style="position:absolute;bottom:0;left:0;right:0;height:55%;background:linear-gradient(to top,${s2[600]}ee,transparent);display:flex;align-items:flex-end;padding:24px" data-shade-color="${s2[600]}" data-shade-weight="600" data-color-name="${sName}">
+        <div style="flex:1">
+          <div style="font-size:26px;font-weight:700;color:white;line-height:1.2;text-shadow:0 2px 8px rgba(0,0,0,0.3)">Sophia<br>Kim</div>
+        </div>
+        <div style="width:40px;height:40px;border-radius:50%;background:${s2[500]};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0" data-shade-color="${s2[500]}" data-shade-weight="500" data-color-name="${sName}">
+          <span style="color:white;font-size:18px">&rarr;</span>
+        </div>
+      </div>
+    </div>`);
+  }
+
+  // 10. NOTIFICATION CARD - with accent borders
+  textCards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s[50]};color:${s[900]};border-radius:var(--radius-lg);box-shadow:var(--shadow-md);border-bottom:4px solid ${accent[500]}">
+    <h3 style="color:${s[700]}">NOTIFICATIONS</h3>
+    <div style="display:flex;flex-direction:column;gap:10px;flex:1">
+      <div style="padding:14px 16px;border-radius:12px;font-size:13px;font-weight:500;line-height:1.5;border-left:3px solid ${accent[500]};background:${accent[50]};color:${s[800]}" data-shade-color="${accent[50]}" data-shade-weight="50" data-color-name="${s2 ? sName : pName}">
+        <strong style="color:${accent[600]}">Update:</strong> Your color scale has been saved successfully.
+      </div>
+      <div style="padding:14px 16px;border-radius:12px;font-size:13px;font-weight:500;line-height:1.5;border-left:3px solid ${s[500]};background:${s[100]};color:${s[800]}" data-shade-color="${s[100]}" data-shade-weight="100" data-color-name="${pName}">
+        <strong style="color:${s[600]}">Info:</strong> 11 shades generated from your input.
+      </div>
+      <div style="padding:14px 16px;border-radius:12px;font-size:13px;font-weight:500;line-height:1.5;border-left:3px solid ${s[300]};background:${s[900]};color:${s[100]}" data-shade-color="${s[900]}" data-shade-weight="900" data-color-name="${pName}">
+        <strong style="color:${accent[300]}">Note:</strong> Dark mode uses the deeper end of your scale.
+      </div>
+    </div>
+    <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:${accent[500]};animation:fadeInSlide 1s ease-out infinite alternate;margin-top:auto">3 NEW</span>
+  </div>`);
+
+  // Shuffle each group independently (Fisher-Yates)
+  for (let i = photoCards.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [photoCards[i], photoCards[j]] = [photoCards[j], photoCards[i]]; }
+  for (let i = textCards.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [textCards[i], textCards[j]] = [textCards[j], textCards[i]]; }
+  // Interleave: 1 photo then 2 text cards — no two photos adjacent
+  const ordered = [];
+  let pi = 0, ti = 0;
+  while (pi < photoCards.length || ti < textCards.length) {
+    if (pi < photoCards.length) ordered.push(photoCards[pi++]);
+    if (ti < textCards.length) ordered.push(textCards[ti++]);
+    if (ti < textCards.length) ordered.push(textCards[ti++]);
+  }
+
+  // Duplicate cards for seamless infinite scroll
+  const allCards = ordered.join('');
+  return `<div class="preview-carousel">
+    <div class="preview-carousel-track">${allCards}${allCards}</div>
+  </div>`;
+}
+
+function renderComponentsPreview(s) {
+  const s2 = colors.length > 1 ? colors[1].shades : null;
+  const pName = colors[0].name;
+  const sName = colors.length > 1 ? colors[1].name : '';
+  const cards = [];
+
+  // 1. Buttons Card
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s[50]};color:${s[900]};display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+    <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${s[400]}">BUTTONS</h3>
+    <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-start">
+      <button class="comp-btn" style="background:${s[500]};color:white;border:none;padding:12px 24px;border-radius:var(--radius-pill);font-family:var(--font-display);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;cursor:pointer" data-shade-color="${s[500]}" data-shade-weight="500" data-color-name="${pName}">PRIMARY</button>
+      <button class="comp-btn" style="background:${s[600]};color:white;border:none;padding:12px 24px;border-radius:var(--radius-pill);font-family:var(--font-display);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;cursor:pointer" data-shade-color="${s[600]}" data-shade-weight="600" data-color-name="${pName}">HOVER</button>
+      <button class="comp-btn" style="background:${s[700]};color:white;border:none;padding:12px 24px;border-radius:var(--radius-pill);font-family:var(--font-display);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;cursor:pointer;animation:pulseBtn 2s infinite" data-shade-color="${s[700]}" data-shade-weight="700" data-color-name="${pName}">ACTIVE</button>
+      <button class="comp-btn" style="border:2px solid ${s[500]};color:${s[500]};background:transparent;padding:12px 24px;border-radius:var(--radius-pill);font-family:var(--font-display);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;cursor:pointer">OUTLINE</button>
+      <button class="comp-btn" style="background:${s[100]};color:${s[700]};border:none;padding:12px 24px;border-radius:var(--radius-pill);font-family:var(--font-display);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;cursor:pointer" data-shade-color="${s[100]}" data-shade-weight="100" data-color-name="${pName}">SUBTLE</button>
+    </div>
+    <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:${s[500]};animation:fadeInSlide 1s ease-out infinite alternate;margin-top:auto">CLICKED!</span>
+  </div>`);
+
+  // 2. Inputs Card
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s[50]};color:${s[900]};display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+    <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${s[400]}">INPUTS</h3>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="position:relative">
+        <input type="text" readonly value="Email address" style="width:100%;padding:12px 16px;border-radius:12px;border:2px solid ${s[300]};background:${s[50]};color:${s[900]};font-family:var(--font-display);font-size:13px;font-weight:500;box-sizing:border-box">
+      </div>
+      <div style="position:relative">
+        <div style="width:100%;padding:12px 16px;border-radius:12px;border:2px solid ${s[500]};background:${s[100]};color:${s[900]};font-family:var(--font-display);font-size:13px;font-weight:500;display:flex;align-items:center" data-shade-color="${s[100]}" data-shade-weight="100" data-color-name="${pName}">
+          <span>Focused input</span><span style="display:inline-block;width:2px;height:16px;background:${s[500]};margin-left:2px;animation:pulse 1s step-end infinite"></span>
+        </div>
+        <span style="position:absolute;top:-8px;right:12px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:${s[500]};color:white;padding:2px 8px;border-radius:4px" data-shade-color="${s[500]}" data-shade-weight="500" data-color-name="${pName}">FOCUS</span>
+      </div>
+    </div>
+  </div>`);
+
+  // 3. Badges Card
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s[50]};color:${s[900]};display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+    <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${s[400]}">BADGES</h3>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start">
+      <span style="display:inline-block;padding:6px 14px;border-radius:var(--radius-pill);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:${s[100]};color:${s[700]}" data-shade-color="${s[100]}" data-shade-weight="100" data-color-name="${pName}">INFO</span>
+      <span style="display:inline-block;padding:6px 14px;border-radius:var(--radius-pill);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:${s[500]};color:white;animation:floatUp 3s infinite ease-in-out" data-shade-color="${s[500]}" data-shade-weight="500" data-color-name="${pName}">PRIMARY</span>
+      <span style="display:inline-block;padding:6px 14px;border-radius:var(--radius-pill);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:${s[700]};color:white" data-shade-color="${s[700]}" data-shade-weight="700" data-color-name="${pName}">DARK</span>
+      <span style="display:inline-block;padding:6px 14px;border-radius:var(--radius-pill);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;border:1px solid ${s[500]};color:${s[500]};background:transparent;animation:floatUp 3s infinite ease-in-out 0.5s">OUTLINE</span>
+      <span style="display:inline-block;padding:6px 14px;border-radius:var(--radius-pill);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:${s[200]};color:${s[800]}" data-shade-color="${s[200]}" data-shade-weight="200" data-color-name="${pName}">SUBTLE</span>
+    </div>
+  </div>`);
+
+  // 4. Alerts Card
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s[50]};color:${s[900]};display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+    <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${s[400]}">ALERTS</h3>
+    <div style="padding:16px 20px;border-radius:16px;font-size:14px;font-weight:500;line-height:1.6;border-left:4px solid ${s[500]};background:${s[100]};color:${s[800]}" data-shade-color="${s[100]}" data-shade-weight="100" data-color-name="${pName}">
+      <strong>Notification:</strong> Your color scale is looking great!
+    </div>
+    <div style="padding:16px 20px;border-radius:16px;font-size:14px;font-weight:500;line-height:1.6;border-left:4px solid ${s[300]};background:${s[900]};color:${s[100]}" data-shade-color="${s[900]}" data-shade-weight="900" data-color-name="${pName}">
+      <strong>Dark Alert:</strong> This uses the darker shades from your scale.
+    </div>
+  </div>`);
+
+  // 5. Toggles + Progress Card
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s[50]};color:${s[900]};display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+    <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${s[400]}">TOGGLES &amp; PROGRESS</h3>
+    <div style="display:flex;gap:16px;align-items:center">
+      <div style="width:48px;height:24px;border-radius:24px;position:relative;background:${s[200]}">
+        <div style="width:20px;height:20px;border-radius:50%;position:absolute;top:2px;background:${s[500]};animation:toggleSlide 2s infinite alternate ease-in-out" data-shade-color="${s[500]}" data-shade-weight="500" data-color-name="${pName}"></div>
+      </div>
+      <div style="width:48px;height:24px;border-radius:24px;position:relative;background:${s[500]}" data-shade-color="${s[500]}" data-shade-weight="500" data-color-name="${pName}">
+        <div style="width:20px;height:20px;border-radius:50%;position:absolute;top:2px;background:white;animation:toggleSlide 2s infinite alternate ease-in-out 0.5s"></div>
+      </div>
+    </div>
+    <div style="margin-top:8px">
+      <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:${s[400]};margin-bottom:6px;display:block">PROGRESS</span>
+      <div style="height:12px;border-radius:12px;overflow:hidden;width:100%;background:${s[200]}">
+        <div style="height:100%;border-radius:12px;background:${s[500]};animation:progressFill 3s infinite ease-in-out" data-shade-color="${s[500]}" data-shade-weight="500" data-color-name="${pName}"></div>
+      </div>
+    </div>
+  </div>`);
+
+  // Secondary color cards
+  if (s2) {
+    // 6. Dual Buttons Card
+    cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s2[50]};color:${s2[900]};display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+      <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${s2[400]}">DUAL BUTTONS</h3>
+      <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-start">
+        <button style="background:${s[500]};color:white;border:2px solid ${s2[500]};padding:12px 24px;border-radius:var(--radius-pill);font-family:var(--font-display);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;cursor:pointer">PRIMARY + SEC</button>
+        <button style="background:${s2[500]};color:white;border:none;padding:12px 24px;border-radius:var(--radius-pill);font-family:var(--font-display);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;cursor:pointer">SECONDARY</button>
+        <button style="background:${s2[600]};color:white;border:none;padding:12px 24px;border-radius:var(--radius-pill);font-family:var(--font-display);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;cursor:pointer;animation:pulseBtn 2s infinite">SEC HOVER</button>
+        <button style="border:2px solid ${s2[500]};color:${s2[500]};background:transparent;padding:12px 24px;border-radius:var(--radius-pill);font-family:var(--font-display);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;cursor:pointer">SEC OUTLINE</button>
+        <button style="background:linear-gradient(135deg,${s[500]},${s2[500]});color:white;border:none;padding:12px 24px;border-radius:var(--radius-pill);font-family:var(--font-display);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;cursor:pointer">GRADIENT</button>
+      </div>
+    </div>`);
+
+    // 7. Mixed Badges Card
+    cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s2[50]};color:${s2[900]};display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+      <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${s2[400]}">MIXED BADGES</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start">
+        <span style="display:inline-block;padding:6px 14px;border-radius:var(--radius-pill);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:${s2[100]};color:${s[700]}">PRIMARY TEXT</span>
+        <span style="display:inline-block;padding:6px 14px;border-radius:var(--radius-pill);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:${s2[500]};color:white;animation:floatUp 3s infinite ease-in-out">SECONDARY</span>
+        <span style="display:inline-block;padding:6px 14px;border-radius:var(--radius-pill);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:${s[100]};color:${s2[700]}">CROSS</span>
+        <span style="display:inline-block;padding:6px 14px;border-radius:var(--radius-pill);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;border:1px solid ${s2[500]};color:${s2[500]};background:transparent;animation:floatUp 3s infinite ease-in-out 0.5s">SEC OUTLINE</span>
+        <span style="display:inline-block;padding:6px 14px;border-radius:var(--radius-pill);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:linear-gradient(135deg,${s[500]},${s2[500]});color:white">GRADIENT</span>
+      </div>
+    </div>`);
+
+    // 8. Dual Progress Card
+    cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s2[50]};color:${s2[900]};display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+      <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${s2[400]}">DUAL PROGRESS</h3>
+      <div>
+        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:${s[400]};margin-bottom:6px;display:block">PRIMARY</span>
+        <div style="height:12px;border-radius:12px;overflow:hidden;width:100%;background:${s[200]}">
+          <div style="height:100%;border-radius:12px;background:${s[500]};animation:progressFill 3s infinite ease-in-out"></div>
+        </div>
+      </div>
+      <div>
+        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:${s2[400]};margin-bottom:6px;display:block">SECONDARY</span>
+        <div style="height:12px;border-radius:12px;overflow:hidden;width:100%;background:${s2[200]}">
+          <div style="height:100%;border-radius:12px;background:${s2[500]};animation:progressFill 3s infinite ease-in-out 0.5s"></div>
+        </div>
+      </div>
+      <div>
+        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:${s[400]};margin-bottom:6px;display:block">COMBINED</span>
+        <div style="height:12px;border-radius:12px;overflow:hidden;width:100%;background:${s[200]}">
+          <div style="display:flex;height:100%;width:100%;border-radius:12px;overflow:hidden">
+            <div style="background:${s[500]};width:50%;height:100%"></div>
+            <div style="background:${s2[500]};width:30%;height:100%"></div>
+          </div>
+        </div>
+      </div>
+    </div>`);
+  }
+
+  const allCards = cards.join('');
+  return `<div class="preview-carousel">
+    <div class="preview-carousel-track">${allCards}${allCards}</div>
+  </div>`;
+}
+
+function renderChartsPreview(s) {
+  const s2 = colors.length > 1 ? colors[1].shades : null;
+  const pName = colors[0].name;
+  const sName = colors.length > 1 ? colors[1].name : '';
+  const heights = [55, 75, 95, 65, 45, 80, 60];
+  const heights2 = [40, 60, 70, 50, 65, 55, 45];
+  const shadeList = [200, 300, 400, 500, 600, 700, 800];
+  const cards = [];
+  const uid = Date.now().toString(36);
+
+  // 1. Bar Chart Card
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+    <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted)">BAR CHART${s2 ? ' (DUAL)' : ''}</h3>
+    <div style="display:flex;gap:12px;align-items:flex-end;height:180px;flex:1">
+      ${s2
+        ? heights.map((h, i) => `<div style="display:flex;gap:3px;align-items:flex-end;flex:1;height:100%"><div style="height:${h}%;background:${s[shadeList[i]]};flex:1;border-radius:8px 8px 0 0;transform-origin:bottom;animation:barGrow 1.5s ease-out forwards;animation-delay:${i * 0.1}s;transform:scaleY(0)" data-shade-color="${s[shadeList[i]]}" data-shade-weight="${shadeList[i]}" data-color-name="${pName}"></div><div style="height:${heights2[i]}%;background:${s2[shadeList[i]]};flex:1;border-radius:8px 8px 0 0;transform-origin:bottom;animation:barGrow 1.5s ease-out forwards;animation-delay:${i * 0.1 + 0.05}s;transform:scaleY(0)" data-shade-color="${s2[shadeList[i]]}" data-shade-weight="${shadeList[i]}" data-color-name="${sName}"></div></div>`).join('')
+        : heights.map((h, i) => `<div style="height:${h}%;background:${s[shadeList[i]]};flex:1;border-radius:8px 8px 0 0;min-width:20px;transform-origin:bottom;animation:barGrow 1.5s ease-out forwards;animation-delay:${i * 0.1}s;transform:scaleY(0)" data-shade-color="${s[shadeList[i]]}" data-shade-weight="${shadeList[i]}" data-color-name="${pName}"></div>`).join('')}
+    </div>
+    ${s2 ? `<div style="display:flex;gap:16px;justify-content:center">
+      <span style="font-size:10px;display:flex;align-items:center;gap:4px;color:var(--text-secondary)"><span style="width:10px;height:10px;border-radius:3px;background:${s[500]};display:inline-block"></span>PRIMARY</span>
+      <span style="font-size:10px;display:flex;align-items:center;gap:4px;color:var(--text-secondary)"><span style="width:10px;height:10px;border-radius:3px;background:${s2[500]};display:inline-block"></span>SECONDARY</span>
+    </div>` : ''}
+  </div>`);
+
+  // 2. Pie Chart Card
+  let pieSlices, pieColorArr;
+  if (s2) {
+    pieSlices = [20, 15, 15, 15, 15, 10, 10];
+    pieColorArr = [s[300], s2[400], s[500], s2[500], s[600], s2[600], s[700]];
+  } else {
+    pieSlices = [25, 20, 20, 20, 15];
+    pieColorArr = [s[300], s[400], s[500], s[600], s[700]];
+  }
+  let pieGrad = 'conic-gradient(';
+  let acc = 0;
+  pieSlices.forEach((sl, i) => {
+    pieGrad += `${pieColorArr[i]} ${acc}% ${acc + sl}%`;
+    acc += sl;
+    if (i < pieSlices.length - 1) pieGrad += ', ';
+  });
+  pieGrad += ')';
+
+  // Build SVG pie with individual hoverable slices
+  let pieSvgSlices = '';
+  let pieAcc = 0;
+  const pieWeights = s2 ? [300, 400, 500, 500, 600, 600, 700] : [300, 400, 500, 600, 700];
+  const pieNames = s2 ? [pName, sName, pName, sName, pName, sName, pName] : [pName, pName, pName, pName, pName];
+  pieSlices.forEach((sl, i) => {
+    const startAngle = (pieAcc / 100) * 360;
+    const endAngle = ((pieAcc + sl) / 100) * 360;
+    const startRad = (startAngle - 90) * Math.PI / 180;
+    const endRad = (endAngle - 90) * Math.PI / 180;
+    const largeArc = sl > 50 ? 1 : 0;
+    const x1 = 80 + 72 * Math.cos(startRad), y1 = 80 + 72 * Math.sin(startRad);
+    const x2 = 80 + 72 * Math.cos(endRad), y2 = 80 + 72 * Math.sin(endRad);
+    pieSvgSlices += `<path d="M80,80 L${x1},${y1} A72,72 0 ${largeArc},1 ${x2},${y2} Z" fill="${pieColorArr[i]}" data-shade-color="${pieColorArr[i]}" data-shade-weight="${pieWeights[i]}" data-color-name="${pieNames[i]}" style="cursor:pointer"/>`;
+    pieAcc += sl;
+  });
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);align-items:center">
+    <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);align-self:flex-start">PIE CHART</h3>
+    <svg viewBox="0 0 160 160" style="width:160px;height:160px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.15));animation:spinSlow 20s linear infinite">${pieSvgSlices}</svg>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+      ${pieSlices.map((sl, i) => `<span style="font-size:10px;display:flex;align-items:center;gap:4px;color:var(--text-secondary)" data-shade-color="${pieColorArr[i]}" data-shade-weight="${pieWeights[i]}" data-color-name="${pieNames[i]}"><span style="width:10px;height:10px;border-radius:3px;background:${pieColorArr[i]};display:inline-block"></span>${sl}%</span>`).join('')}
+    </div>
+  </div>`);
+
+  // 3. Line Chart Card
+  const lineWeights = [200, 300, 400, 500, 600, 700, 800];
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+    <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted)">LINE CHART${s2 ? ' (DUAL)' : ''}</h3>
+    <svg viewBox="0 0 300 120" style="width:100%;height:auto;flex:1">
+      <defs>
+        <linearGradient id="areaGrad_${uid}" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="${s[400]}" stop-opacity="0.4"/>
+          <stop offset="100%" stop-color="${s[600]}" stop-opacity="0.05"/>
+        </linearGradient>
+        ${s2 ? `<linearGradient id="areaGrad2_${uid}" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="${s2[400]}" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="${s2[600]}" stop-opacity="0.05"/>
+        </linearGradient>` : ''}
+      </defs>
+      <path d="M0,100 L50,70 L100,85 L150,40 L200,55 L250,25 L300,45 L300,120 L0,120Z" fill="url(#areaGrad_${uid})" data-shade-color="${s[400]}" data-shade-weight="400" data-color-name="${pName}"/>
+      <polyline points="0,100 50,70 100,85 150,40 200,55 250,25 300,45" fill="none" stroke="${s[500]}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1000" stroke-dashoffset="1000" style="animation:drawLine 3s ease-out forwards" data-shade-color="${s[500]}" data-shade-weight="500" data-color-name="${pName}"/>
+      ${[0,50,100,150,200,250,300].map((x,i) => `<circle cx="${x}" cy="${[100,70,85,40,55,25,45][i]}" r="4" fill="${s[lineWeights[i]]}" stroke="rgba(0,0,0,0.3)" stroke-width="1" data-shade-color="${s[lineWeights[i]]}" data-shade-weight="${lineWeights[i]}" data-color-name="${pName}"/>`).join('')}
+      ${s2 ? `
+      <path d="M0,80 L50,90 L100,65 L150,75 L200,45 L250,60 L300,35 L300,120 L0,120Z" fill="url(#areaGrad2_${uid})" data-shade-color="${s2[400]}" data-shade-weight="400" data-color-name="${sName}"/>
+      <polyline points="0,80 50,90 100,65 150,75 200,45 250,60 300,35" fill="none" stroke="${s2[500]}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1000" stroke-dashoffset="1000" style="animation:drawLine 3s ease-out forwards 0.5s" data-shade-color="${s2[500]}" data-shade-weight="500" data-color-name="${sName}"/>
+      ${[0,50,100,150,200,250,300].map((x,i) => `<circle cx="${x}" cy="${[80,90,65,75,45,60,35][i]}" r="4" fill="${s2[lineWeights[i]]}" stroke="rgba(0,0,0,0.3)" stroke-width="1" data-shade-color="${s2[lineWeights[i]]}" data-shade-weight="${lineWeights[i]}" data-color-name="${sName}"/>`).join('')}
+      ` : ''}
+    </svg>
+  </div>`);
+
+  // 4. Area Chart Card
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+    <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted)">AREA CHART${s2 ? ' (LAYERED)' : ''}</h3>
+    <svg viewBox="0 0 300 120" style="width:100%;height:auto;flex:1">
+      <path d="M0,90 L60,70 L120,80 L180,50 L240,65 L300,40 L300,120 L0,120Z" fill="${s[200]}" opacity="0.5" style="animation:pulse 4s ease-in-out infinite" data-shade-color="${s[200]}" data-shade-weight="200" data-color-name="${pName}"/>
+      <path d="M0,100 L60,80 L120,90 L180,65 L240,75 L300,55 L300,120 L0,120Z" fill="${s[400]}" opacity="0.5" style="animation:pulse 4s ease-in-out infinite 0.5s" data-shade-color="${s[400]}" data-shade-weight="400" data-color-name="${pName}"/>
+      <path d="M0,110 L60,95 L120,100 L180,80 L240,90 L300,70 L300,120 L0,120Z" fill="${s[600]}" opacity="0.5" style="animation:pulse 4s ease-in-out infinite 1s" data-shade-color="${s[600]}" data-shade-weight="600" data-color-name="${pName}"/>
+      ${s2 ? `
+      <path d="M0,95 L60,85 L120,75 L180,90 L240,60 L300,50 L300,120 L0,120Z" fill="${s2[300]}" opacity="0.35" style="animation:pulse 4s ease-in-out infinite 1.5s" data-shade-color="${s2[300]}" data-shade-weight="300" data-color-name="${sName}"/>
+      <path d="M0,105 L60,95 L120,85 L180,100 L240,75 L300,65 L300,120 L0,120Z" fill="${s2[500]}" opacity="0.35" style="animation:pulse 4s ease-in-out infinite 2s" data-shade-color="${s2[500]}" data-shade-weight="500" data-color-name="${sName}"/>
+      ` : ''}
+    </svg>
+  </div>`);
+
+  // Dual chart cards if s2
+  if (s2) {
+    // 5. Dual Bar Chart
+    cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+      <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted)">SECONDARY BAR CHART</h3>
+      <div style="display:flex;gap:12px;align-items:flex-end;height:180px;flex:1">
+        ${heights2.map((h, i) => `<div style="height:${h}%;background:${s2[shadeList[i]]};flex:1;border-radius:8px 8px 0 0;min-width:20px;transform-origin:bottom;animation:barGrow 1.5s ease-out forwards;animation-delay:${i * 0.1}s;transform:scaleY(0)" data-shade-color="${s2[shadeList[i]]}" data-shade-weight="${shadeList[i]}" data-color-name="${sName}"></div>`).join('')}
+      </div>
+    </div>`);
+
+    // 6. Dual Pie Chart
+    let pie2Slices = [30, 25, 25, 20];
+    let pie2Colors = [s2[300], s2[400], s2[600], s2[700]];
+    let pie2Grad = 'conic-gradient(';
+    let acc2 = 0;
+    pie2Slices.forEach((sl, i) => {
+      pie2Grad += `${pie2Colors[i]} ${acc2}% ${acc2 + sl}%`;
+      acc2 += sl;
+      if (i < pie2Slices.length - 1) pie2Grad += ', ';
+    });
+    pie2Grad += ')';
+
+    // Build SVG pie for secondary
+    let pie2SvgSlices = '';
+    let pie2Acc = 0;
+    const pie2Weights = [300, 400, 600, 700];
+    pie2Slices.forEach((sl, i) => {
+      const startAngle = (pie2Acc / 100) * 360;
+      const endAngle = ((pie2Acc + sl) / 100) * 360;
+      const startRad = (startAngle - 90) * Math.PI / 180;
+      const endRad = (endAngle - 90) * Math.PI / 180;
+      const largeArc = sl > 50 ? 1 : 0;
+      const x1 = 80 + 72 * Math.cos(startRad), y1 = 80 + 72 * Math.sin(startRad);
+      const x2 = 80 + 72 * Math.cos(endRad), y2 = 80 + 72 * Math.sin(endRad);
+      pie2SvgSlices += `<path d="M80,80 L${x1},${y1} A72,72 0 ${largeArc},1 ${x2},${y2} Z" fill="${pie2Colors[i]}" data-shade-color="${pie2Colors[i]}" data-shade-weight="${pie2Weights[i]}" data-color-name="${sName}" style="cursor:pointer"/>`;
+      pie2Acc += sl;
+    });
+    cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);align-items:center">
+      <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);align-self:flex-start">SECONDARY PIE</h3>
+      <svg viewBox="0 0 160 160" style="width:160px;height:160px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.15));animation:spinSlow 20s linear infinite reverse">${pie2SvgSlices}</svg>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+        ${pie2Slices.map((sl, i) => `<span style="font-size:10px;display:flex;align-items:center;gap:4px;color:var(--text-secondary)" data-shade-color="${pie2Colors[i]}" data-shade-weight="${pie2Weights[i]}" data-color-name="${sName}"><span style="width:10px;height:10px;border-radius:3px;background:${pie2Colors[i]};display:inline-block"></span>${sl}%</span>`).join('')}
+      </div>
+    </div>`);
+  }
+
+  const allCards = cards.join('');
+  return `<div class="preview-carousel">
+    <div class="preview-carousel-track">${allCards}${allCards}</div>
+  </div>`;
+}
+
+function renderGradientsPreview(s) {
+  const s2 = colors.length > 1 ? colors[1].shades : null;
+  const pName = colors[0].name;
+  const sName = colors.length > 1 ? colors[1].name : '';
+  const cards = [];
+
+  // 1. Linear Gradients Card
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:12px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+    <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted)">LINEAR GRADIENTS</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1">
+      <div style="border-radius:12px;background:linear-gradient(135deg,${s[200]},${s[600]});background-size:200% 200%;animation:gradientShift 4s infinite alternate;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+        <span style="font-size:10px;font-weight:700;color:white;text-shadow:0 2px 8px rgba(0,0,0,0.5);text-transform:uppercase;letter-spacing:0.06em">200-600</span>
+        <div style="display:flex;gap:4px"><span style="width:14px;height:14px;border-radius:50%;background:${s[200]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[200]}" data-shade-weight="200" data-color-name="${pName}"></span><span style="width:14px;height:14px;border-radius:50%;background:${s[600]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[600]}" data-shade-weight="600" data-color-name="${pName}"></span></div>
+      </div>
+      <div style="border-radius:12px;background:linear-gradient(135deg,${s[300]},${s[700]});background-size:200% 200%;animation:gradientShift 4s infinite alternate 0.5s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+        <span style="font-size:10px;font-weight:700;color:white;text-shadow:0 2px 8px rgba(0,0,0,0.5);text-transform:uppercase;letter-spacing:0.06em">300-700</span>
+        <div style="display:flex;gap:4px"><span style="width:14px;height:14px;border-radius:50%;background:${s[300]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[300]}" data-shade-weight="300" data-color-name="${pName}"></span><span style="width:14px;height:14px;border-radius:50%;background:${s[700]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[700]}" data-shade-weight="700" data-color-name="${pName}"></span></div>
+      </div>
+      <div style="border-radius:12px;background:linear-gradient(135deg,${s[400]},${s[800]});background-size:200% 200%;animation:gradientShift 4s infinite alternate 1s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+        <span style="font-size:10px;font-weight:700;color:white;text-shadow:0 2px 8px rgba(0,0,0,0.5);text-transform:uppercase;letter-spacing:0.06em">400-800</span>
+        <div style="display:flex;gap:4px"><span style="width:14px;height:14px;border-radius:50%;background:${s[400]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[400]}" data-shade-weight="400" data-color-name="${pName}"></span><span style="width:14px;height:14px;border-radius:50%;background:${s[800]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[800]}" data-shade-weight="800" data-color-name="${pName}"></span></div>
+      </div>
+      <div style="border-radius:12px;background:linear-gradient(135deg,${s[100]},${s[500]},${s[900]});background-size:200% 200%;animation:gradientShift 4s infinite alternate 1.5s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+        <span style="font-size:10px;font-weight:700;color:white;text-shadow:0 2px 8px rgba(0,0,0,0.5);text-transform:uppercase;letter-spacing:0.06em">100-900</span>
+        <div style="display:flex;gap:4px"><span style="width:14px;height:14px;border-radius:50%;background:${s[100]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[100]}" data-shade-weight="100" data-color-name="${pName}"></span><span style="width:14px;height:14px;border-radius:50%;background:${s[500]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[500]}" data-shade-weight="500" data-color-name="${pName}"></span><span style="width:14px;height:14px;border-radius:50%;background:${s[900]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[900]}" data-shade-weight="900" data-color-name="${pName}"></span></div>
+      </div>
+    </div>
+  </div>`);
+
+  // 2. Radial Gradients Card
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:12px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+    <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted)">RADIAL GRADIENTS</h3>
+    <div style="flex:1;border-radius:12px;background:radial-gradient(circle,${s[400]},${s[800]});display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;animation:pulse 4s ease-in-out infinite">
+      <span style="font-size:10px;font-weight:700;color:white;text-shadow:0 2px 8px rgba(0,0,0,0.5);text-transform:uppercase;letter-spacing:0.06em">RADIAL</span>
+      <div style="display:flex;gap:4px"><span style="width:14px;height:14px;border-radius:50%;background:${s[400]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[400]}" data-shade-weight="400" data-color-name="${pName}"></span><span style="width:14px;height:14px;border-radius:50%;background:${s[800]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[800]}" data-shade-weight="800" data-color-name="${pName}"></span></div>
+    </div>
+    <div style="flex:1;border-radius:12px;background:radial-gradient(ellipse,${s[300]},${s[700]});display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;animation:pulse 4s ease-in-out infinite 1s">
+      <span style="font-size:10px;font-weight:700;color:white;text-shadow:0 2px 8px rgba(0,0,0,0.5);text-transform:uppercase;letter-spacing:0.06em">ELLIPSE</span>
+      <div style="display:flex;gap:4px"><span style="width:14px;height:14px;border-radius:50%;background:${s[300]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[300]}" data-shade-weight="300" data-color-name="${pName}"></span><span style="width:14px;height:14px;border-radius:50%;background:${s[700]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[700]}" data-shade-weight="700" data-color-name="${pName}"></span></div>
+    </div>
+  </div>`);
+
+  // 3. Conic + Patterns Card
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:12px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+    <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted)">CONIC &amp; PATTERNS</h3>
+    <div style="flex:1;border-radius:12px;background:conic-gradient(from 0deg,${s[300]},${s[500]},${s[700]},${s[300]});display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+      <span style="font-size:10px;font-weight:700;color:white;text-shadow:0 2px 8px rgba(0,0,0,0.5);text-transform:uppercase;letter-spacing:0.06em">CONIC</span>
+      <div style="display:flex;gap:4px"><span style="width:14px;height:14px;border-radius:50%;background:${s[300]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[300]}" data-shade-weight="300" data-color-name="${pName}"></span><span style="width:14px;height:14px;border-radius:50%;background:${s[500]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[500]}" data-shade-weight="500" data-color-name="${pName}"></span><span style="width:14px;height:14px;border-radius:50%;background:${s[700]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[700]}" data-shade-weight="700" data-color-name="${pName}"></span></div>
+    </div>
+    <div style="flex:1;border-radius:12px;background:repeating-linear-gradient(45deg,${s[200]} 0px,${s[200]} 10px,${s[400]} 10px,${s[400]} 20px);background-size:200% 200%;animation:gradientShift 4s infinite alternate;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+      <span style="font-size:10px;font-weight:700;color:white;text-shadow:0 2px 8px rgba(0,0,0,0.5);text-transform:uppercase;letter-spacing:0.06em">STRIPED</span>
+      <div style="display:flex;gap:4px"><span style="width:14px;height:14px;border-radius:50%;background:${s[200]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[200]}" data-shade-weight="200" data-color-name="${pName}"></span><span style="width:14px;height:14px;border-radius:50%;background:${s[400]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[400]}" data-shade-weight="400" data-color-name="${pName}"></span></div>
+    </div>
+  </div>`);
+
+  // 4. Text Gradients Card
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);justify-content:center">
+    <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted)">TEXT GRADIENTS</h3>
+    <div style="font-size:clamp(28px,5vw,40px);font-weight:700;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-transform:uppercase;letter-spacing:-0.02em;line-height:1.2;background:linear-gradient(135deg,${s[400]},${s[700]});-webkit-background-clip:text;background-clip:text;background-size:200% 200%;animation:gradientShift 4s infinite alternate">BEAUTIFUL TEXT</div>
+    <div style="font-size:clamp(28px,5vw,40px);font-weight:700;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-transform:uppercase;letter-spacing:-0.02em;line-height:1.2;background:linear-gradient(90deg,${s[200]},${s[600]});-webkit-background-clip:text;background-clip:text;background-size:200% 200%;animation:gradientShift 4s infinite alternate 1s">COLOR GRADIENTS</div>
+  </div>`);
+
+  if (s2) {
+    // 5. Cross-Palette Card
+    cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:10px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+      <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted)">CROSS-PALETTE</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1">
+        <div style="border-radius:12px;background:linear-gradient(135deg,${s[300]},${s2[700]});background-size:200% 200%;animation:gradientShift 4s infinite alternate;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+          <span style="font-size:9px;font-weight:700;color:white;text-shadow:0 2px 8px rgba(0,0,0,0.5);text-transform:uppercase;letter-spacing:0.06em">P-S</span>
+          <div style="display:flex;gap:4px"><span style="width:14px;height:14px;border-radius:50%;background:${s[300]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[300]}" data-shade-weight="300" data-color-name="${pName}"></span><span style="width:14px;height:14px;border-radius:50%;background:${s2[700]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s2[700]}" data-shade-weight="700" data-color-name="${sName}"></span></div>
+        </div>
+        <div style="border-radius:12px;background:linear-gradient(135deg,${s2[200]},${s[600]});background-size:200% 200%;animation:gradientShift 4s infinite alternate 0.5s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+          <span style="font-size:9px;font-weight:700;color:white;text-shadow:0 2px 8px rgba(0,0,0,0.5);text-transform:uppercase;letter-spacing:0.06em">S-P</span>
+          <div style="display:flex;gap:4px"><span style="width:14px;height:14px;border-radius:50%;background:${s2[200]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s2[200]}" data-shade-weight="200" data-color-name="${sName}"></span><span style="width:14px;height:14px;border-radius:50%;background:${s[600]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[600]}" data-shade-weight="600" data-color-name="${pName}"></span></div>
+        </div>
+        <div style="border-radius:12px;background:linear-gradient(135deg,${s[400]},${s2[400]},${s[700]});background-size:200% 200%;animation:gradientShift 4s infinite alternate 1s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+          <span style="font-size:9px;font-weight:700;color:white;text-shadow:0 2px 8px rgba(0,0,0,0.5);text-transform:uppercase;letter-spacing:0.06em">P-S-P</span>
+          <div style="display:flex;gap:4px"><span style="width:14px;height:14px;border-radius:50%;background:${s[400]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[400]}" data-shade-weight="400" data-color-name="${pName}"></span><span style="width:14px;height:14px;border-radius:50%;background:${s2[400]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s2[400]}" data-shade-weight="400" data-color-name="${sName}"></span><span style="width:14px;height:14px;border-radius:50%;background:${s[700]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[700]}" data-shade-weight="700" data-color-name="${pName}"></span></div>
+        </div>
+        <div style="border-radius:12px;background:linear-gradient(135deg,${s2[300]},${s[500]},${s2[700]});background-size:200% 200%;animation:gradientShift 4s infinite alternate 1.5s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+          <span style="font-size:9px;font-weight:700;color:white;text-shadow:0 2px 8px rgba(0,0,0,0.5);text-transform:uppercase;letter-spacing:0.06em">S-P-S</span>
+          <div style="display:flex;gap:4px"><span style="width:14px;height:14px;border-radius:50%;background:${s2[300]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s2[300]}" data-shade-weight="300" data-color-name="${sName}"></span><span style="width:14px;height:14px;border-radius:50%;background:${s[500]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s[500]}" data-shade-weight="500" data-color-name="${pName}"></span><span style="width:14px;height:14px;border-radius:50%;background:${s2[700]};border:2px solid rgba(255,255,255,0.6);cursor:pointer" data-shade-color="${s2[700]}" data-shade-weight="700" data-color-name="${sName}"></span></div>
+        </div>
+      </div>
+    </div>`);
+
+    // 6. Mesh Gradient Card
+    cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:12px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+      <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted)">MESH GRADIENT</h3>
+      <div style="flex:1;border-radius:12px;background:radial-gradient(circle at 20% 30%,${s[300]},transparent 50%),radial-gradient(circle at 80% 70%,${s2[400]},transparent 50%),radial-gradient(circle at 50% 50%,${s[600]},${s2[800]});display:flex;align-items:center;justify-content:center;background-size:200% 200%;animation:gradientShift 4s infinite alternate"><span style="font-size:11px;font-weight:700;color:white;text-shadow:0 2px 8px rgba(0,0,0,0.5);text-transform:uppercase;letter-spacing:0.06em">MESH</span></div>
+      <div style="font-size:clamp(24px,4vw,32px);font-weight:700;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-transform:uppercase;letter-spacing:-0.02em;line-height:1.2;background:linear-gradient(135deg,${s[400]},${s2[600]});-webkit-background-clip:text;background-clip:text;background-size:200% 200%;animation:gradientShift 4s infinite alternate 1s">DUAL PALETTE</div>
+    </div>`);
+  }
+
+  const allCards = cards.join('');
+  return `<div class="preview-carousel">
+    <div class="preview-carousel-track">${allCards}${allCards}</div>
+  </div>`;
+}
+
+function renderLogosPreview(s) {
+  const s2 = colors.length > 1 ? colors[1].shades : null;
+  const uid = Date.now().toString(36);
+  const logoSvg = (fill) => `<svg viewBox="0 0 100 100" fill="${fill}" style="width:60px;height:60px"><circle cx="50" cy="40" r="25"/><rect x="30" y="70" width="40" height="12" rx="6"/></svg>`;
+  const logoGradSvg = (id, c1, c2) => `<svg viewBox="0 0 100 100" style="width:60px;height:60px"><defs><linearGradient id="${id}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/></linearGradient></defs><circle cx="50" cy="40" r="25" fill="url(#${id})"/><rect x="30" y="70" width="40" height="12" rx="6" fill="url(#${id})"/></svg>`;
+  const logoDualSvg = (iconFill, textFill) => `<svg viewBox="0 0 100 100" style="width:60px;height:60px"><circle cx="50" cy="40" r="25" fill="${iconFill}"/><rect x="30" y="70" width="40" height="12" rx="6" fill="${textFill}"/></svg>`;
+  const cards = [];
+
+  // 1. Monochrome Logo Card
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s[50]};color:${s[900]};display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);align-items:center;justify-content:center">
+    <div style="animation:floatUp 3s infinite ease-in-out;display:flex;flex-direction:column;align-items:center;gap:16px">
+      ${logoSvg(s[500])}
+      <span style="font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;font-family:var(--font-display);color:${s[700]}">BRAND</span>
+    </div>
+    <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${s[400]};margin-top:auto">MONOCHROME</span>
+  </div>`);
+
+  // 2. Gradient Logo Card
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s[900]};color:${s[100]};display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);align-items:center;justify-content:center">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:16px">
+      ${logoGradSvg('lgr1_'+uid, s[300], s[600])}
+      <span style="font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;font-family:var(--font-display);color:${s[100]}">BRAND</span>
+    </div>
+    <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${s[500]};margin-top:auto">GRADIENT</span>
+  </div>`);
+
+  // 3. On White Logo Card
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:white;color:${s[900]};display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);align-items:center;justify-content:center">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:16px">
+      ${logoSvg(s[500])}
+      <span style="font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;font-family:var(--font-display);color:${s[900]}">BRAND</span>
+    </div>
+    <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${s[400]};margin-top:auto">ON WHITE</span>
+  </div>`);
+
+  // 4. Inverted Logo Card (pulses)
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s[500]};color:white;display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);align-items:center;justify-content:center">
+    <div style="animation:pulseBtn 2s infinite;display:flex;flex-direction:column;align-items:center;gap:16px">
+      ${logoSvg('white')}
+      <span style="font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;font-family:var(--font-display);color:white">BRAND</span>
+    </div>
+    <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.6);margin-top:auto">INVERTED</span>
+  </div>`);
+
+  if (s2) {
+    // 5. Primary Icon + Secondary Text
+    cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s[50]};color:${s[900]};display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);align-items:center;justify-content:center">
+      <div style="animation:floatUp 3s infinite ease-in-out;display:flex;flex-direction:column;align-items:center;gap:16px">
+        ${logoDualSvg(s[500], s2[500])}
+        <span style="font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;font-family:var(--font-display);color:${s2[600]}">BRAND</span>
+      </div>
+      <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${s[400]};margin-top:auto">PRIMARY + SECONDARY</span>
+    </div>`);
+
+    // 6. Cross-Palette Gradient
+    cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s[900]};color:${s2[200]};display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);align-items:center;justify-content:center">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:16px">
+        ${logoGradSvg('lgr2_'+uid, s[400], s2[500])}
+        <span style="font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;font-family:var(--font-display);color:${s2[200]}">BRAND</span>
+      </div>
+      <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${s2[500]};margin-top:auto">CROSS-PALETTE</span>
+    </div>`);
+
+    // 7. On Secondary
+    cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s2[500]};color:white;display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);align-items:center;justify-content:center">
+      <div style="animation:floatUp 3s infinite ease-in-out 0.5s;display:flex;flex-direction:column;align-items:center;gap:16px">
+        ${logoSvg('white')}
+        <span style="font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;font-family:var(--font-display);color:white">BRAND</span>
+      </div>
+      <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.6);margin-top:auto">ON SECONDARY</span>
+    </div>`);
+  }
+
+  const allCards = cards.join('');
+  return `<div class="preview-carousel">
+    <div class="preview-carousel-track">${allCards}${allCards}</div>
+  </div>`;
+}
+
+function renderHeadingsPreview(s) {
+  const s2 = colors.length > 1 ? colors[1].shades : null;
+  const pName = colors[0].name;
+  const sName = colors.length > 1 ? colors[1].name : '';
+  const cards = [];
+
+  // 1. H1 Card - gradient shimmer
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:12px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);justify-content:center">
+    <h1 style="font-size:clamp(28px,5vw,40px);font-weight:700;text-transform:uppercase;letter-spacing:-0.02em;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;background:linear-gradient(135deg,${s[400]},${s[600]},${s[400]});-webkit-background-clip:text;background-clip:text;background-size:200% 200%;animation:gradientShift 4s infinite alternate" data-shade-color="${s[500]}" data-shade-weight="500" data-color-name="${pName}">THE QUICK BROWN FOX</h1>
+    <p style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-top:8px">H1 -- SHADE 500</p>
+  </div>`);
+
+  // 2. H2 Card - typewriter cursor blink
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:12px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);justify-content:center">
+    <div style="display:flex;align-items:center">
+      <h2 style="color:${s[600]};font-size:clamp(20px,4vw,28px);font-weight:700;text-transform:uppercase;overflow:hidden;white-space:nowrap;border-right:3px solid ${s[500]};animation:typewriter 3s steps(20) infinite alternate,pulse 1s step-end infinite">The Quick Brown Fox</h2>
+    </div>
+    <p style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-top:8px">H2 -- SHADE 600</p>
+  </div>`);
+
+  // 3. H3 + Body Card
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:12px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);justify-content:center">
+    <h3 style="color:${s[700]};font-size:20px;font-weight:700;text-transform:uppercase;animation:fadeInSlide 1s ease-out">The Quick Brown Fox Jumps</h3>
+    <p style="color:${s[800]};font-size:14px;font-weight:500;line-height:1.7;animation:fadeInSlide 1s ease-out 0.2s;animation-fill-mode:both">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.</p>
+    <p style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-top:8px">H3 + BODY</p>
+  </div>`);
+
+  // 4. Light BG Card
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s[50]};color:${s[900]};display:flex;flex-direction:column;gap:12px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);justify-content:center" data-shade-color="${s[50]}" data-shade-weight="50" data-color-name="${pName}">
+    <h2 style="color:${s[700]};font-size:clamp(20px,4vw,28px);font-weight:700;text-transform:uppercase">HEADINGS ON LIGHT</h2>
+    <p style="color:${s[600]};font-size:14px;font-weight:500;line-height:1.6">This is how your text looks on a light background using the shade scale.</p>
+    <p style="font-size:11px;color:${s[400]};text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-top:8px">SHADE 50 BG</p>
+  </div>`);
+
+  // 5. Dark BG Card
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s[900]};color:${s[50]};display:flex;flex-direction:column;gap:12px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);justify-content:center" data-shade-color="${s[900]}" data-shade-weight="900" data-color-name="${pName}">
+    <h2 style="color:${s[100]};font-size:clamp(20px,4vw,28px);font-weight:700;text-transform:uppercase">HEADINGS ON DARK</h2>
+    <p style="color:${s[300]};font-size:14px;font-weight:500;line-height:1.6">This is how your text looks on a dark background using the shade scale.</p>
+    <p style="font-size:11px;color:${s[500]};text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-top:8px">SHADE 900 BG</p>
+  </div>`);
+
+  // 6. Gradient Text Card
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);justify-content:center">
+    <div style="font-size:clamp(28px,5vw,40px);font-weight:700;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-transform:uppercase;letter-spacing:-0.02em;line-height:1.2;background:linear-gradient(135deg,${s[400]},${s[700]});-webkit-background-clip:text;background-clip:text;background-size:200% 200%;animation:gradientShift 4s infinite alternate" data-shade-color="${s[400]}" data-shade-weight="400" data-color-name="${pName}">GRADIENT HEADING</div>
+    <p style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;font-weight:600">GRADIENT (400 &rarr; 700)</p>
+  </div>`);
+
+  // 7. Contrast Grid Card
+  cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:12px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+    <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted)">CONTRAST GRID</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1">
+      <div style="padding:20px 16px;border-radius:12px;text-align:center;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:${s[50]};color:${s[900]};display:flex;align-items:center;justify-content:center" data-shade-color="${s[50]}" data-shade-weight="50" data-color-name="${pName}">50 / 900</div>
+      <div style="padding:20px 16px;border-radius:12px;text-align:center;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:${s[100]};color:${s[800]};display:flex;align-items:center;justify-content:center" data-shade-color="${s[100]}" data-shade-weight="100" data-color-name="${pName}">100 / 800</div>
+      <div style="padding:20px 16px;border-radius:12px;text-align:center;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:${s[500]};color:white;display:flex;align-items:center;justify-content:center" data-shade-color="${s[500]}" data-shade-weight="500" data-color-name="${pName}">500 / WHITE</div>
+      <div style="padding:20px 16px;border-radius:12px;text-align:center;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:${s[900]};color:${s[100]};display:flex;align-items:center;justify-content:center" data-shade-color="${s[900]}" data-shade-weight="900" data-color-name="${pName}">900 / 100</div>
+    </div>
+  </div>`);
+
+  // Secondary heading cards
+  if (s2) {
+    // 8. Secondary H1 Card
+    cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:12px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);justify-content:center">
+      <h1 style="color:${s2[500]};font-size:clamp(28px,5vw,40px);font-weight:700;text-transform:uppercase;letter-spacing:-0.02em;animation:fadeInSlide 1s ease-out">SECONDARY HEADING</h1>
+      <p style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-top:8px">H1 -- SECONDARY 500</p>
+    </div>`);
+
+    // 9. Cross-Palette Gradient Text
+    cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:16px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);justify-content:center">
+      <div style="font-size:clamp(28px,5vw,40px);font-weight:700;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-transform:uppercase;letter-spacing:-0.02em;line-height:1.2;background:linear-gradient(135deg,${s[400]},${s2[600]});-webkit-background-clip:text;background-clip:text;background-size:200% 200%;animation:gradientShift 4s infinite alternate">CROSS-PALETTE TEXT</div>
+      <p style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;font-weight:600">PRIMARY 400 &rarr; SECONDARY 600</p>
+    </div>`);
+
+    // 10. Primary on Secondary BG
+    cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s2[50]};color:${s[700]};display:flex;flex-direction:column;gap:12px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);justify-content:center">
+      <h2 style="color:${s[700]};font-size:clamp(20px,4vw,28px);font-weight:700;text-transform:uppercase">PRIMARY ON SECONDARY BG</h2>
+      <p style="color:${s2[600]};font-size:14px;font-weight:500;line-height:1.6">Primary heading text on a secondary shade background.</p>
+      <p style="font-size:11px;color:${s2[400]};text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-top:8px">SEC-50 BG</p>
+    </div>`);
+
+    // 11. Primary on Dark Secondary
+    cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:${s2[900]};color:${s[200]};display:flex;flex-direction:column;gap:12px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);justify-content:center">
+      <h2 style="color:${s[200]};font-size:clamp(20px,4vw,28px);font-weight:700;text-transform:uppercase">PRIMARY ON DARK SEC</h2>
+      <p style="color:${s2[300]};font-size:14px;font-weight:500;line-height:1.6">Light primary text on dark secondary background for cross-palette contrast.</p>
+      <p style="font-size:11px;color:${s2[500]};text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-top:8px">SEC-900 BG</p>
+    </div>`);
+
+    // 12. Cross-palette Contrast Grid Card
+    cards.push(`<div class="preview-card" style="flex:0 0 320px;min-height:340px;background:var(--surface);border:1px solid var(--border-light);color:var(--text);display:flex;flex-direction:column;gap:12px;padding:28px;border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+      <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted)">CROSS CONTRAST</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1">
+        <div style="padding:20px 16px;border-radius:12px;text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:${s2[50]};color:${s[900]};display:flex;align-items:center;justify-content:center">S-50/P-900</div>
+        <div style="padding:20px 16px;border-radius:12px;text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:${s[500]};color:${s2[50]};display:flex;align-items:center;justify-content:center">P-500/S-50</div>
+        <div style="padding:20px 16px;border-radius:12px;text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:${s2[500]};color:white;display:flex;align-items:center;justify-content:center">S-500/WHT</div>
+        <div style="padding:20px 16px;border-radius:12px;text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;background:${s2[900]};color:${s[100]};display:flex;align-items:center;justify-content:center">S-900/P-100</div>
+      </div>
+    </div>`);
+  }
+
+  const allCards = cards.join('');
+  return `<div class="preview-carousel">
+    <div class="preview-carousel-track">${allCards}${allCards}</div>
+  </div>`;
+}
+
+/* ==============================================================
+   MODULE 7: UI UTILITIES
+   ============================================================== */
+
+let toastTimer = null;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+async function copyShadeValue(value, element) {
+  try {
+    await navigator.clipboard.writeText(value);
+    showToast('COPIED ' + value.toUpperCase());
+    if (element) {
+      element.classList.add('flash-green');
+      setTimeout(() => element.classList.remove('flash-green'), 300);
+    }
+  } catch (e) {
+    showToast('COPY FAILED');
+  }
+}
+
+async function copyExport() {
+  const code = document.getElementById('exportCode').textContent;
+  try {
+    await navigator.clipboard.writeText(code);
+    showToast('CODE COPIED TO CLIPBOARD');
+  } catch(e) { showToast('COPY FAILED'); }
+}
+
+function downloadExport() {
+  if (colors.length === 0) return;
+  const code = document.getElementById('exportCode').textContent;
+  const filename = getExportFilename();
+  const blob = new Blob([code], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('DOWNLOADED ' + filename.toUpperCase());
+}
+
+function switchPreview(tab, btn) {
+  currentPreviewTab = tab;
+  document.querySelectorAll('.preview-tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const content = document.getElementById('previewContent');
+  content.style.opacity = '0';
+  setTimeout(() => {
+    if (colors.length === 0) return;
+    const s = colors[0].shades;
+    switch (currentPreviewTab) {
+      case 'components': content.innerHTML = renderComponentsPreview(s); break;
+      case 'charts': content.innerHTML = renderChartsPreview(s); break;
+      case 'gradients': content.innerHTML = renderGradientsPreview(s); break;
+      case 'headings': content.innerHTML = renderHeadingsPreview(s); break;
+    }
+    content.style.opacity = '1';
+  }, 150);
+}
+
+function switchExport(format, btn) {
+  currentExportTab = format;
+  document.querySelectorAll('.export-tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderExport();
+}
+
+function showSecondaryModal() {
+  if (colors.length === 0) { showToast('ADD A PRIMARY COLOR FIRST'); return; }
+  const oklch = hexToOklch(colors[0].baseHex);
+  const compHex = oklchToHex(oklch.L, oklch.C, (oklch.H + 180) % 360);
+  document.getElementById('secondaryColorInput').value = compHex;
+  document.getElementById('secondaryModal').classList.add('show');
+}
+function hideSecondaryModal() {
+  document.getElementById('secondaryModal').classList.remove('show');
+}
+
+/* ==============================================================
+   MODULE 8: EVENT LISTENERS + ACTIONS + INIT
+   ============================================================== */
+
+// Color actions
+function addColor(name, baseHex) {
+  name = name || (colors.length === 0 ? 'primary' : 'secondary');
+  baseHex = baseHex || '#3b82f6';
+  const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  const result = generateShades(baseHex);
+  colors.push({ id, name, baseHex, anchorKey: result.anchorKey, shades: result.shades, manualShades: {}, lockedShades: {} });
+  pushHistory();
+  render();
+}
+
+function updateColorBase(id, newHex) {
+  const color = colors.find(c => c.id === id);
+  if (!color) return;
+  color.baseHex = newHex;
+  const result = generateShades(newHex);
+  color.anchorKey = result.anchorKey;
+  SHADE_KEYS.forEach(k => {
+    if (!color.lockedShades[k] && !color.manualShades[k]) {
+      color.shades[k] = result.shades[k];
+    }
+  });
+  color.shades[color.anchorKey] = newHex; // anchor always follows
+  pushHistory();
+  render();
+  // Sync top controls if primary
+  if (colors[0] && colors[0].id === id) {
+    document.getElementById('primaryColorInput').value = newHex;
+    document.getElementById('hexInput').value = newHex;
+  }
+}
+
+function updateColorName(id, name) {
+  const color = colors.find(c => c.id === id);
+  if (color) { color.name = name; pushHistory(); renderExport(); }
+}
+
+function removeColor(id) {
+  colors = colors.filter(c => c.id !== id);
+  pushHistory();
+  render();
+}
+
+function editShade(colorId, shadeKey, newHex) {
+  const color = colors.find(c => c.id === colorId);
+  if (!color) return;
+  color.shades[shadeKey] = newHex;
+  color.manualShades[shadeKey] = true;
+  pushHistory();
+  render();
+}
+
+function toggleLockShade(colorId, shadeKey) {
+  const color = colors.find(c => c.id === colorId);
+  if (!color) return;
+  color.lockedShades[shadeKey] = !color.lockedShades[shadeKey];
+  pushHistory();
+  render();
+}
+
+function unlockAllShades(colorId) {
+  const color = colors.find(c => c.id === colorId);
+  if (!color) return;
+  const hadLocks = Object.values(color.lockedShades).some(v => v);
+  if (!hadLocks) { showToast('NO LOCKED SHADES'); return; }
+  color.lockedShades = {};
+  pushHistory();
+  render();
+  showToast('ALL SHADES UNLOCKED');
+}
+
+function resetAllEdits(colorId) {
+  const color = colors.find(c => c.id === colorId);
+  if (!color) return;
+  const hadEdits = Object.values(color.manualShades).some(v => v);
+  if (!hadEdits) { showToast('NO MANUAL EDITS'); return; }
+  color.manualShades = {};
+  const result = generateShades(color.baseHex);
+  SHADE_KEYS.forEach(k => {
+    if (!color.lockedShades[k]) {
+      color.shades[k] = result.shades[k];
+    }
+  });
+  pushHistory();
+  render();
+  showToast('ALL EDITS RESET');
+}
+
+function setShadeFormat(colorId, shadeKey, format) {
+  shadeFormats[colorId + '_' + shadeKey] = format;
+  render();
+}
+
+function randomColor() {
+  const hex = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0');
+  if (colors.length === 0) {
+    addColor('primary', hex);
+  } else {
+    updateColorBase(colors[0].id, hex);
+  }
+  document.getElementById('primaryColorInput').value = hex;
+  document.getElementById('hexInput').value = hex;
+  showToast('RANDOM: ' + hex.toUpperCase());
+}
+
+function addSecondaryColor() {
+  const scheme = document.getElementById('schemeSelect').value;
+  let hex = document.getElementById('secondaryColorInput').value;
+  if (scheme !== 'custom' && colors.length > 0) {
+    hex = getSchemeColor(colors[0].baseHex, scheme);
+  }
+  addColor('secondary', hex);
+  hideSecondaryModal();
+}
+
+// Top controls sync
+document.getElementById('primaryColorInput').addEventListener('input', function() {
+  const hex = this.value;
+  document.getElementById('hexInput').value = hex;
+  if (colors.length === 0) {
+    addColor('primary', hex);
+  } else {
+    updateColorBase(colors[0].id, hex);
+  }
+});
+
+let hexDebounce = null;
+document.getElementById('hexInput').addEventListener('input', function() {
+  clearTimeout(hexDebounce);
+  const val = this.value.trim();
+  hexDebounce = setTimeout(() => {
+    if (/^#[0-9a-fA-F]{6}$/.test(val)) {
+      document.getElementById('primaryColorInput').value = val;
+      if (colors.length === 0) {
+        addColor('primary', val);
+      } else {
+        updateColorBase(colors[0].id, val);
+      }
+    }
+  }, 300);
+});
+
+// Scheme select updates preview color
+document.getElementById('schemeSelect').addEventListener('change', function() {
+  if (this.value !== 'custom' && colors.length > 0) {
+    const hex = getSchemeColor(colors[0].baseHex, this.value);
+    document.getElementById('secondaryColorInput').value = hex;
+  }
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+  // Spacebar = random (when not in input)
+  if (e.code === 'Space' && !['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) {
+    e.preventDefault();
+    randomColor();
+  }
+  // Ctrl+Z = undo
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+    e.preventDefault();
+    undo();
+  }
+  // Ctrl+Y or Ctrl+Shift+Z = redo
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+    e.preventDefault();
+    redo();
+  }
+  // Escape = close modal
+  if (e.key === 'Escape') {
+    hideSecondaryModal();
+  }
+});
+
+// Close modal on overlay click
+document.getElementById('secondaryModal').addEventListener('click', function(e) {
+  if (e.target === this) hideSecondaryModal();
+});
+
+// Theme toggle
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-theme');
+  document.getElementById('themeToggle').innerHTML = isLight ? '&#x2600;' : '&#x263D;';
+  localStorage.setItem('shade-gen-theme', isLight ? 'light' : 'dark');
+  document.body.style.backgroundImage = isLight
+    ? 'radial-gradient(circle, rgba(0,0,0,0.03) 1px, transparent 1px)'
+    : 'radial-gradient(circle, rgba(255,255,255,0.015) 1px, transparent 1px)';
+}
+function loadTheme() {
+  const saved = localStorage.getItem('shade-gen-theme');
+  if (saved === 'light') {
+    document.body.classList.add('light-theme');
+    document.getElementById('themeToggle').innerHTML = '&#x2600;';
+    document.body.style.backgroundImage = 'radial-gradient(circle, rgba(0,0,0,0.03) 1px, transparent 1px)';
+  } else {
+    document.body.classList.remove('light-theme');
+    document.getElementById('themeToggle').innerHTML = '&#x263D;';
+    document.body.style.backgroundImage = 'radial-gradient(circle, rgba(255,255,255,0.015) 1px, transparent 1px)';
+  }
+}
+
+// Shade tooltip for preview elements
+(function initShadeTooltip() {
+  const tooltip = document.getElementById('shadeTooltip');
+  const section = document.querySelector('.preview-section');
+  section.addEventListener('mouseover', function(e) {
+    let el = e.target.closest('[data-shade-color]');
+    if (!el) {
+      const card = e.target.closest('.preview-card');
+      if (card) el = card.querySelector('[data-shade-color]');
+    }
+    if (el) {
+      const hex = el.dataset.shadeColor;
+      const weight = el.dataset.shadeWeight;
+      const name = el.dataset.colorName || 'primary';
+      const nickname = SHADE_NICKNAMES[weight] || '';
+      tooltip.innerHTML = name + ' &middot; ' + nickname + ' ' + weight + ' &middot; ' + hex + ' <span class="tooltip-swatch" style="background:' + hex + '"></span>';
+      tooltip.style.display = 'block';
+    }
+  });
+  section.addEventListener('mouseout', function(e) {
+    const related = e.relatedTarget;
+    if (!related || !related.closest || (!related.closest('[data-shade-color]') && !related.closest('.preview-card'))) {
+      tooltip.style.display = 'none';
+    }
+  });
+  document.addEventListener('mousemove', function(e) {
+    if (tooltip.style.display === 'block') {
+      tooltip.style.left = (e.clientX + 16) + 'px';
+      tooltip.style.top = (e.clientY - 10) + 'px';
+    }
+  });
+})();
+
+// Init
+(function init() {
+  loadTheme();
+  loadFromStorage();
+  // Always start with a fresh random color
+  const hex = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0');
+  document.getElementById('primaryColorInput').value = hex;
+  document.getElementById('hexInput').value = hex;
+  if (colors.length === 0) {
+    addColor('primary', hex);
+  } else {
+    updateColorBase(colors[0].id, hex);
+  }
+})();
+</script>
+</body>
+</html>

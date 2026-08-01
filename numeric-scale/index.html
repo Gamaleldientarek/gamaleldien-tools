@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Numeric Scale Generator — Free Figma Variables Tool</title>
+  <meta name="description" content="Generate linear or multiplier numeric scales for Figma variables. Perfect for spacing, sizing, and design tokens. Export to Figma Variables JSON. Free forever.">
+  <meta name="keywords" content="figma variables, numeric scale, design tokens, spacing scale, golden ratio, multiplier scale, figma export">
+  <meta name="author" content="Gamal Eldien">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://tools.gamaleldien.com/numeric-scale">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tools.gamaleldien.com/numeric-scale">
+  <meta property="og:title" content="Numeric Scale Generator - Figma Variables">
+  <meta property="og:description" content="Generate linear or multiplier numeric scales for Figma design tokens">
+  <meta property="og:image" content="https://tools.gamaleldien.com/numeric-scale/og-image.png">
+  <meta property="og:site_name" content="Gamal Eldien Tools">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Numeric Scale Generator: Free Figma Variables Tool">
+  <meta name="twitter:description" content="Generate linear or multiplier numeric scales for Figma variables. Perfect for spacing, sizing, and design tokens.">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap">
+  <style>
+    /* ==========================================
+       1. CSS Variables / Design Tokens
+       ========================================== */
+    :root {
+      --bg: #0a0a0a;
+      --surface: rgba(63, 63, 63, 0.3);
+      --surface-2: rgba(80, 80, 80, 0.35);
+      --surface-elevated: rgba(90, 90, 90, 0.25);
+      --text: rgb(255, 255, 255);
+      --text-muted: rgb(128, 128, 128);
+      --text-secondary: rgb(153, 153, 153);
+      --border: rgb(51, 51, 51);
+      --border-light: rgba(255, 255, 255, 0.08);
+      --accent: rgb(225, 97, 5);
+      --accent-hover: rgb(255, 117, 25);
+      --accent-glow: rgba(225, 97, 5, 0.15);
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+      --radius: 24px;
+      --radius-lg: 32px;
+      --radius-pill: 64px;
+      --font-display: 'Clash Display', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.12);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.16), 0 2px 4px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.24), 0 4px 8px rgba(0, 0, 0, 0.12);
+      --shadow-glow: 0 0 24px rgba(225, 97, 5, 0.12);
+    }
+
+    /* ==========================================
+       1b. Light Theme Overrides
+       ========================================== */
+    body.light-theme {
+      --bg: #f5f5f5;
+      --surface: rgba(255, 255, 255, 0.8);
+      --surface-2: rgba(240, 240, 240, 0.9);
+      --surface-elevated: rgba(230, 230, 230, 0.6);
+      --text: #0a0a0a;
+      --text-muted: #6b6b6b;
+      --text-secondary: #4a4a4a;
+      --border: #e0e0e0;
+      --border-light: rgba(0, 0, 0, 0.08);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+    }
+    .light-theme .navbar { background: rgba(245, 245, 245, 0.01); border-color: transparent; }
+    .light-theme .navbar.scrolled { background: rgba(245, 245, 245, 0.9); border-color: #e0e0e0; }
+    .light-theme .btn { border-color: #333; color: #333; }
+    .light-theme .btn::before { background: #333; }
+    .light-theme .btn-primary { background: var(--accent); border-color: var(--accent); color: white; }
+    .light-theme .btn-outline { border-color: rgba(0,0,0,0.2); color: #333; }
+    .light-theme .btn-outline:hover { background: rgba(0,0,0,0.06); border-color: #333; }
+    .light-theme .input-field { background: rgba(255,255,255,0.9); color: #333; border-color: rgba(0,0,0,0.15); }
+    .light-theme select { background: rgba(255,255,255,0.9); color: #333; border-color: rgba(0,0,0,0.15); }
+    .light-theme .preview-table { background: rgba(255,255,255,0.9); }
+    .light-theme .table-header { background: rgba(240,240,240,0.9); color: #333; }
+    .light-theme .table-row:hover { background: rgba(0,0,0,0.03); }
+    .light-theme .export-code { background: rgba(240,240,240,0.8); color: #333; }
+    .light-theme .toast { background: rgba(255,255,255,0.95); color: #0a0a0a; }
+    .icon-btn {
+      background: transparent !important;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 6px;
+      border-radius: 8px;
+      line-height: 1;
+      transition: all 0.2s;
+      font-weight: 600;
+    }
+    .icon-btn:hover {
+      color: var(--accent);
+      background: rgba(225, 97, 5, 0.1) !important;
+    }
+    .theme-toggle { font-size: 20px; transition: all 0.3s; background: transparent !important; }
+    .theme-toggle:hover { transform: rotate(30deg); }
+
+    /* ==========================================
+       2. Reset + Base Styles
+       ========================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-display);
+      background: var(--bg);
+      background-image: radial-gradient(circle, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 32px 32px;
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      animation: fadeIn 0.4s ease-out;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: var(--font-display); }
+    ::selection { background: var(--accent); color: white; }
+
+    /* ==========================================
+       3. Keyframe Animations
+       ========================================== */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+    /* ==========================================
+       4. Navbar (Floating & Transparent)
+       ========================================== */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+      background: transparent; /* Transparent initially */
+      backdrop-filter: none;
+      border-bottom: 1px solid transparent;
+      padding: 20px clamp(24px, 5vw, 48px);
+      display: flex; justify-content: space-between; align-items: center;
+      animation: fadeIn 0.3s ease-out;
+      transition: all 0.3s ease;
+    }
+    /* Scrolled State */
+    .navbar.scrolled {
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(48px); -webkit-backdrop-filter: blur(48px);
+      border-bottom: 1px solid var(--border);
+      padding-top: 16px; padding-bottom: 16px;
+    }
+    .navbar-logo {
+      display: flex; align-items: center; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: var(--font-display); font-weight: 700; font-size: 18px;
+      line-height: 1.1; letter-spacing: -0.02em; color: var(--text);
+      text-decoration: none;
+    }
+    .navbar-logo:hover { filter: brightness(1.2); transform: translateY(-2px); }
+    .navbar-links { display: flex; gap: 32px; align-items: center; }
+    .navbar-link {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--text-muted);
+      transition: color 0.2s;
+    }
+    .navbar-link:hover { color: var(--accent); }
+
+    /* ==========================================
+       5. Main Wrapper + Container
+       ========================================== */
+    .main-wrapper { padding: clamp(16px, 4vw, 48px); }
+    .container { max-width: 1280px; margin: 0 auto; }
+
+    /* ==========================================
+       6. Header / Hero (Full Width & Transparent Nav Compatible)
+       ========================================== */
+    header {
+      margin-top: 0;
+      margin-bottom: clamp(48px, 8vw, 80px);
+      /* Increased top padding to account for navbar */
+      padding: clamp(140px, 15vw, 180px) clamp(24px, 5vw, 48px) clamp(80px, 10vw, 120px);
+      border-bottom: none;
+      text-align: center;
+      animation: fadeInUp 0.5s ease-out;
+      position: relative;
+      overflow: hidden;
+      border-radius: 0;
+      
+      /* Exact Footer Gradient - Flipped to Top */
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, 
+          rgba(232,97,26,0.85) 0%, 
+          rgba(180,50,5,0.55) 30%, 
+          rgba(50,10,0,0.25) 60%, 
+          transparent 100%),
+        linear-gradient(to bottom, #1a0800 0%, var(--bg) 45%);
+    }
+    
+    /* Header Gradient — Light Theme */
+    body.light-theme header {
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, 
+          rgba(232,97,26,0.35) 0%, 
+          rgba(232,97,26,0.18) 30%, 
+          rgba(232,97,26,0.05) 60%, 
+          transparent 100%),
+        linear-gradient(to bottom, rgba(232,97,26,0.06) 0%, var(--bg) 45%);
+    }
+
+    header h1 {
+      font-size: clamp(32px, 6vw, 64px); font-weight: 700;
+      text-transform: uppercase; letter-spacing: -0.03em;
+      line-height: 1.1; color: var(--accent);
+      position: relative; z-index: 2;
+      text-shadow: 0 0 30px rgba(225, 97, 5, 0.4);
+    }
+    header .hero-subtitle {
+      font-size: clamp(16px, 3vw, 22px); font-weight: 600;
+      color: var(--text-secondary); max-width: 680px; margin: 16px auto 0;
+      text-transform: uppercase; letter-spacing: 0.02em;
+      position: relative; z-index: 2;
+    }
+    header .hero-description {
+      font-size: clamp(11px, 2vw, 14px); font-weight: 500;
+      color: var(--text-muted); max-width: 680px; margin: 12px auto 0;
+      line-height: 1.6; letter-spacing: 0.02em;
+      position: relative; z-index: 2;
+    }
+
+    /* ==========================================
+       7. Controls
+       ========================================== */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 24px;
+      margin-bottom: clamp(32px, 6vw, 48px);
+      animation: fadeInUp 0.6s ease-out;
+    }
+    .control-item { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 10px; 
+      flex: 1;
+      min-width: 150px;
+    }
+    /* Give radio group more breathing room */
+    .control-item:nth-child(3) {
+      flex: 1.5;
+      min-width: 280px;
+    }
+    .control-label {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-muted); font-weight: 700;
+    }
+    .input-field {
+      width: 100%; height: 56px; font-size: 14px; font-weight: 600;
+      padding: 0 16px; border: 1.5px solid var(--border-light);
+      border-radius: 14px; background: rgba(30, 30, 30, 0.8);
+      color: white; font-family: var(--font-display);
+      transition: all 0.2s;
+    }
+    .input-field:focus {
+      outline: none; border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    /* Hide number input spinners */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+    select.input-field {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23808080' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      background-size: 12px;
+      padding-right: 40px;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+    select option { background: #1a1a1a; }
+    .radio-group {
+      display: flex; gap: 12px; height: 56px; align-items: center; width: 100%;
+    }
+    .radio-label {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      cursor: pointer; font-size: 12px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      padding: 0 20px; height: 100%; border: 1.5px solid var(--border-light);
+      border-radius: var(--radius-pill); transition: all 0.2s;
+      background: transparent; flex: 1;
+    }
+    .radio-label:hover { border-color: var(--accent); }
+    .radio-label input[type="radio"] {
+      appearance: none; width: 16px; height: 16px;
+      border: 2px solid var(--border-light); border-radius: 50%;
+      position: relative; cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+    }
+    .radio-label input[type="radio"]:checked {
+      border-color: var(--accent); background: var(--accent);
+    }
+    .radio-label input[type="radio"]:checked::after {
+      content: ''; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%); width: 6px; height: 6px;
+      background: white; border-radius: 50%;
+    }
+    .ratio-dropdown-wrapper {
+      display: none;
+    }
+    .ratio-dropdown-wrapper.visible {
+      display: flex;
+    }
+    .custom-ratio-wrapper {
+      display: none;
+    }
+    .custom-ratio-wrapper.visible {
+      display: flex;
+    }
+
+    /* ==========================================
+       8. Buttons
+       ========================================== */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 14px 32px; border: 1.5px solid white;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-display); font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      background: transparent; color: white;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      position: relative; overflow: hidden; min-width: 140px; line-height: 1;
+    }
+    .btn::before {
+      content: ''; position: absolute; inset: 0;
+      background: white; opacity: 0; transition: opacity 0.25s;
+    }
+    .btn:hover::before { opacity: 0.08; }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary {
+      background: var(--accent); border-color: var(--accent);
+      box-shadow: var(--shadow-glow);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover); border-color: var(--accent-hover);
+      transform: translateY(-2px); box-shadow: var(--shadow-glow), var(--shadow-md);
+    }
+    .btn-success { background: var(--success); border-color: var(--success); color: white; }
+    .btn-success:hover { opacity: 0.9; transform: translateY(-2px); }
+
+    /* ==========================================
+       9. Action Buttons
+       ========================================== */
+    .actions {
+      display: flex; 
+      justify-content: center; 
+      gap: 16px; 
+      margin-bottom: clamp(32px, 6vw, 48px);
+      flex-wrap: wrap;
+      animation: fadeInUp 0.7s ease-out;
+    }
+
+    /* ==========================================
+       9b. Collection Name Section (Above Preview)
+       ========================================== */
+    .collection-name-section {
+      margin-top: clamp(32px, 6vw, 56px);
+      margin-bottom: 48px;
+      padding-top: clamp(32px, 6vw, 48px);
+      border-top: 1px solid var(--border-light);
+      animation: fadeInUp 0.75s ease-out;
+    }
+    .collection-name-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      max-width: 100%;
+    }
+    .collection-name-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      text-align: left;
+    }
+    .collection-name-input {
+      width: 100%;
+      text-align: left;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    /* ==========================================
+       10. Preview Section
+       ========================================== */
+    .preview-section {
+      animation: fadeInUp 0.8s ease-out;
+      margin-bottom: clamp(48px, 8vw, 80px);
+    }
+    .preview-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px; padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-light);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .preview-title {
+      font-size: 13px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.12em; color: var(--text-muted);
+    }
+    .preview-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .toggle-btn {
+      background: transparent;
+      border: 1px solid var(--border-light);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .toggle-btn:hover {
+      border-color: var(--text-secondary);
+      color: var(--text);
+    }
+    .toggle-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+    .preview-count {
+      font-size: 11px; font-weight: 600; color: var(--text-secondary);
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .preview-table {
+      background: var(--surface);
+      backdrop-filter: blur(48px); -webkit-backdrop-filter: blur(48px);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+    .table-header {
+      display: grid;
+      grid-template-columns: 80px 180px 1fr 140px;
+      gap: 20px;
+      background: rgba(30, 30, 30, 0.95);
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-secondary);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 16px clamp(24px, 3vw, 32px);
+      align-items: center;
+    }
+    .table-body {
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    /* Custom scrollbar for dark theme */
+    .table-body::-webkit-scrollbar {
+      width: 8px;
+    }
+    .table-body::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+    }
+    .table-body::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
+    .table-body::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    .table-row {
+      display: grid;
+      grid-template-columns: 80px 180px 1fr 140px;
+      gap: 20px;
+      padding: 16px clamp(24px, 3vw, 32px);
+      border-bottom: 1px solid var(--border-light);
+      transition: background 0.2s;
+      align-items: center;
+    }
+    .table-row:last-child { border-bottom: none; }
+    .table-row:hover { background: rgba(255, 255, 255, 0.03); }
+    .table-cell-index {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .table-cell-value {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .table-cell-copy {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .copy-btn {
+      background: none;
+      border: 1px solid var(--border-light);
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-family: var(--font-display);
+    }
+    .copy-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(225, 97, 5, 0.1);
+    }
+    .name-input {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 6px 10px;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .name-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: rgba(225, 97, 5, 0.05);
+    }
+    .name-input:hover {
+      border-color: var(--text-muted);
+    }
+    .empty-state {
+      text-align: center;
+      padding: 80px 40px;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* ==========================================
+       11. Export Code Section
+       ========================================== */
+    .export-section {
+      background: var(--surface);
+      backdrop-filter: blur(48px); -webkit-backdrop-filter: blur(48px);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: clamp(28px, 5vw, 40px);
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      animation: fadeInUp 0.9s ease-out;
+      margin-bottom: clamp(48px, 8vw, 80px);
+    }
+    .export-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .export-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+    }
+    .export-code {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      max-height: 400px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ==========================================
+       12. Toast
+       ========================================== */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(120px);
+      background: var(--surface);
+      backdrop-filter: blur(48px);
+      -webkit-backdrop-filter: blur(48px);
+      border: 1px solid var(--border-light);
+      color: white;
+      padding: 16px 32px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000;
+      box-shadow: var(--shadow-lg);
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ==========================================
+       13. Floating Shortcuts Panel
+       ========================================== */
+    .shortcuts-panel {
+      position: fixed;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(20, 20, 20, 0.8);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-light);
+      border-radius: 20px;
+      padding: 20px;
+      z-index: 850;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: var(--shadow-lg);
+      transition: all 0.3s ease;
+    }
+    .shortcut-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .shortcut-key {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 45px;
+      text-align: center;
+    }
+    .shortcut-desc {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    @media (max-width: 1200px) {
+      .shortcuts-panel { display: none; }
+    }
+
+    /* Footer */
+    .footer {
+      position: relative;
+      margin-top: clamp(64px, 10vw, 120px);
+      padding: clamp(80px, 12vw, 160px) clamp(24px, 5vw, 48px) clamp(100px, 14vw, 140px);
+      text-align: center;
+      background:
+        radial-gradient(ellipse 80% 55% at 50% 100%, rgba(232,97,26,0.85) 0%, rgba(180,50,5,0.55) 30%, rgba(50,10,0,0.25) 60%, transparent 100%),
+        linear-gradient(to top, #1a0800 0%, var(--bg, #0a0a0a) 45%);
+      border-top: none;
+    }
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .footer-made-with {
+      font-size: 16px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.85);
+      letter-spacing: 0.02em;
+    }
+    .footer-made-with a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      transition: color 0.2s;
+    }
+    .footer-made-with a:hover {
+      color: rgb(232,97,26);
+    }
+    .emoji { font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", sans-serif; font-style: normal; }
+    .footer-bmc {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 12px 28px;
+      border-radius: 50px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      cursor: pointer;
+    }
+    .footer-bmc:hover {
+      background: rgba(232,97,26,0.25);
+      border-color: rgba(232,97,26,0.5);
+      transform: translateY(-2px);
+    }
+    .footer-copyright {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      line-height: 1.8;
+    }
+    .footer-copyright a {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-weight: 700;
+      transition: color 0.2s;
+    }
+    .footer-copyright a:hover {
+      color: rgb(232,97,26);
+    }
+    .footer-social {
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.06em;
+      margin-top: -8px;
+    }
+    .footer-social a {
+      color: rgba(255,255,255,0.45);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-social a:hover {
+      color: rgb(232,97,26);
+    }
+
+    /* Footer — Light Theme */
+    .light-theme .footer {
+      background:
+        radial-gradient(ellipse 80% 55% at 50% 100%, rgba(232,97,26,0.35) 0%, rgba(232,97,26,0.18) 30%, rgba(232,97,26,0.05) 60%, transparent 100%),
+        linear-gradient(to top, rgba(232,97,26,0.06) 0%, var(--bg) 45%);
+    }
+    .light-theme .footer-made-with { color: rgba(10,10,10,0.8); }
+    .light-theme .footer-made-with a { color: #0a0a0a; }
+    .light-theme .footer-made-with a:hover { color: rgb(232,97,26); }
+    .light-theme .footer-bmc {
+      background: rgba(0,0,0,0.05);
+      border-color: rgba(0,0,0,0.12);
+      color: #1a1a1a;
+    }
+    .light-theme .footer-bmc:hover {
+      background: rgba(232,97,26,0.15);
+      border-color: rgba(232,97,26,0.4);
+    }
+    .light-theme .footer-copyright { color: rgba(10,10,10,0.4); }
+    .light-theme .footer-copyright a { color: rgba(10,10,10,0.6); }
+    .light-theme .footer-copyright a:hover { color: rgb(232,97,26); }
+    .light-theme .footer-social { color: rgba(10,10,10,0.3); }
+    .light-theme .footer-social a { color: rgba(10,10,10,0.45); }
+    .light-theme .footer-social a:hover { color: rgb(232,97,26); }
+
+    /* ==========================================
+       Responsive
+       ========================================== */
+    @media (max-width: 768px) {
+      .controls {
+        grid-template-columns: 1fr;
+      }
+      .table-header, .table-row {
+        grid-template-columns: 60px 110px 1fr 80px;
+        padding: 12px 16px;
+        font-size: 9px;
+      }
+      .name-input {
+        font-size: 11px;
+        padding: 4px 6px;
+      }
+      .actions {
+        flex-direction: column;
+      }
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+<!-- Google Analytics (consent-gated) -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  function _loadGA() {
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-KSQ52DZN13';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-KSQ52DZN13');
+  }
+  if (localStorage.getItem('ga-consent') === 'yes') { _loadGA(); }
+  else if (!localStorage.getItem('ga-consent')) {
+    document.addEventListener('DOMContentLoaded', function() {
+      var b = document.createElement('div');
+      b.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#1a1a1a;border-top:1px solid #333;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:99999;font-family:system-ui,sans-serif;font-size:13px;color:#999';
+      b.innerHTML = 'We use cookies for analytics to improve this tool. <span style="display:flex;gap:8px;flex-shrink:0"><button onclick="localStorage.setItem(\'ga-consent\',\'yes\');_loadGA();this.parentElement.parentElement.remove()" style="background:#e16105;color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;white-space:nowrap">Accept</button><button onclick="localStorage.setItem(\'ga-consent\',\'no\');this.parentElement.parentElement.remove()" style="background:transparent;color:#666;border:1px solid #444;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;white-space:nowrap">Decline</button></span>';
+      document.body.appendChild(b);
+    });
+  }
+</script>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <a href="/" class="navbar-logo">Numeric<br>Scale</a>
+    <div class="navbar-links">
+      <button class="icon-btn theme-toggle" onclick="toggleTheme()" title="Toggle theme" id="themeToggle">&#x263D;</button>
+      <a href="/" class="navbar-link">TOOLS</a>
+      <a href="https://gamaleldien.com" class="navbar-link" target="_blank" rel="noopener">ABOUT</a>
+    </div>
+  </nav>
+
+  <!-- Header (Full Width) -->
+  <header>
+    <div class="header-bg-noise"></div>
+    <div class="container">
+      <h1>NUMERIC SCALE GENERATOR</h1>
+      <p class="hero-subtitle">Generate Figma Variables for Spacing & Sizing</p>
+      <p class="hero-description">Create linear or multiplier numeric scales for design tokens. Perfect for spacing, sizing, and typography scales. Export directly to Figma Variables JSON.</p>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <div class="main-wrapper">
+    <div class="container">
+      <!-- Controls -->
+      <section class="controls">
+        <div class="control-item">
+          <span class="control-label">BASE VALUE</span>
+          <input type="number" class="input-field" id="baseValue" value="8" min="1" step="1">
+        </div>
+        <div class="control-item">
+          <span class="control-label">NUMBER OF STEPS</span>
+          <input type="number" class="input-field" id="numSteps" value="10" min="1" max="50" step="1">
+        </div>
+        <div class="control-item">
+          <span class="control-label">SCALE TYPE</span>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="radio" name="scaleType" value="linear" checked>
+              LINEAR
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="scaleType" value="multiplier">
+              MULTIPLIER
+            </label>
+          </div>
+        </div>
+        <div class="control-item ratio-dropdown-wrapper" id="ratioDropdownWrapper">
+          <span class="control-label">RATIO</span>
+          <select class="input-field" id="ratioSelect">
+            <option value="1.2">Minor Third (1.2)</option>
+            <option value="1.25">Major Third (1.25)</option>
+            <option value="1.333">Perfect Fourth (1.333)</option>
+            <option value="1.5" selected>Perfect Fifth (1.5)</option>
+            <option value="1.618">Golden Ratio (1.618)</option>
+            <option value="1.875">Major Seventh (1.875)</option>
+            <option value="2.0">Octave (2.0)</option>
+            <option value="custom">Custom Multiplier</option>
+          </select>
+        </div>
+        <div class="control-item custom-ratio-wrapper" id="customRatioWrapper">
+          <span class="control-label">ENTER MULTIPLIER</span>
+          <input type="number" class="input-field" id="customRatio" value="1.5" min="1.0" max="3.0" step="0.01">
+        </div>
+      </section>
+
+      <!-- Action Buttons -->
+      <section class="actions">
+        <button class="btn btn-primary" onclick="exportFigmaJSON()">EXPORT FIGMA VARIABLES</button>
+      </section>
+
+      <!-- Collection Name Input (Above Preview) -->
+      <section class="collection-name-section">
+        <div class="collection-name-wrapper">
+          <label for="collectionName" class="collection-name-label">COLLECTION NAME</label>
+          <input type="text" class="input-field collection-name-input" id="collectionName" value="scale" placeholder="scale">
+        </div>
+      </section>
+
+      <!-- Preview Section -->
+      <section class="preview-section">
+        <div class="preview-header">
+          <span class="preview-title">PREVIEW</span>
+          <div class="preview-controls">
+            <button class="toggle-btn" id="btnZero" onclick="toggleZero()">ADD ZERO</button>
+            <button class="toggle-btn" id="btnFull" onclick="toggleFull()">ADD FULL (9999)</button>
+            <button class="toggle-btn" onclick="setNameToValue()">NAME = VALUE</button>
+            <span class="preview-count" id="previewCount">0 VALUES</span>
+          </div>
+        </div>
+        <div class="preview-table">
+          <div class="table-header">
+            <div>INDEX</div>
+            <div>CUSTOM NAME</div>
+            <div>VALUE</div>
+            <div style="text-align: right;">ACTION</div>
+          </div>
+          <div class="table-body" id="tableBody">
+            <div class="empty-state">Click "Generate Scale" to preview values</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Export Code Section (HIDDEN) -->
+      <section class="export-section" style="display: none;">
+        <div class="export-header">
+          <span class="export-title">FIGMA VARIABLES JSON</span>
+        </div>
+        <pre class="export-code" id="exportCode">{
+  "Click Generate Scale to see preview"
+}</pre>
+      </section>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+        <div class="footer-made-with">Made with <span class="emoji">❤️</span> in Egypt <span class="emoji">🇪🇬</span> by <a href="https://gamaleldien.com" target="_blank" rel="noopener">Gamal Eldien</a></div>
+        <a href="https://buymeacoffee.com/gamaleldien" target="_blank" rel="noopener" class="footer-bmc">☕ Buy me a coffee</a>
+        <div class="footer-copyright">©2026 Gamal Eldien <span style="color:rgba(255,255,255,0.2);margin:0 8px">//</span> All tools are free & open for everyone</div>
+        <div class="footer-social"><a href="https://www.behance.net/Gamal_eldin" target="_blank" rel="noopener">Behance</a> <span style="color:rgba(255,255,255,0.15);margin:0 6px">·</span> <a href="https://www.linkedin.com/in/gamaleldien" target="_blank" rel="noopener">LinkedIn</a></div>
+    </div>
+  </footer>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">Copied!</div>
+
+  <!-- Floating Shortcuts Panel -->
+  <div class="shortcuts-panel">
+    <div class="shortcut-item">
+      <span class="shortcut-key">ENTER</span>
+      <span class="shortcut-desc">Next Name Field</span>
+    </div>
+    <div class="shortcut-item">
+      <span class="shortcut-key">↑ / ↓</span>
+      <span class="shortcut-desc">Change Values</span>
+    </div>
+    <div class="shortcut-item">
+      <span class="shortcut-key">TAB</span>
+      <span class="shortcut-desc">Navigate Rows</span>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    // ==========================================
+    // Navbar Scroll Effect
+    // ==========================================
+    window.addEventListener('scroll', function() {
+      const navbar = document.getElementById('navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // ==========================================
+    // Theme Toggle
+    // ==========================================
+    function toggleTheme() {
+      const body = document.body;
+      const themeToggle = document.getElementById('themeToggle');
+      body.classList.toggle('light-theme');
+      const isLight = body.classList.contains('light-theme');
+      themeToggle.textContent = isLight ? '☀' : '☽';
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    }
+
+    // Load saved theme
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light-theme');
+      document.getElementById('themeToggle').textContent = '☀';
+    }
+
+    // ==========================================
+    // Scale Type Radio Toggle
+    // ==========================================
+    const scaleTypeRadios = document.querySelectorAll('input[name="scaleType"]');
+    const ratioDropdown = document.getElementById('ratioDropdownWrapper');
+    const customRatioWrapper = document.getElementById('customRatioWrapper');
+    const ratioSelect = document.getElementById('ratioSelect');
+    const customRatioInput = document.getElementById('customRatio');
+
+    function updateRatioVisibility() {
+      const scaleType = document.querySelector('input[name="scaleType"]:checked').value;
+      if (scaleType === 'multiplier') {
+        ratioDropdown.classList.add('visible');
+        // Show custom input only when "custom" is selected
+        if (ratioSelect.value === 'custom') {
+          customRatioWrapper.style.display = 'grid';
+        } else {
+          customRatioWrapper.style.display = 'none';
+        }
+      } else {
+        ratioDropdown.classList.remove('visible');
+        customRatioWrapper.style.display = 'none';
+      }
+    }
+
+    scaleTypeRadios.forEach(radio => {
+      radio.addEventListener('change', function() {
+        updateRatioVisibility();
+        generateScale();
+      });
+    });
+
+    ratioSelect.addEventListener('change', function() {
+      updateRatioVisibility();
+      generateScale();
+    });
+
+    // ==========================================
+    // Auto-update on input change
+    // ==========================================
+    document.getElementById('baseValue').addEventListener('input', generateScale);
+    document.getElementById('numSteps').addEventListener('input', generateScale);
+    customRatioInput.addEventListener('input', generateScale);
+    document.getElementById('collectionName').addEventListener('input', generateScale);
+
+    // ==========================================
+    // Generate Default Name
+    // ==========================================
+    function generateDefaultName(index) {
+      const names = ['xs', 'sm', 'base', 'lg', 'xl'];
+      if (index <= 5) return names[index - 1];
+      return `${index - 4}xl`; // 6=2xl, 7=3xl, etc.
+    }
+
+    // ==========================================
+    // Generate Scale
+    // ==========================================
+    let currentScale = [];
+    let hasZero = false;
+    let hasFull = false;
+    let customNamesStore = {}; // NEW: Global store for custom names
+
+    function toggleZero() {
+      hasZero = !hasZero;
+      document.getElementById('btnZero').classList.toggle('active', hasZero);
+      generateScale();
+    }
+
+    function toggleFull() {
+      hasFull = !hasFull;
+      document.getElementById('btnFull').classList.toggle('active', hasFull);
+      generateScale();
+    }
+
+    function addRow(atIndex, position) {
+      const newRow = {
+        index: Date.now(), // Unique ID for custom rows
+        value: 0,
+        customName: ''
+      };
+      
+      const idx = currentScale.findIndex(item => item.index === atIndex);
+      if (position === 'above') {
+        currentScale.splice(idx, 0, newRow);
+      } else {
+        currentScale.splice(idx + 1, 0, newRow);
+      }
+      renderPreview();
+      updateExportCode();
+    }
+
+    function deleteRow(index) {
+      currentScale = currentScale.filter(item => item.index !== index);
+      renderPreview();
+      updateExportCode();
+    }
+
+    function updateRowValue(index, value) {
+      const item = currentScale.find(item => item.index === index);
+      if (item) {
+        item.value = parseFloat(value) || 0;
+        updateExportCode();
+      }
+    }
+
+    function generateScale() {
+      const baseValue = parseFloat(document.getElementById('baseValue').value) || 8;
+      const numSteps = parseInt(document.getElementById('numSteps').value) || 10;
+      const scaleType = document.querySelector('input[name="scaleType"]:checked').value;
+
+      // Determine ratio: use custom input when "Custom Multiplier" is selected
+      let ratio;
+      if (ratioSelect.value === 'custom') {
+        ratio = parseFloat(customRatioInput.value) || 1.5;
+      } else {
+        ratio = parseFloat(ratioSelect.value) || 1.5;
+      }
+
+      // Generate Target Values
+      const generatedValues = new Map();
+      if (scaleType === 'linear') {
+        for (let i = 1; i <= numSteps; i++) {
+          generatedValues.set(i, baseValue * i);
+        }
+      } else {
+        for (let i = 0; i < numSteps; i++) {
+          const valIndex = i + 1;
+          const value = baseValue * Math.pow(ratio, i);
+          generatedValues.set(valIndex, Math.round(value * 100) / 100); // Round to 2 decimals
+        }
+      }
+
+      // If currentScale is empty (initial load), build it from scratch
+      if (currentScale.length === 0) {
+        if (hasZero) currentScale.push({ index: 0, value: 0, customName: customNamesStore[0] || 'none' });
+        
+        for (const [idx, val] of generatedValues) {
+          currentScale.push({
+             index: idx,
+             value: val,
+             customName: customNamesStore[idx] || generateDefaultName(idx)
+          });
+        }
+        
+        if (hasFull) currentScale.push({ index: 9999, value: 9999, customName: customNamesStore[9999] || 'full' });
+      } else {
+        // Smart Update: Preserve Manual Rows & Custom Names
+        
+        // 1. Remove Generated Rows that are out of bounds (index > numSteps)
+        // Keep Manual Rows (index > 10000)
+        // Keep Zero (0) and Full (9999) - handled by toggles
+        currentScale = currentScale.filter(item => {
+           if (item.index === 0 || item.index === 9999) return true;
+           if (item.index > 10000) return true; // Keep manual rows
+           return item.index <= numSteps; // Keep generated rows within bounds
+        });
+        
+        // 2. Update values of existing generated rows
+        const existingIndices = new Set();
+        currentScale.forEach(item => {
+           existingIndices.add(item.index);
+           if (generatedValues.has(item.index)) {
+              item.value = generatedValues.get(item.index);
+              // Name is preserved in item.customName
+           }
+        });
+        
+        // 3. Add missing generated rows (e.g. if numSteps increased)
+        const newItems = [];
+        for (const [idx, val] of generatedValues) {
+           if (!existingIndices.has(idx)) {
+              newItems.push({
+                 index: idx,
+                 value: val,
+                 customName: customNamesStore[idx] || generateDefaultName(idx)
+              });
+           }
+        }
+        
+        // Insert new items before Full, or at end
+        const fullIndex = currentScale.findIndex(i => i.index === 9999);
+        if (fullIndex !== -1) {
+           currentScale.splice(fullIndex, 0, ...newItems);
+        } else {
+           currentScale.push(...newItems);
+        }
+        
+        // 4. Handle Zero Toggle
+        const zeroIndex = currentScale.findIndex(i => i.index === 0);
+        if (hasZero && zeroIndex === -1) {
+           currentScale.unshift({ index: 0, value: 0, customName: customNamesStore[0] || 'none' });
+        } else if (!hasZero && zeroIndex !== -1) {
+           currentScale.splice(zeroIndex, 1);
+        }
+
+        // 5. Handle Full Toggle
+        const fullIdx = currentScale.findIndex(i => i.index === 9999);
+        if (hasFull && fullIdx === -1) {
+           currentScale.push({ index: 9999, value: 9999, customName: customNamesStore[9999] || 'full' });
+        } else if (!hasFull && fullIdx !== -1) {
+           currentScale.splice(fullIdx, 1);
+        }
+      }
+
+      renderPreview();
+      updateExportCode();
+    }
+
+    // ==========================================
+    // Security: Sanitize HTML
+    // ==========================================
+    function escapeHtml(text) {
+      if (typeof text !== 'string') return text;
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    }
+
+    // ==========================================
+    // Name = Value
+    // ==========================================
+    function setNameToValue() {
+      currentScale.forEach(item => {
+        const valStr = item.value.toString();
+        item.customName = valStr;
+        customNamesStore[item.index] = valStr;
+      });
+      renderPreview();
+      updateExportCode();
+      showToast('Names set to values');
+    }
+
+    // ==========================================
+    // Render Preview Table
+    // ==========================================
+    function renderPreview() {
+      const tableBody = document.getElementById('tableBody');
+      const previewCount = document.getElementById('previewCount');
+
+      if (currentScale.length === 0) {
+        tableBody.innerHTML = '<div class="empty-state">Click "Generate Scale" to preview values</div>';
+        previewCount.textContent = '0 VALUES';
+        return;
+      }
+
+      previewCount.textContent = `${currentScale.length} VALUES`;
+
+      tableBody.innerHTML = currentScale.map((item, idx) => {
+        const safeName = escapeHtml(item.customName);
+        const isSpecial = item.index === 0 || item.index === 9999;
+        return `
+        <div class="table-row">
+          <div class="table-cell-index">${isSpecial ? (item.index === 0 ? 'ZERO' : 'FULL') : idx + 1}</div>
+          <div><input type="text" class="name-input" id="name-input-${idx}" value="${safeName}" data-index="${item.index}" placeholder="Name..." /></div>
+          <div><input type="number" class="name-input" value="${item.value}" oninput="updateRowValue(${item.index}, this.value)" style="font-family:var(--font-mono)" /></div>
+          <div class="table-cell-copy" style="gap:4px; display:flex;">
+            <button class="icon-btn" onclick="addRow(${item.index}, 'above')" title="Insert Above">↑</button>
+            <button class="icon-btn" onclick="addRow(${item.index}, 'below')" title="Insert Below">↓</button>
+            <button class="icon-btn" onclick="deleteRow(${item.index})" title="Delete" style="color:var(--danger)">×</button>
+          </div>
+        </div>
+      `}).join('');
+
+      // Add event listeners for name inputs
+      document.querySelectorAll('.name-input').forEach((input, idx) => {
+        input.addEventListener('input', function() {
+          const index = parseInt(this.getAttribute('data-index'));
+          const newName = this.value;
+          const scaleItem = currentScale.find(item => item.index === index);
+          if (scaleItem) {
+            scaleItem.customName = newName;
+            customNamesStore[index] = newName; // Save to persistent store
+            updateExportCode();
+          }
+        });
+
+        // NEW: Enter Key Navigation (Fixed - goes to next name input in DOM order)
+        input.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            // Find all name inputs in the current table
+            const allNameInputs = Array.from(document.querySelectorAll('.name-input'));
+            const currentIndex = allNameInputs.indexOf(input);
+            
+            // Focus on the next name input in DOM order
+            if (currentIndex < allNameInputs.length - 1) {
+              const nextInput = allNameInputs[currentIndex + 1];
+              if (nextInput) {
+                nextInput.focus();
+                nextInput.select();
+              }
+            }
+          }
+        });
+      });
+    }
+
+    // ==========================================
+    // Update Export Code
+    // ==========================================
+    function updateExportCode() {
+      const collectionName = document.getElementById('collectionName').value || 'scale';
+      const exportCode = document.getElementById('exportCode');
+
+      if (currentScale.length === 0) {
+        exportCode.textContent = '{\n  "Click Generate Scale to see preview"\n}';
+        return;
+      }
+
+      const figmaJSON = {
+        "$extensions": {
+          "com.figma.modeName": "Default"
+        },
+        [collectionName]: {}
+      };
+
+      currentScale.forEach(item => {
+        figmaJSON[collectionName][item.customName || item.index] = {
+          "$type": "number",
+          "$value": item.value,
+          "$extensions": {
+            "com.figma.scopes": ["ALL_SCOPES"],
+            "com.figma.unit": "px"
+          }
+        };
+      });
+
+      exportCode.textContent = JSON.stringify(figmaJSON, null, 2);
+    }
+
+    // ==========================================
+    // Export Figma JSON
+    // ==========================================
+    function exportFigmaJSON() {
+      if (currentScale.length === 0) {
+        showToast('Generate a scale first!');
+        return;
+      }
+
+      const collectionName = document.getElementById('collectionName').value || 'scale';
+      const figmaJSON = {
+        "$extensions": {
+          "com.figma.modeName": "Default"
+        },
+        [collectionName]: {}
+      };
+
+      currentScale.forEach(item => {
+        figmaJSON[collectionName][item.customName || item.index] = {
+          "$type": "number",
+          "$value": item.value,
+          "$extensions": {
+            "com.figma.scopes": ["ALL_SCOPES"],
+            "com.figma.unit": "px"
+          }
+        };
+      });
+
+      const jsonString = JSON.stringify(figmaJSON, null, 2);
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `figma-variables-${collectionName}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      
+      // Trigger Full Screen Confetti Effect after download!
+      setTimeout(() => {
+        if (typeof confetti !== 'undefined') {
+          confetti({
+            particleCount: 150,
+            spread: 180,
+            origin: { y: 0 },
+            colors: ['#e16105', '#ffffff', '#ff7519'],
+            gravity: 0.4,
+            scalar: 1.2
+          });
+          
+          // Additional confetti bursts for full screen effect
+          setTimeout(() => confetti({ particleCount: 100, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#e16105', '#ffffff', '#ff7519'] }), 150);
+          setTimeout(() => confetti({ particleCount: 100, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#e16105', '#ffffff', '#ff7519'] }), 300);
+        }
+      }, 100); // Small delay to ensure download starts first
+      
+      showToast('Figma Variables exported!');
+    }
+
+    // ==========================================
+    // Copy Value
+    // ==========================================
+    function copyValue(value) {
+      navigator.clipboard.writeText(value.toString()).then(() => {
+        showToast(`Copied: ${value}`);
+      });
+    }
+
+    function copyJSON() {
+      const code = document.getElementById('exportCode').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        showToast('JSON copied to clipboard!');
+      });
+    }
+
+    // ==========================================
+    // Toast Notification
+    // ==========================================
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    // ==========================================
+    // Initialize on load
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', function() {
+      generateScale();
+    });
+  </script>
+</body>
+</html>
