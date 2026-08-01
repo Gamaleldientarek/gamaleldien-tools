@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Brand color override ─────────────────────────────── */
+    :root {
+      --figma-color-bg-brand: #E16105;
+      --figma-color-bg-brand-hover: #c85504;
+      --figma-color-bg-brand-pressed: #b04b03;
+      --figma-color-text-onbrand: #ffffff;
+    }
+
+    body {
+      font-family: Inter, sans-serif;
+      font-size: 11px;
+      line-height: 16px;
+      color: var(--figma-color-text);
+      background: var(--figma-color-bg);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── Views — both start hidden; JS shows the correct one ─ */
+    #onboarding-view, #main-view {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    /* ── Onboarding view ──────────────────────────────────── */
+    #onboarding-view {
+      padding: 0;
+      gap: 0;
+    }
+
+    .onboarding-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 14px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .onboarding-scroll::-webkit-scrollbar { width: 3px; }
+    .onboarding-scroll::-webkit-scrollbar-track { background: transparent; }
+    .onboarding-scroll::-webkit-scrollbar-thumb { background: var(--figma-color-border-strong); border-radius: 2px; }
+
+    .onboarding-step {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--figma-color-bg-brand);
+      color: var(--figma-color-text-onbrand);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .step-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .step-content h3 {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--figma-color-text);
+      margin-bottom: 3px;
+    }
+
+    .step-content p {
+      font-size: 11px;
+      color: var(--figma-color-text-secondary);
+      line-height: 16px;
+    }
+
+    .onboarding-code {
+      display: inline;
+      background: var(--figma-color-bg-secondary, rgba(0,0,0,0.04));
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--figma-color-text);
+    }
+
+    .onboarding-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+      max-width: 120px;
+      margin-top: 6px;
+    }
+
+    .onboarding-grid span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--figma-color-bg-secondary, rgba(0,0,0,0.025));
+      border: 1px solid var(--figma-color-border);
+      border-radius: 4px;
+      height: 22px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--figma-color-text);
+    }
+
+    .onboarding-footer {
+      padding: 10px 14px 14px;
+      flex-shrink: 0;
+      border-top: 1px solid var(--figma-color-border);
+    }
+
+    button#got-it-btn {
+      width: 100%;
+      height: 36px;
+      font-size: 12px;
+      font-family: inherit;
+      font-weight: 700;
+      color: var(--figma-color-text-onbrand);
+      background: var(--figma-color-bg-brand);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 2px 8px color-mix(in srgb, var(--figma-color-bg-brand) 30%, transparent);
+    }
+
+    button#got-it-btn:hover {
+      background: var(--figma-color-bg-brand-hover);
+      box-shadow: 0 4px 12px color-mix(in srgb, var(--figma-color-bg-brand) 40%, transparent);
+    }
+
+    /* ── Main scroll area ─────────────────────────────────── */
+    #main-view > #app {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px 12px 8px;
+      overflow-y: auto;
+    }
+
+    /* ── Header ──────────────────────────────────────────── */
+    .plugin-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--figma-color-border);
+    }
+
+    /* ── Help button ────────────────────────────────────── */
+    #help-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1px solid var(--figma-color-border);
+      background: var(--figma-color-bg-tertiary, rgba(0,0,0,0.03));
+      color: var(--figma-color-text-secondary);
+      font-size: 11px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+      padding: 0;
+    }
+
+    #help-btn:hover {
+      color: var(--figma-color-text);
+      background: var(--figma-color-bg-secondary, rgba(0,0,0,0.05));
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    #help-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .plugin-icon {
+      width: 34px;
+      height: 34px;
+      background: var(--figma-color-bg-brand);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .plugin-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--figma-color-text);
+      line-height: 16px;
+    }
+
+    .plugin-subtitle {
+      font-size: 10px;
+      color: var(--figma-color-text-secondary);
+      margin-top: 1px;
+      line-height: 14px;
+    }
+
+    /* ── Cards ───────────────────────────────────────────── */
+    .card {
+      background: var(--figma-color-bg-secondary, rgba(0,0,0,0.025));
+      border: 1px solid var(--figma-color-border);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* ── Labels ──────────────────────────────────────────── */
+    label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--figma-color-text-secondary);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* ── Inputs ──────────────────────────────────────────── */
+    select, input[type="text"], input[type="number"] {
+      width: 100%;
+      height: 30px;
+      padding: 0 10px;
+      font-size: 11px;
+      font-family: inherit;
+      color: var(--figma-color-text);
+      background: var(--figma-color-bg);
+      border: 1.5px solid var(--figma-color-border);
+      border-radius: 7px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23888'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 28px;
+    }
+
+    select:focus, input:focus {
+      outline: none;
+      border-color: var(--figma-color-bg-brand);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--figma-color-bg-brand) 15%, transparent);
+    }
+
+    input.invalid {
+      border-color: var(--figma-color-text-danger, #f24822);
+    }
+
+    .range-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .range-row .field { display: flex; flex-direction: column; }
+
+    .field-hint {
+      font-size: 10px;
+      color: var(--figma-color-text-secondary);
+      margin-top: 4px;
+      line-height: 14px;
+    }
+
+    .validation-error {
+      color: var(--figma-color-text-danger, #f24822);
+      font-size: 10px;
+      margin-top: 3px;
+    }
+
+    /* ── Number format toggle ──────────────────────────────── */
+    .format-toggle {
+      display: flex;
+    }
+
+    .fmt-btn {
+      flex: 1;
+      height: 28px;
+      padding: 0 10px;
+      font-size: 11px;
+      font-family: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--figma-color-border);
+      background: var(--figma-color-bg);
+      color: var(--figma-color-text-secondary);
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .fmt-btn:first-child {
+      border-radius: 6px 0 0 6px;
+      border-right: none;
+    }
+
+    .fmt-btn:last-child {
+      border-radius: 0 6px 6px 0;
+    }
+
+    .fmt-btn.active {
+      background: var(--figma-color-bg-brand);
+      color: var(--figma-color-text-onbrand);
+      border-color: var(--figma-color-bg-brand);
+      font-weight: 600;
+    }
+
+    .fmt-btn:not(.active):hover {
+      background: var(--figma-color-bg-tertiary, rgba(0,0,0,0.03));
+      color: var(--figma-color-text);
+    }
+
+    /* ── Advanced toggle ─────────────────────────────────── */
+    #advanced-toggle {
+      width: 100%;
+      background: var(--figma-color-bg-secondary, rgba(0,0,0,0.025));
+      border: 1px solid var(--figma-color-border);
+      border-radius: 8px;
+      padding: 7px 11px;
+      font-size: 11px;
+      font-family: inherit;
+      font-weight: 500;
+      color: var(--figma-color-text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    #advanced-toggle:hover {
+      color: var(--figma-color-text);
+      border-color: var(--figma-color-border-strong);
+      background: var(--figma-color-bg-tertiary, rgba(0,0,0,0.05));
+    }
+
+    .toggle-chevron {
+      font-size: 9px;
+      transition: transform 0.2s ease;
+      display: inline-block;
+      opacity: 0.6;
+    }
+
+    #advanced-body {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px;
+      background: var(--figma-color-bg-secondary, rgba(0,0,0,0.025));
+      border: 1px solid var(--figma-color-border);
+      border-radius: 8px;
+    }
+
+    /* ── Run button ──────────────────────────────────────── */
+    button#run-btn {
+      width: 100%;
+      height: 38px;
+      font-size: 12px;
+      font-family: inherit;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      color: var(--figma-color-text-onbrand);
+      background: var(--figma-color-bg-brand);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+      box-shadow: 0 2px 8px color-mix(in srgb, var(--figma-color-bg-brand) 30%, transparent);
+    }
+
+    button#run-btn:hover {
+      background: var(--figma-color-bg-brand-hover);
+      box-shadow: 0 4px 12px color-mix(in srgb, var(--figma-color-bg-brand) 40%, transparent);
+    }
+
+    button#run-btn:active {
+      background: var(--figma-color-bg-brand-pressed);
+      transform: scale(0.99);
+      box-shadow: none;
+    }
+
+    button#run-btn:disabled {
+      background: var(--figma-color-bg-disabled);
+      color: var(--figma-color-text-disabled);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* ── Empty / no-slides states ────────────────────────── */
+    #empty-state, #no-slides-state {
+      font-size: 11px;
+      color: var(--figma-color-text-secondary);
+      text-align: center;
+      padding: 14px 12px;
+      background: var(--figma-color-bg-secondary, rgba(0,0,0,0.025));
+      border: 1px solid var(--figma-color-border);
+      border-radius: 10px;
+      line-height: 16px;
+    }
+
+    /* ── Results card ────────────────────────────────────── */
+    #results {
+      display: none;
+      flex-direction: column;
+      background: var(--figma-color-bg-secondary, rgba(0,0,0,0.025));
+      border: 1px solid var(--figma-color-border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--figma-color-border);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--figma-color-text-secondary);
+    }
+
+    .results-body {
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .result-label { color: var(--figma-color-text-secondary); font-size: 11px; }
+    .result-value { font-weight: 700; font-size: 11px; }
+    .result-value.error { color: var(--figma-color-text-danger, #f24822); }
+
+    #error-list {
+      margin-top: 4px;
+      padding-top: 8px;
+      border-top: 1px solid var(--figma-color-border);
+    }
+
+    .error-item {
+      color: var(--figma-color-text-danger, #f24822);
+      margin-bottom: 4px;
+      font-size: 10px;
+      line-height: 14px;
+    }
+
+    /* ── Slide details log ───────────────────────────────── */
+    #slide-log-section {
+      border-top: 1px solid var(--figma-color-border);
+      padding: 8px 12px 10px;
+    }
+
+    #slide-log-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--figma-color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    #slide-log { max-height: 130px; overflow-y: auto; }
+
+    #slide-log::-webkit-scrollbar { width: 3px; }
+    #slide-log::-webkit-scrollbar-track { background: transparent; }
+    #slide-log::-webkit-scrollbar-thumb { background: var(--figma-color-border-strong); border-radius: 2px; }
+
+    .log-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 0;
+      min-width: 0;
+      border-bottom: 1px solid var(--figma-color-border);
+    }
+
+    .log-row:last-child { border-bottom: none; }
+
+    .log-name {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--figma-color-text);
+      font-size: 10px;
+    }
+
+    .log-num {
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+      color: var(--figma-color-text-secondary);
+      font-size: 10px;
+      min-width: 28px;
+      text-align: right;
+    }
+
+    .log-status { flex-shrink: 0; font-size: 10px; min-width: 32px; text-align: right; }
+    .log-status.updated { color: var(--figma-color-text-success, #14ae5c); }
+    .log-status.cover   { color: var(--figma-color-text-secondary); }
+    .log-status.error   { color: var(--figma-color-text-danger, #f24822); }
+
+    /* ── Footer ──────────────────────────────────────────── */
+    footer {
+      padding: 8px 12px 12px;
+      text-align: center;
+      font-size: 10px;
+      color: var(--figma-color-text-secondary);
+      border-top: 1px solid var(--figma-color-border);
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    footer a {
+      color: var(--figma-color-text-secondary);
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.15s ease;
+    }
+
+    footer a:hover { color: var(--figma-color-text); text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- Onboarding view — shown on first launch, hidden after dismiss -->
+  <div id="onboarding-view">
+    <div class="onboarding-scroll">
+      <h2 style="font-size: 13px; font-weight: 700; color: var(--figma-color-text); margin-bottom: 2px;">Quick start guide</h2>
+      <div class="onboarding-step">
+        <span class="step-num">1</span>
+        <div class="step-content">
+          <h3>Add a number layer</h3>
+          <p>In each slide frame, create a <strong>Text</strong> layer named <span class="onboarding-code">{p#}</span>. The plugin replaces its text with the page number.</p>
+          <p>Slides without this layer are skipped — perfect for covers.</p>
+        </div>
+      </div>
+
+      <div class="onboarding-step">
+        <span class="step-num">2</span>
+        <div class="step-content">
+          <h3>Pick a section & run</h3>
+          <p>Choose the Figma <strong>Section</strong> that holds your slides, then hit <strong>Number Slides</strong>.</p>
+        </div>
+      </div>
+
+      <div class="onboarding-step">
+        <span class="step-num">3</span>
+        <div class="step-content">
+          <h3>Reading order</h3>
+          <p>Slides are numbered <strong>left → right</strong>, then <strong>top → bottom</strong>:</p>
+          <div class="onboarding-grid">
+            <span>1</span><span>2</span><span>3</span>
+            <span>4</span><span>5</span><span>6</span>
+            <span>7</span><span>8</span><span>9</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="onboarding-footer">
+      <button id="got-it-btn">Got it</button>
+    </div>
+  </div>
+
+  <!-- Main view — the normal plugin UI -->
+  <div id="main-view">
+  <div id="app">
+
+    <!-- Header -->
+    <header class="plugin-header">
+      <div class="plugin-icon">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="3" width="14" height="12" rx="2" fill="white" opacity="0.95"/>
+          <rect x="5" y="6.5" width="4" height="1.5" rx="0.75" fill="#E16105" opacity="0.7"/>
+          <rect x="5" y="9.5" width="8" height="1" rx="0.5" fill="#E16105" opacity="0.4"/>
+          <rect x="5" y="11.5" width="6" height="1" rx="0.5" fill="#E16105" opacity="0.25"/>
+        </svg>
+      </div>
+      <div style="flex:1;">
+        <div class="plugin-title">Slide Numbering</div>
+        <div class="plugin-subtitle">Auto-number your presentation slides</div>
+      </div>
+      <button id="help-btn" title="How it works">?</button>
+    </header>
+
+    <!-- Primary controls card -->
+    <div class="card">
+
+      <div>
+        <label for="section-select">Section</label>
+        <select id="section-select"></select>
+        <p class="field-hint">Slides must be direct children of this section</p>
+        <p id="empty-state" style="display:none;">No sections found on this page.</p>
+      </div>
+
+      <div>
+        <label for="identifier">Page number identifier</label>
+        <input type="text" id="identifier" value="{p#}" />
+        <p class="field-hint">Text layer name must contain this string</p>
+      </div>
+
+      <div>
+        <label>Number format</label>
+        <div class="format-toggle">
+          <button type="button" id="fmt-plain" class="fmt-btn active">1, 2, 3</button>
+          <button type="button" id="fmt-padded" class="fmt-btn">01, 02, 03</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Advanced settings (collapsible) -->
+    <div>
+      <button id="advanced-toggle" type="button">
+        <span>Advanced settings</span>
+        <span class="toggle-chevron">▶</span>
+      </button>
+      <div id="advanced-body" style="display:none;">
+
+        <div>
+          <label>Width range (px)</label>
+          <div class="range-row">
+            <div class="field">
+              <label for="min-width" style="font-weight:400;text-transform:none;letter-spacing:0;">Min</label>
+              <input type="number" id="min-width" value="1900" min="1" step="1" />
+            </div>
+            <div class="field">
+              <label for="max-width" style="font-weight:400;text-transform:none;letter-spacing:0;">Max</label>
+              <input type="number" id="max-width" value="1950" min="1" step="1" />
+            </div>
+          </div>
+          <p class="field-hint">Filters frames by width — default matches 1920px slides</p>
+          <p class="validation-error" id="width-error" style="display:none;"></p>
+        </div>
+
+        <div>
+          <label>Height range (px)</label>
+          <div class="range-row">
+            <div class="field">
+              <label for="min-height" style="font-weight:400;text-transform:none;letter-spacing:0;">Min</label>
+              <input type="number" id="min-height" value="1070" min="1" step="1" />
+            </div>
+            <div class="field">
+              <label for="max-height" style="font-weight:400;text-transform:none;letter-spacing:0;">Max</label>
+              <input type="number" id="max-height" value="1090" min="1" step="1" />
+            </div>
+          </div>
+          <p class="field-hint">Filters frames by height — default matches 1080px slides</p>
+          <p class="validation-error" id="height-error" style="display:none;"></p>
+        </div>
+
+        <div class="range-row">
+          <div class="field">
+            <label for="y-tolerance">Y tolerance (px)</label>
+            <input type="number" id="y-tolerance" value="50" min="0" step="1" />
+            <p class="field-hint">Max Y gap for same row</p>
+          </div>
+          <div class="field">
+            <label for="starting-number">Starting number</label>
+            <input type="number" id="starting-number" value="1" min="0" step="1" />
+            <p class="field-hint">First page number</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Run button -->
+    <button id="run-btn" disabled>Number Slides</button>
+
+    <!-- No slides found -->
+    <p id="no-slides-state" style="display:none;"></p>
+
+    <!-- Results card -->
+    <div id="results">
+      <div class="results-header">Results</div>
+      <div class="results-body">
+        <div class="result-row">
+          <span class="result-label">Total slides</span>
+          <span class="result-value" id="res-total">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Updated</span>
+          <span class="result-value" id="res-updated">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Covers (no label)</span>
+          <span class="result-value" id="res-skipped">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Errors</span>
+          <span class="result-value" id="res-errors">—</span>
+        </div>
+        <div id="error-list" style="display:none;"></div>
+      </div>
+      <div id="slide-log-section" style="display:none;">
+        <div id="slide-log-label">Slide details</div>
+        <div id="slide-log"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    Made with ❤️ by <a id="author-link" href="#">Gamal Eldien</a>
+  </footer>
+  </div><!-- /main-view -->
+
+  <script>
+    function sendMessage(type, payload) {
+      parent.postMessage({ pluginMessage: { type, ...payload } }, '*');
+    }
+
+    // ── View-swap logic ──────────────────────────────────
+    let hasSeen = false;
+    const onboardingView = document.getElementById('onboarding-view');
+    const mainView = document.getElementById('main-view');
+
+    function showView(viewId) {
+      onboardingView.style.display = viewId === 'onboarding-view' ? 'flex' : 'none';
+      mainView.style.display = viewId === 'main-view' ? 'flex' : 'none';
+    }
+
+    // "Got it" dismiss button
+    document.getElementById('got-it-btn').addEventListener('click', () => {
+      if (!hasSeen) {
+        sendMessage('set-onboarding-seen');
+        hasSeen = true;
+      }
+      showView('main-view');
+    });
+
+    // Help button — re-opens onboarding from main view
+    const helpBtn = document.getElementById('help-btn');
+    helpBtn.addEventListener('click', () => {
+      showView('onboarding-view');
+    });
+
+    // Footer link → opens gamaleldien.com via code.js
+    document.getElementById('author-link').addEventListener('click', (e) => {
+      e.preventDefault();
+      sendMessage('open-url', { url: 'https://gamaleldien.com/' });
+    });
+
+    // Number format toggle
+    let zeroPadded = false;
+    const fmtPlain = document.getElementById('fmt-plain');
+    const fmtPadded = document.getElementById('fmt-padded');
+    fmtPlain.addEventListener('click', () => {
+      zeroPadded = false;
+      fmtPlain.classList.add('active');
+      fmtPadded.classList.remove('active');
+    });
+    fmtPadded.addEventListener('click', () => {
+      zeroPadded = true;
+      fmtPadded.classList.add('active');
+      fmtPlain.classList.remove('active');
+    });
+
+    // Advanced toggle with animated chevron
+    const advancedToggle = document.getElementById('advanced-toggle');
+    const advancedBody = document.getElementById('advanced-body');
+    const chevron = advancedToggle.querySelector('.toggle-chevron');
+    let advancedOpen = false;
+    advancedToggle.addEventListener('click', () => {
+      advancedOpen = !advancedOpen;
+      advancedBody.style.display = advancedOpen ? 'flex' : 'none';
+      chevron.style.transform = advancedOpen ? 'rotate(90deg)' : '';
+    });
+
+    function safeInt(id, fallback, allowZero) {
+      const val = parseInt(document.getElementById(id).value, 10);
+      if (isNaN(val)) return null;
+      if (!allowZero && val < 1) return null;
+      if (allowZero && val < 0) return null;
+      return val;
+    }
+
+    function validate() {
+      let valid = true;
+      document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+      document.querySelectorAll('.validation-error').forEach(el => { el.style.display = 'none'; el.textContent = ''; });
+
+      const minW = safeInt('min-width', null, false);
+      const maxW = safeInt('max-width', null, false);
+      const widthErr = document.getElementById('width-error');
+      if (minW === null || maxW === null) {
+        widthErr.textContent = 'Enter valid positive numbers.';
+        widthErr.style.display = 'block';
+        if (minW === null) document.getElementById('min-width').classList.add('invalid');
+        if (maxW === null) document.getElementById('max-width').classList.add('invalid');
+        valid = false;
+      } else if (minW > maxW) {
+        widthErr.textContent = 'Min must be \u2264 Max';
+        widthErr.style.display = 'block';
+        document.getElementById('min-width').classList.add('invalid');
+        document.getElementById('max-width').classList.add('invalid');
+        valid = false;
+      }
+
+      const minH = safeInt('min-height', null, false);
+      const maxH = safeInt('max-height', null, false);
+      const heightErr = document.getElementById('height-error');
+      if (minH === null || maxH === null) {
+        heightErr.textContent = 'Enter valid positive numbers.';
+        heightErr.style.display = 'block';
+        if (minH === null) document.getElementById('min-height').classList.add('invalid');
+        if (maxH === null) document.getElementById('max-height').classList.add('invalid');
+        valid = false;
+      } else if (minH > maxH) {
+        heightErr.textContent = 'Min must be \u2264 Max';
+        heightErr.style.display = 'block';
+        document.getElementById('min-height').classList.add('invalid');
+        document.getElementById('max-height').classList.add('invalid');
+        valid = false;
+      }
+
+      const yTol = safeInt('y-tolerance', null, true);
+      if (yTol === null) {
+        document.getElementById('y-tolerance').classList.add('invalid');
+        valid = false;
+      }
+
+      const identifier = document.getElementById('identifier').value.trim();
+      if (!identifier) {
+        document.getElementById('identifier').classList.add('invalid');
+        valid = false;
+      }
+
+      const startNum = safeInt('starting-number', null, true);
+      if (startNum === null) {
+        document.getElementById('starting-number').classList.add('invalid');
+        valid = false;
+      }
+
+      return valid;
+    }
+
+    function getConfig() {
+      return {
+        sectionId: document.getElementById('section-select').value,
+        identifier: document.getElementById('identifier').value.trim(),
+        minWidth: parseInt(document.getElementById('min-width').value, 10),
+        maxWidth: parseInt(document.getElementById('max-width').value, 10),
+        minHeight: parseInt(document.getElementById('min-height').value, 10),
+        maxHeight: parseInt(document.getElementById('max-height').value, 10),
+        yTolerance: parseInt(document.getElementById('y-tolerance').value, 10),
+        startingNumber: parseInt(document.getElementById('starting-number').value, 10),
+        zeroPadded: zeroPadded,
+      };
+    }
+
+    const runBtn = document.getElementById('run-btn');
+    const sectionSelect = document.getElementById('section-select');
+
+    runBtn.addEventListener('click', () => {
+      if (!validate()) return;
+      const config = getConfig();
+      if (!config.sectionId) return;
+      runBtn.disabled = true;
+      helpBtn.disabled = true;
+      runBtn.textContent = 'Running\u2026';
+      document.getElementById('results').style.display = 'none';
+      document.getElementById('no-slides-state').style.display = 'none';
+      sendMessage('run-numbering', { config });
+    });
+
+    window.onmessage = (event) => {
+      const msg = event.data.pluginMessage;
+      if (!msg) return;
+
+      switch (msg.type) {
+
+        case 'onboarding-state': {
+          hasSeen = !!msg.hasSeen;
+          showView(hasSeen ? 'main-view' : 'onboarding-view');
+          break;
+        }
+
+        case 'sections-list': {
+          sectionSelect.innerHTML = '';
+          msg.sections.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s.id;
+            opt.textContent = s.name;
+            sectionSelect.appendChild(opt);
+          });
+          runBtn.disabled = false;
+          break;
+        }
+
+        case 'no-sections': {
+          sectionSelect.style.display = 'none';
+          document.getElementById('empty-state').style.display = 'block';
+          break;
+        }
+
+        case 'numbering-complete': {
+          const r = msg.result;
+          runBtn.disabled = false;
+          helpBtn.disabled = false;
+          runBtn.textContent = 'Number Slides';
+
+          if (r.totalSlides === 0 && r.errors.length === 0) {
+            const el = document.getElementById('no-slides-state');
+            if (r.diagnosticSizes && r.diagnosticSizes.length > 0) {
+              el.textContent = 'No slides found. Sizes in section: ' + r.diagnosticSizes.join(', ') + ' \u2014 adjust the width/height range above.';
+            } else {
+              el.textContent = 'No slides found. The section appears to be empty.';
+            }
+            el.style.display = 'block';
+            if (!advancedOpen) advancedToggle.click();
+            break;
+          }
+
+          document.getElementById('res-total').textContent   = r.totalSlides;
+          document.getElementById('res-updated').textContent = r.updated;
+          document.getElementById('res-skipped').textContent = r.skipped;
+
+          const errCount = document.getElementById('res-errors');
+          errCount.textContent = r.errors.length;
+          errCount.className = 'result-value' + (r.errors.length > 0 ? ' error' : '');
+
+          const errorList = document.getElementById('error-list');
+          if (r.errors.length > 0) {
+            errorList.innerHTML = '';
+            r.errors.forEach(e => {
+              const div = document.createElement('div');
+              div.className = 'error-item';
+              div.textContent = 'Slide "' + e.slideName + '" (p.' + e.pageNumber + '): ' + e.message;
+              errorList.appendChild(div);
+            });
+            errorList.style.display = 'block';
+          } else {
+            errorList.style.display = 'none';
+          }
+
+          const slideLogSection = document.getElementById('slide-log-section');
+          const slideLog = document.getElementById('slide-log');
+          if (r.slideDetails && r.slideDetails.length > 0) {
+            slideLog.innerHTML = '';
+            r.slideDetails.forEach(d => {
+              const row = document.createElement('div');
+              row.className = 'log-row';
+              const name = document.createElement('span');
+              name.className = 'log-name';
+              name.textContent = d.name;
+              name.title = d.name;
+              const num = document.createElement('span');
+              num.className = 'log-num';
+              num.textContent = d.status !== 'cover' ? 'p.' + d.pageNumber : '—';
+              const status = document.createElement('span');
+              status.className = 'log-status ' + d.status;
+              status.textContent = d.status === 'updated' ? '✓' : d.status === 'cover' ? 'cover' : '✗';
+              row.appendChild(name);
+              row.appendChild(num);
+              row.appendChild(status);
+              slideLog.appendChild(row);
+            });
+            slideLogSection.style.display = 'block';
+          } else {
+            slideLogSection.style.display = 'none';
+          }
+
+          document.getElementById('results').style.display = 'flex';
+          break;
+        }
+
+        default:
+          console.warn('Unhandled message:', msg.type);
+      }
+    };
+
+    sendMessage('get-onboarding-state');
+    sendMessage('get-sections');
+  </script>
+</body>
+</html>
