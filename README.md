@@ -15,6 +15,7 @@ Free tools by [Gamal Eldien](https://gamaleldien.com) — hosted at [tools.gamal
 | URL Shortener | [tools.gamaleldien.com/s](https://tools.gamaleldien.com/s) | [`url-shortener/`](./url-shortener) |
 | Brand Brief | [brief.gamaleldien.com](https://brief.gamaleldien.com) | [`brand-brief/`](./brand-brief) |
 | Hexer (Chrome Extension) | [Chrome Web Store](https://chromewebstore.google.com/detail/mgbajpnindnpkdgidnijgaklbfbamkab) | [`hexer/`](./hexer) |
+| Figma Slide Numbering | Figma Plugin | [`figma-slide-numbering/`](./figma-slide-numbering) |
 | Landing Page | [tools.gamaleldien.com](https://tools.gamaleldien.com) | [`landing/`](./landing) |
 
 ## Deployment
