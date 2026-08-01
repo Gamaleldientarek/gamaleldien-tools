@@ -82,7 +82,7 @@ FAVICON_LANDING = _make_fav("""
     <path d="M60.12 10.32 47.67 22.77c-3.44-3.44-7.94-5.16-12.45-5.16s-9.01 1.72-12.45 5.16c-3.44 3.43-5.16 7.94-5.16 12.45s1.72 9.01 5.16 12.45L10.32 60.12C3.94 53.75 0 44.94 0 35.22s3.94-18.53 10.32-24.9C16.69 3.94 25.49 0 35.22 0s18.53 3.94 24.9 10.32" fill="#f1f2f2"/>
   </g>
 </svg>""")
-WORKER_NAME = "darkmode"
+WORKER_NAME = "dark-mode-converter"
 BASE = os.path.dirname(os.path.abspath(__file__))
 
 print("🛠️  tools.gamaleldien.com — Build & Deploy (Router)")
