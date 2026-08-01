@@ -2084,23 +2084,74 @@ function fixDarkModeContrast(id) {
 // Dark Mode Conversion Methods
 // ============================================
 
-function convertToDark(hex, method, chromaAdj, darkBg, locked = false) {
+// Lightness for a FOREGROUND colour on the dark background.
+//
+// The OKLCH-family methods invert ABSOLUTE lightness. That is correct for a
+// surface — a light background should become a dark one — and backwards for a
+// foreground, because inversion assumes the colour is dark text on white. A
+// colour that is already light (#ff6a00, L 0.701) inverts to L 0.389 and lands
+// at 1.82:1 on #141414, when the unconverted colour already passes at 6.42:1.
+//
+// So: preserve the contrast RATIO and move lightness as little as possible.
+// Surfaces never reach this function — see isSurfaceRole() in convertToDark.
+function foregroundDarkL(hex, oklch, newC, darkBg, lightBg) {
+  // The contrast it had in light mode, never below AA. A colour that was already
+  // weak in light mode should not be reproduced as weak in dark mode.
+  const target = Math.max(4.5, getContrastRatio(hex, lightBg));
+
+  // Already clears the target on the dark background — keep its lightness.
+  // Minimal movement is the point: a brand colour that works on dark must not
+  // be shifted for the sake of shifting.
+  if (getContrastRatio(hex, darkBg) >= target) return oklch.L;
+
+  // Otherwise search L upward, AWAY from the dark background, at constant H and
+  // adjusted C. Same 20-iteration pattern as autoFixContrast and oklchToHex.
+  let low = oklch.L;
+  let high = 0.98; // ceiling — pure white foregrounds are not the goal
+  let metL = null; // smallest L that reached the target (minimal movement)
+  let bestL = oklch.L;
+  let bestRatio = getContrastRatio(oklchToHex(oklch.L, newC, oklch.H), darkBg);
+
+  for (let i = 0; i < 20; i++) {
+    const mid = (low + high) / 2;
+    const ratio = getContrastRatio(oklchToHex(mid, newC, oklch.H), darkBg);
+
+    if (ratio > bestRatio) { bestRatio = ratio; bestL = mid; }
+
+    if (ratio >= target) {
+      metL = mid;
+      high = mid; // Try closer to the original
+    } else {
+      low = mid;  // Need lighter
+    }
+  }
+
+  // Target unreachable (it can exceed what #141414 allows): return the best L
+  // found, which is never worse than the input.
+  return metL !== null ? metL : bestL;
+}
+
+function convertToDark(hex, method, chromaAdj, darkBg, locked = false, name = '', lightBg = '#ffffff') {
   if (locked) return hex; // Don't convert locked colors
-  
+
   const oklch = hexToOklch(hex);
   const hsl = hexToHsl(hex);
+  // Surfaces invert; foregrounds preserve their contrast ratio instead.
+  const surface = isSurfaceRole(name);
 
   switch (method) {
     case 'oklch-invert': {
-      const newL = Math.max(0.05, Math.min(0.95, 1.0 - oklch.L));
       const newC = oklch.C * chromaAdj;
+      if (!surface) return oklchToHex(foregroundDarkL(hex, oklch, newC, darkBg, lightBg), newC, oklch.H);
+      const newL = Math.max(0.05, Math.min(0.95, 1.0 - oklch.L));
       return oklchToHex(newL, newC, oklch.H);
     }
     case 'oklch-remap': {
+      const newC = oklch.C * chromaAdj;
+      if (!surface) return oklchToHex(foregroundDarkL(hex, oklch, newC, darkBg, lightBg), newC, oklch.H);
       const darkBgOklch = hexToOklch(darkBg);
       const range = 0.85 - darkBgOklch.L;
       const newL = darkBgOklch.L + (1.0 - oklch.L) * range;
-      const newC = oklch.C * chromaAdj;
       return oklchToHex(Math.max(0.05, Math.min(0.95, newL)), newC, oklch.H);
     }
     case 'hsl-invert': {
@@ -2108,11 +2159,12 @@ function convertToDark(hex, method, chromaAdj, darkBg, locked = false) {
       return hslToHex(hsl.h, hsl.s, newL);
     }
     case 'antdesign': {
+      const newC = Math.min(0.4, oklch.C * chromaAdj * (oklch.L > 0.7 ? 1.2 : 0.9));
+      if (!surface) return oklchToHex(foregroundDarkL(hex, oklch, newC, darkBg, lightBg), newC, oklch.H);
       const newL = oklch.L > 0.5
         ? Math.max(0.15, oklch.L * 0.4)
         : Math.min(0.85, oklch.L + (1 - oklch.L) * 0.6);
-      const newC = oklch.C * chromaAdj * (oklch.L > 0.7 ? 1.2 : 0.9);
-      return oklchToHex(newL, Math.min(0.4, newC), oklch.H);
+      return oklchToHex(newL, newC, oklch.H);
     }
     default:
       return hex;
@@ -2300,13 +2352,15 @@ function getDarkColors() {
   const globalMethod = document.getElementById('method').value;
   const chromaAdj = parseFloat(document.getElementById('chromaAdjust').value);
   const darkBg = getDarkBg();
+  // Foreground conversion targets the contrast the colour had in light mode.
+  const lightBg = getLightBg();
 
   return colors.map(c => {
     // Use per-color method if set, otherwise use global
     const effectiveMethod = c.method || globalMethod;
-    
+
     // If darkOverride exists, use it instead of computed value
-    const computedDark = convertToDark(c.hex, effectiveMethod, chromaAdj, darkBg, c.locked);
+    const computedDark = convertToDark(c.hex, effectiveMethod, chromaAdj, darkBg, c.locked, c.name, lightBg);
     
     return {
       ...c,
