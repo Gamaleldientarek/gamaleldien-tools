@@ -6384,8 +6384,10 @@ function openInEditor(file) {
         timestamp: Date.now()
     }));
 
-    // Navigate to editor
-    window.location.href = '/lottie?from=preview';
+    // Navigate to editor. The editor is served at the root of
+    // lottie.gamaleldien.com; '/lottie' is a path from the old
+    // tools.gamaleldien.com/lottie host and 404s here.
+    window.location.href = '/?from=preview';
 }
 
 // Clean up stale sessionStorage data (older than 5 minutes)
