@@ -18,6 +18,21 @@ Free tools by [Gamal Eldien](https://gamaleldien.com) — hosted at [tools.gamal
 | Hexer (Chrome Extension) | [Chrome Web Store](https://chromewebstore.google.com/detail/mgbajpnindnpkdgidnijgaklbfbamkab) | [`hexer/`](./hexer) |
 | Figma Slide Numbering | [Figma Community](https://www.figma.com/community/plugin/1611086088438508623/page-number-for-presentations) | [`figma-slide-numbering/`](./figma-slide-numbering) |
 | Landing Page | [tools.gamaleldien.com](https://tools.gamaleldien.com) | [`landing/`](./landing) |
+| Freelancing Presentation | [learn.gamaleldien.com/freelance](https://learn.gamaleldien.com/freelance) | [`iti-freelance-presentation`](https://github.com/Gamaleldientarek/iti-freelance-presentation) (separate private repo) |
+
+## Where everything runs
+
+No traditional servers anywhere — everything is serverless. Full deploy detail per
+surface is in [`CLAUDE.md`](./CLAUDE.md#hosting-map).
+
+| Surface | Platform | State |
+|---|---|---|
+| `tools.gamaleldien.com` (most tools) | Cloudflare Worker (`build-router.py`) | Stateless |
+| `shorten.gamaleldien.com` | Cloudflare Worker (own deploy) | **KV** — shortlinks + click analytics |
+| `brief.gamaleldien.com` | Cloudflare Pages (`brand-brief`, direct upload) | Stateless |
+| `lottie.gamaleldien.com` | Vercel (`lottie-test-vercel`, CLI deploy) | Stateless |
+| `/random-selector` (Turn Order) | Vercel (`turn-order-generator`) + **Supabase** | Postgres + Realtime — the only real backend |
+| `learn.gamaleldien.com` | Vercel (`iti-freelance`, CLI deploy) | Stateless |
 
 ## Deployment
 
