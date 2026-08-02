@@ -22,8 +22,9 @@ worker.js
 __pycache__/
 *.pyc
 
-# Scrapped scaffold from the 2026-08-01 random-selector build. It still holds
-# LICENSED AzmX and thmanyah font files, which are AZMX client assets and must
-# never ship from this repo. Google Drive's file provider denies unlink to the
-# shell, so it has to be deleted from Finder — ignored here until that happens.
-ZZZ-DELETE-IN-FINDER-random-selector/
+# Agent/tooling scratch. Playwright cannot create its output dir inside Google
+# Drive (the file provider denies mkdir on dot-directories), so it gets
+# symlinked out to /tmp — the link itself must never be committed.
+.playwright-mcp
+.vercel
+.supabase
