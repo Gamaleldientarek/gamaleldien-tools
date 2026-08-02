@@ -67,16 +67,28 @@ function skipAnimation(resolved: boolean, orderLength: number): boolean {
 }
 
 /**
- * A long name must not wrap on a projector — a wrapped name breaks the
- * moment. Step the peak size down as the name gets longer rather than
- * letting it run onto a second line.
+ * A long name must not wrap on a projector — a wrapped name breaks the moment.
+ *
+ * This was first written as character-count size steps, and that was wrong:
+ * "Mighty Cedar" (12 chars) still wrapped at the 12vw step, because a step
+ * table can only ever approximate the real width of a specific string.
+ *
+ * Instead, derive the size from the width the text will actually occupy.
+ * With `nowrap`, a line of N characters is about `N * ADVANCE * fontSize`
+ * wide, so the size that fills a target width W is `W / (N * ADVANCE)`.
+ * Capped at 14vw so short names don't become absurd.
+ *
+ * ADVANCE is deliberately an UPPER bound on Clash Display Bold's average
+ * uppercase advance, not the mean — overestimating costs a few pixels of
+ * headroom, underestimating costs a wrapped line, and only one of those is
+ * visible from the back of a room.
  */
+const ADVANCE = 0.72;
+const FILL_VW = 86;
+
 function peakSizeFor(name: string): string {
-  const n = name.length;
-  if (n <= 10) return "clamp(3.5rem, 14vw, 15rem)";
-  if (n <= 14) return "clamp(3rem, 12vw, 13rem)";
-  if (n <= 20) return "clamp(2.5rem, 9vw, 10rem)";
-  return "clamp(2rem, 7vw, 8rem)";
+  const n = Math.max(name.trim().length, 1);
+  return `min(14vw, ${(FILL_VW / (n * ADVANCE)).toFixed(2)}vw)`;
 }
 
 export function WheelReveal({ order, resolved = false }: WheelRevealProps) {
@@ -194,7 +206,7 @@ export function WheelReveal({ order, resolved = false }: WheelRevealProps) {
           key={settled ? "settled" : "peak"}
           className={`mt-[1.6vh] font-display font-bold uppercase leading-[0.92] tracking-[-0.03em] text-white ${
             spinning ? "opacity-90" : "g-lock"
-          }`}
+          } ${settled ? "" : "whitespace-nowrap"}`}
           style={{
             fontSize: settled
               ? "clamp(1.85rem, 4.5vw, 3.25rem)"
