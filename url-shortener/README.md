@@ -4,10 +4,19 @@ Password-protected URL shortener on Cloudflare Workers + KV.
 
 ## Deploy
 
+Two paths:
+
 ```bash
-cd /root/clawd
-python3 projects/business/gamaleldien.com/tools/url-shortener/deploy.py
+# Full deploy (worker + secret + DNS/routes) — needs CLOUDFLARE_API_TOKEN
+python3 deploy.py
+
+# Worker-only redeploy via wrangler login (secrets and routes persist)
+python3 deploy.py --dry-run   # sanity-check the build first
+npx wrangler deploy           # uses wrangler.jsonc; needs worker.js from a deploy.py run
 ```
+
+Note: wrangler cannot write its cache inside the Google Drive folder — copy
+`worker.js` + `wrangler.jsonc` to a local temp dir and run `npx wrangler deploy` there.
 
 ## CF Resources
 

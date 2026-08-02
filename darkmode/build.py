@@ -16,9 +16,10 @@ CONVERTER_HTML = SCRIPT_DIR / "index.html"
 WORKER_JS = SCRIPT_DIR / "worker.js"
 WORKER_NAME = "dark-mode-converter"
 
-# Cloudflare credentials
+# Cloudflare credentials — token comes from the environment, never hardcoded
+# (NOTE: this script is legacy, superseded by ../build-router.py — do not use)
 ACCOUNT_ID = "b6c05712bc4cb61fccdf5b7600845d03"
-API_TOKEN = "C5G9HUJkYJSJtk_zadNjPhJeKs-I3qpLGmGuiKaz"
+API_TOKEN = os.environ.get("CLOUDFLARE_API_TOKEN", "")
 
 def read_file(filepath):
     """Read a file"""

@@ -7,9 +7,20 @@ ZONE_ID = "356be8b57644a92fb81f4660c7b1dc7f"
 WORKER_NAME = "url-shortener"
 BASE = os.path.dirname(os.path.abspath(__file__))
 KV_NAMESPACE_ID = "6a4611fd1f654a6784f46dbee98a04b3"
-ADMIN_PASSWORD = "cup-ic9VTmMPBZZdS91BtA"
+
+# Admin password is a secret — never hardcode it here (this repo is public).
+# Read from the environment, or from the local secrets file.
+_pw_file = os.path.expanduser("~/.claude/.secrets/shorten-admin-password.txt")
+ADMIN_PASSWORD = os.environ.get("SHORTEN_ADMIN_PASSWORD") or (
+    open(_pw_file).read().strip() if os.path.exists(_pw_file) else None
+)
 
 DRY_RUN = "--dry-run" in sys.argv
+
+if not ADMIN_PASSWORD and not DRY_RUN:
+    print("❌ No admin password. Set SHORTEN_ADMIN_PASSWORD or create")
+    print(f"   {_pw_file}")
+    sys.exit(1)
 
 print("🔗  shorten.gamaleldien.com — URL Shortener Deploy")
 print("=" * 52)
@@ -380,5 +391,4 @@ print(f"\n{'=' * 52}")
 print("✅ Deployment complete!\n")
 print("🔗 Admin:    https://shorten.gamaleldien.com/admin")
 print("🔗 Short:    https://l.gamaleldien.com/{slug}")
-print(f"🔑 Password: {ADMIN_PASSWORD}")
-print("\n⚠️  Change the password in deploy.py after testing!")
+print("🔑 Password: (from ~/.claude/.secrets/shorten-admin-password.txt — never printed)")

@@ -1,0 +1,10 @@
+{
+  "name": "url-shortener",
+  "main": "worker.js",
+  "compatibility_date": "2024-01-01",
+  // shorten.gamaleldien.com is a CNAME to url-shortener.zone99.workers.dev — keep workers_dev on
+  "workers_dev": true,
+  "kv_namespaces": [
+    { "binding": "KV", "id": "6a4611fd1f654a6784f46dbee98a04b3" }
+  ]
+}
