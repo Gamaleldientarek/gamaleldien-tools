@@ -233,7 +233,7 @@ function base64ToArrayBuffer(base64) {{
 }}
 
 const SECURITY_HEADERS = {{
-  "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://cdn.jsdelivr.net blob:; style-src 'self' 'unsafe-inline' https://api.fontshare.com; img-src 'self' data: blob: https://images.unsplash.com; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://analytics.google.com https://region1.google-analytics.com; font-src 'self' https://api.fontshare.com https://cdn.fontshare.com; worker-src blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+  "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://cdn.jsdelivr.net https://static.cloudflareinsights.com blob:; style-src 'self' 'unsafe-inline' https://api.fontshare.com; img-src 'self' data: blob: https://images.unsplash.com; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://analytics.google.com https://region1.google-analytics.com https://cloudflareinsights.com; font-src 'self' https://api.fontshare.com https://cdn.fontshare.com; worker-src blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
   "X-Frame-Options": "DENY",
   "X-Content-Type-Options": "nosniff",
   "Referrer-Policy": "strict-origin-when-cross-origin",
