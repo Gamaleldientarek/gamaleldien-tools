@@ -28,7 +28,7 @@ import { verifyWithClaims } from "@/lib/tokenVerify";
 const COOKIE_TTL_SECONDS = 60 * 60 * 12; // one session day
 
 const cookieName = (roomId: string) =>
-  `st_p_${roomId.replaceAll("-", "")}`;
+  `tog_p_${roomId.replaceAll("-", "")}`;
 
 export async function setParticipantCookie(
   roomId: string,

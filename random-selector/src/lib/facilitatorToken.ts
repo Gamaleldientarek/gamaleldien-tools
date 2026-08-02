@@ -22,7 +22,7 @@ import {
 } from "@/lib/tokenSecrets";
 import { verifyWithClaims } from "@/lib/tokenVerify";
 
-export const FACILITATOR_COOKIE_NAME = "st_facilitator";
+export const FACILITATOR_COOKIE_NAME = "tog_facilitator";
 
 /** One working session; re-login next week costs nothing. */
 export const FACILITATOR_SESSION_TTL_SECONDS = 60 * 60 * 12; // 12h
