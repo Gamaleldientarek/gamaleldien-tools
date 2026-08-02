@@ -687,6 +687,26 @@
 
         /* ===================== Responsive ===================== */
         @media (max-width: 768px) {
+            /* Navbar: no room for the centered title handoff on mobile —
+               hide it and compact logo + links onto one row */
+            .nav-title {
+                display: none;
+            }
+            .navbar {
+                gap: 12px;
+            }
+            .navbar-logo svg {
+                height: 30px;
+            }
+            .navbar-links {
+                gap: 12px !important;
+                flex-wrap: nowrap !important;
+            }
+            .navbar-link {
+                font-size: 10px;
+                letter-spacing: 0.06em;
+                white-space: nowrap;
+            }
             .tools-grid {
                 grid-template-columns: 1fr;
             }
@@ -702,6 +722,22 @@
             }
             .glyph.g1 { left: 5%; top: 8%; width: 40px; }
             .glyph.g2 { right: 6%; top: 12%; width: 34px; }
+        }
+
+        @media (max-width: 380px) {
+            .navbar {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+            .navbar-logo svg {
+                height: 26px;
+            }
+            .navbar-links {
+                gap: 10px !important;
+            }
+            .navbar-link {
+                font-size: 9px;
+            }
         }
 
         /* ============================================================
@@ -946,7 +982,7 @@
             </svg>
         </a>
         <span class="nav-title" aria-hidden="true">Tools &amp; Learning</span>
-        <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;">
+        <div class="navbar-links" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;">
             <a href="https://template.gamaleldien.com" class="navbar-link">TEMPLATES</a>
             <a href="https://gamaleldien.com" class="navbar-link" target="_blank">GAMALELDIEN.COM</a>
         </div>
